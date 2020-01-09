@@ -7,10 +7,10 @@ class DBHelper{
         let conn = mysql.createConnection({
             // 数据库连接配置
             host:'127.0.0.1',
-            port:'3306', 
+            port:'3307', 
             user:'root',
             password:'',
-            database:'test'  // 数据库名
+            database:'yantou'  // 数据库名
         });
         conn.connect();
         return conn;

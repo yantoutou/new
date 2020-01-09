@@ -1,5 +1,6 @@
 <template>
   <div class="hello">
+    <el-button type="danger" round>危险按钮</el-button>
     <form action="">
       姓名：<input type="text" name="username" v-model="userName">
       <br>
@@ -36,7 +37,7 @@ export default {
       axios.post('/api/user/addUser', {
         name,
         age
-      }).then(res => {
+      }).then(() => {
         alert('信息添加成功');
       }).catch(err => {
         console.log(err)
