@@ -51,33 +51,62 @@ router.post('/login', (req, res) => {
     conn.end();
 });
 
-// 增加用户
-router.post('/addUser', (req, res) => {
-    let sqlStr = sql.user.add;
+// 用户注册
+router.post('/registered', (req, res) => {
     let params = req.body;
+    let sqlStr_user = sql.user.add;
+    let sqlStr_admin = sql.admin.add;
     let conn = new DBHelper().getConn();
-    conn.query(sqlStr, [params.name, params.age], (err, result) => {
-        if (err) {
-            res.json(err);
+    if (params.password1 != params.password2) {
+        res.json({
+            code: 1,
+            msg: '两次密码输入不一致'
+        })
+    } else {
+        if (params.identity == 'user') {
+            conn.query(sqlStr_user, [params.name, params.password1, params.nickName], (err, result) => {
+                if (err) {
+                    res.json(err);
+                } else {
+                    res.json(result);
+                }
+            });
         } else {
-            res.json(result);
+            conn.query(sqlStr_admin, [params.name, params.password1], (err, result) => {
+                if (err) {
+                    res.json(err);
+                } else {
+                    res.json(result);
+                }
+            });
         }
-    });
+    }
     conn.end();
 });
 
 // 查询用户
 router.post('/selectUser', (req, res) => {
-    let sqlStr = sql.user.select;
+    let sqlStr_user = sql.user.select;
+    let sqlStr_admin = sql.admin.select;
     let params = req.body;
     let conn = new DBHelper().getConn();
-    conn.query(sqlStr, [params.name], (err, result) => {
-        if (err) {
-            res.json(err);
-        } else {
-            res.json(result)
-        }
-    });
+    if (params.identity == 'user') {
+        conn.query(sqlStr_user, [params.name], (err, result) => {
+            if (err) {
+                res.json(err);
+            } else {
+                res.json(result)
+            }
+        });
+    } else {
+        conn.query(sqlStr_admin, [params.name], (err, result) => {
+            if (err) {
+                res.json(err);
+            } else {
+                res.json(result)
+            }
+        });
+    }
     conn.end();
 });
 
