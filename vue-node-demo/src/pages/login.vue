@@ -183,7 +183,12 @@ export default {
             })
             .then(res => {
               if (res.data.code == 1) {
-                this.$router.push({ path: "/about" });
+                if (res.data.identity == "user") {
+                  this.$router.replace({ path: "/about" });
+                } else {
+                  sessionStorage.setItem("token", 'true');
+                  this.$router.replace({ path: "/manage" });
+                }
               } else {
                 this.$message.error("身份有误或用户名密码错误");
               }
@@ -224,7 +229,11 @@ export default {
               if (res.data.code == 1) {
                 this.$message.error(res.data.msg);
               } else {
-                this.$router.push({ path: "/about" });
+                if (res.data.identity == "user") {
+                  this.$router.replace({ path: "/about" });
+                } else {
+                  this.$router.replace({ path: "manage" });
+                }
               }
             })
             .catch(err => {
@@ -254,6 +263,8 @@ export default {
     // 下拉框更改时
     change() {
       if (this.showR == true && this.form.identity == "admin") {
+        this.showN = false;
+      } else if (this.showR == false) {
         this.showN = false;
       } else {
         this.showN = true;

@@ -24,7 +24,8 @@ router.post('/login', (req, res) => {
                 } else {
                     res.json({
                         code: 1,
-                        msg: result
+                        msg: result,
+                        identity: 'user'
                     })
                 }
             }
@@ -42,7 +43,8 @@ router.post('/login', (req, res) => {
                 } else {
                     res.json({
                         code: 1,
-                        msg: result
+                        msg: result,
+                        identity: 'admin'
                     })
                 }
             }
@@ -68,7 +70,7 @@ router.post('/registered', (req, res) => {
                 if (err) {
                     res.json(err);
                 } else {
-                    res.json(result);
+                    res.json({msg: result, identity: 'user'});
                 }
             });
         } else {
@@ -76,7 +78,7 @@ router.post('/registered', (req, res) => {
                 if (err) {
                     res.json(err);
                 } else {
-                    res.json(result);
+                    res.json({msg: result, identity: 'admin'});
                 }
             });
         }
