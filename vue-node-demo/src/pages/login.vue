@@ -184,9 +184,11 @@ export default {
             .then(res => {
               if (res.data.code == 1) {
                 if (res.data.identity == "user") {
+                  sessionStorage.setItem("token", 'true');
                   this.$router.replace({ path: "/about" });
                 } else {
                   sessionStorage.setItem("token", 'true');
+                  sessionStorage.setItem("username", name);
                   this.$router.replace({ path: "/manage" });
                 }
               } else {
@@ -230,8 +232,10 @@ export default {
                 this.$message.error(res.data.msg);
               } else {
                 if (res.data.identity == "user") {
+                  sessionStorage.setItem("token", 'true');
                   this.$router.replace({ path: "/about" });
                 } else {
+                  sessionStorage.setItem("token", 'true');
                   this.$router.replace({ path: "manage" });
                 }
               }
@@ -299,7 +303,7 @@ export default {
   }
   .login {
     position: relative;
-    bottom: 1%;
+    bottom: -15%;
     .login-button {
       width: 17.2%;
     }
