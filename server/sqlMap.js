@@ -13,6 +13,14 @@ var sqlMap = {
         //添加管理员
         add: 'insert into admin(name, password) values (?, ?)',
         select: 'select * from admin where name = ?'
+    },
+    order: {
+        // 订单列表
+        select_list: 'select * from orderList',
+        // 状态下拉列表
+        select_status: 'select * from statusList',
+        // 订单查询
+        select_order: 'select * from orderList where number = ?'
     }
 }
 

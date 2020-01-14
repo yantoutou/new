@@ -4,6 +4,7 @@ const badyParser = require('body-parser');
 const express = require('express');
 
 const userApi = require('./api/userApi');
+const orderApi = require('./api/orderApi')
 
 let app = express();
 let server = http.createServer(app);
@@ -15,6 +16,7 @@ app.use(badyParser.urlencoded({
 
 // 后端api路由
 app.use('/api/user', userApi);
+app.use('/api/order', orderApi)
 
 // 启动监听
 server.listen(8888, () => {

@@ -4,8 +4,11 @@ import router from './router'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import less from 'less'
+import './assets/iconfont/iconfont.css'
+import moment from 'moment'
 
 Vue.config.productionTip = false
+Vue.prototype.$moment = moment;
 
 // 路由拦截
 router.beforeEach((to, from, next) => {
@@ -19,11 +22,7 @@ router.beforeEach((to, from, next) => {
       })
     }
   } else {
-    if(sessionStorage.getItem("token") == 'true'){
-      next('/manage');
-    }else{
-      next();
-    }
+    next();
   }
 });
 

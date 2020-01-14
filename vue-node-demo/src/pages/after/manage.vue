@@ -1,85 +1,94 @@
 <template>
   <div class="back">
-    <div class="top">
-      <h1>烟草专卖后台管理系统</h1>
-      <el-dropdown class="dropdown">
-        <span>
-          {{userName}}
-          <i class="el-icon-arrow-down el-icon--right"></i>
-        </span>
-        <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item>退出登录</el-dropdown-item>
-          <el-dropdown-item>个人设置-修改头像</el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>
-    </div>
-    <div class="content">
-      <el-menu
-        default-active="2"
-        class="el-menu-vertical-demo"
-        @open="handleOpen"
-        @close="handleClose"
-      >
-        <el-submenu index="1">
-          <template slot="title">
-            <i class="el-icon-s-order"></i>
-            <span>订单管理</span>
-          </template>
-          <el-menu-item-group>
-            <template slot="title">分组一</template>
-            <el-menu-item index="1-1">选项1</el-menu-item>
-            <el-menu-item index="1-2">选项2</el-menu-item>
-          </el-menu-item-group>
-          <el-menu-item-group title="分组2">
-            <el-menu-item index="1-3">选项3</el-menu-item>
-          </el-menu-item-group>
-          <el-submenu index="1-4">
-            <template slot="title">选项4</template>
-            <el-menu-item index="1-4-1">选项1</el-menu-item>
-          </el-submenu>
-        </el-submenu>
-        <el-menu-item index="2">
-          <i class="el-icon-menu"></i>
-          <span slot="title">导航二</span>
-        </el-menu-item>
-        <el-menu-item index="3" disabled>
-          <i class="el-icon-document"></i>
-          <span slot="title">导航三</span>
-        </el-menu-item>
-        <el-menu-item index="4">
-          <i class="el-icon-setting"></i>
-          <span slot="title">导航四</span>
-        </el-menu-item>
-      </el-menu>
-    </div>
+    <el-container>
+      <el-header>
+        <div class="top">
+          <h1>烟草专卖后台管理系统</h1>
+          <el-dropdown class="dropdown">
+            <span>
+              {{userName}}
+              <i class="el-icon-arrow-down el-icon--right"></i>
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item>退出登录</el-dropdown-item>
+              <el-dropdown-item>个人设置-修改头像</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </div>
+      </el-header>
+      <el-container>
+        <el-aside width="200px">
+            <div class="content">
+              <el-menu
+                default-active="1"
+                background-color="#3a3e51"
+                text-color="#b5b6bd"
+                @select="selectMenu"
+              >
+                <el-menu-item index="/manage/order">
+                  <i class="iconfont icon-icon-test"></i>
+                  <span slot="title">订单管理</span>
+                </el-menu-item>
+                <el-menu-item index="2">
+                  <i class="iconfont icon-shangpinguanli"></i>
+                  <span slot="title">商品管理</span>
+                </el-menu-item>
+                <el-menu-item index="3">
+                  <i class="iconfont icon-danzi"></i>
+                  <span slot="title">工作单</span>
+                </el-menu-item>
+                <el-menu-item index="4">
+                  <i class="iconfont icon-liuyan"></i>
+                  <span slot="title">留言管理</span>
+                </el-menu-item>
+                <el-menu-item index="5">
+                  <i class="iconfont icon-gonggao"></i>
+                  <span slot="title">公告管理</span>
+                </el-menu-item>
+                <el-menu-item index="5">
+                  <i class="iconfont icon-zhanghao"></i>
+                  <span slot="title">账号管理</span>
+                </el-menu-item>
+                <el-menu-item index="6">
+                  <i class="iconfont icon-NMStubiao-"></i>
+                  <span slot="title">设置</span>
+                </el-menu-item>
+              </el-menu>
+            </div>
+        </el-aside>
+        <el-main>
+            <router-view></router-view>
+        </el-main>
+      </el-container>
+    </el-container>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
+import axios from "axios";
 export default {
   data() {
     return {
-      userName: ''
+      userName: ""
     };
   },
   methods: {
-    handleOpen(key, keyPath) {
-      console.log(key, keyPath);
-    },
-    handleClose(key, keyPath) {
-      console.log(key, keyPath);
+    selectMenu(key) {
+      this.$router.push(key);
     }
   },
   mounted() {
-    let name = sessionStorage.getItem("username")
-    axios.post('/api/user/selectUser', {
-      name
-    }).then(res => {
-      this.userName = res.data[0].name
-    }).catch(err => {
-      console.log(err)
-    })
+    let name = sessionStorage.getItem("username");
+    axios
+      .post("/api/user/selectUser", {
+        name
+      })
+      .then(res => {
+        this.userName = res.data[0].name;
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }
 };
 </script>
@@ -121,7 +130,15 @@ export default {
     position: absolute;
     top: 68px;
     left: 0;
-    width: 10%;
+    width: 13%;
+    height: 100%;
+    background: #3a3e51;
+    i {
+      margin-right: 5px;
+    }
+    .el-menu {
+      border-color: #3a3e51;
+    }
   }
 }
 </style>
