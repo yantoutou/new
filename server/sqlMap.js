@@ -18,9 +18,15 @@ var sqlMap = {
         // 订单列表
         select_list: 'select * from orderList',
         // 状态下拉列表
-        select_status: 'select * from statusList',
-        // 订单查询
-        select_order: 'select * from orderList where number = ?'
+        status: 'select * from statusList',
+        // 订单查询 状态
+        select_status: 'select * from orderList where status = ?',
+        // 订单查询 订单号
+        select_number: 'select * from orderList where number = ?',
+        // 订单查询 状态、订单号
+        select_order: 'select * from orderList where number = ? and status = ?',
+        // 订单修改
+        update: 'update orderList set phone = ?, address = ?, status = ?, label = ? where id = ?'
     }
 }
 
