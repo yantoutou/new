@@ -35,25 +35,35 @@ router.post('/statusList', (req, res) => {
 router.post('/orderSelect', (req,res) => {
     let params = req.body;
     let number = params.number;
-    let status = params.status
+    let status = params.status;
+    let startTime = params.startTime;
+    let endTime = params.endTime;
     let sqlStr = ''
     let conn = new DBHelper().getConn();
     let arr = []
-    if (number.length == 0) {
-        if (status.length == 0) {
-            sqlStr = sql.order.select_list
-        } else {
-            sqlStr = sql.order.select_status
-            arr = [status]
-        }
-    } else {
-        if (status.length == 0) {
-            sqlStr = sql.order.select_number
-            arr = [number]
-        } else {
-            sqlStr = sql.order.select_order
-            arr = [number, status]
-        }
+    if (number.length == 0 && status.length == 0 && startTime == '' && endTime == '') {
+        sqlStr = sql.order.select_list
+    } else if (number.length != 0 && status.length == 0 && startTime == '' && endTime == '') {
+        sqlStr = sql.order.select_one
+        arr = [status, number, startTime, endTime]
+    } else if (number.length == 0 && status.length != 0 && startTime == '' && endTime == '') {
+        sqlStr = sql.order.select_one
+        arr = [status, number, startTime, endTime]
+    } else if (number.length == 0 && status.length == 0 && startTime != '' && endTime != '') {
+        sqlStr = sql.order.select_one
+        arr = [status, number, startTime, endTime]
+    } else if (number.length != 0 && status.length != 0 && startTime == '' && endTime == '') {
+        sqlStr = sql.order.select_NS
+        arr = [number, status]
+    } else if (number.length != 0 && status.length == 0 && startTime != '' && endTime != '') {
+        sqlStr = sql.order.select_NT
+        arr = [number, startTime, endTime]
+    } else if (number.length == 0 && status.length != 0 && startTime != '' && endTime != '') {
+        sqlStr = sql.order.select_ST
+        arr = [status, startTime, endTime]
+    } else if (number.length != 0 && status.length != 0 && startTime != '' && endTime != '') {
+        sqlStr = sql.order.select_NST
+        arr = [number,status, startTime, endTime]
     }
     conn.query(sqlStr, arr, (err, result) => {
         if (err) {

@@ -20,7 +20,7 @@
         <el-aside width="200px">
             <div class="content">
               <el-menu
-                default-active="1"
+                default-active="/manage/order"
                 background-color="#3a3e51"
                 text-color="#b5b6bd"
                 @select="selectMenu"

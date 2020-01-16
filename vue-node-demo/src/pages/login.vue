@@ -189,7 +189,7 @@ export default {
                 } else {
                   sessionStorage.setItem("token", 'true');
                   sessionStorage.setItem("username", name);
-                  this.$router.replace({ path: "/manage" });
+                  this.$router.replace({ path: "/manage/order" });
                 }
               } else {
                 this.$message.error("身份有误或用户名密码错误");
@@ -236,7 +236,7 @@ export default {
                   this.$router.replace({ path: "/about" });
                 } else {
                   sessionStorage.setItem("token", 'true');
-                  this.$router.replace({ path: "manage" });
+                  this.$router.replace({ path: "/manage/order" });
                 }
               }
             })

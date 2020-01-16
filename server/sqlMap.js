@@ -19,12 +19,16 @@ var sqlMap = {
         select_list: 'select * from orderList',
         // 状态下拉列表
         status: 'select * from statusList',
-        // 订单查询 状态
-        select_status: 'select * from orderList where status = ?',
-        // 订单查询 订单号
-        select_number: 'select * from orderList where number = ?',
-        // 订单查询 状态、订单号
-        select_order: 'select * from orderList where number = ? and status = ?',
+        // 订单查询 一个
+        select_one: 'select * from orderList where status = ? or number = ? or time between ? and ?',
+        // 订单查询 订单号、状态
+        select_NS: 'select * from orderList where number = ? and status = ?',
+        // 订单查询 订单号、时间
+        select_NT: 'select * from orderList where number = ? and time between ? and ?',
+        // 订单查询 状态、时间
+        select_ST: 'select * from orderList where status = ? and time between ? and ?',
+        // 订单查询 订单号、状态、时间
+        select_NST: 'select * from orderList where number = ? and status = ? and time between ? and ?',
         // 订单修改
         update: 'update orderList set phone = ?, address = ?, status = ?, label = ? where id = ?'
     }

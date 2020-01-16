@@ -7,7 +7,7 @@
             <span>订单管理</span>
           </div>
           <div>
-            <el-row :gutter="20">
+            <el-row :gutter="20" class="layout">
               <el-col :span="5">
                 <el-input
                   placeholder="请输入订单号"
@@ -29,12 +29,27 @@
                   ></el-option>
                 </el-select>
               </el-col>
+            </el-row>
+
+            <el-row :gutter="20">
+              <el-col :span="10">
+                <el-date-picker
+                  v-model="time"
+                  type="datetimerange"
+                  align="right"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  :default-time="['00:00:00', '23:59:59']"
+                >
+                </el-date-picker>
+              </el-col>
               <el-col :span="3">
                 <el-button type="primary" icon="el-icon-search" @click="search"
                   >搜索</el-button
                 >
               </el-col>
             </el-row>
+
             <el-table
               style="width: 100%"
               :data="tableData"
@@ -105,7 +120,11 @@
         </el-row>
         <el-row>
           <el-col :span="15">
-            <el-form-item label="收货地址" prop="addEdit" :hide-required-asterisk="true">
+            <el-form-item
+              label="收货地址"
+              prop="addEdit"
+              :hide-required-asterisk="true"
+            >
               <el-input
                 v-model="form.addEdit"
                 placeholder="请输入地址"
@@ -168,9 +187,7 @@
       </el-form>
       <div slot="footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click='Confirm'
-          >确 定</el-button
-        >
+        <el-button type="primary" @click="Confirm">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -179,6 +196,7 @@
 <script>
 import axios from "axios";
 export default {
+  inject: ['reload'],
   data() {
     var phoneEdit = (rule, value, callback) => {
       if (value === "") {
@@ -198,6 +216,7 @@ export default {
       number: "",
       statusList: [],
       status: "",
+      time: "",
       dialogFormVisible: false,
       index: 0,
       loading: true,
@@ -236,10 +255,21 @@ export default {
     },
     // 搜索
     search() {
+      let startTime;
+      let endTime;
+      if (this.time == "" || !this.time) {
+        startTime = "";
+        endTime = "";
+      } else {
+        startTime = this.time[0];
+        endTime = this.time[1];
+      }
       axios
         .post("/api/order/orderSelect", {
           number: this.number,
-          status: this.status
+          status: this.status,
+          startTime,
+          endTime
         })
         .then(res => {
           this.tableData = res.data;
@@ -278,27 +308,31 @@ export default {
       this.form.timeEdit = row.time;
       this.form.money = row.money;
       this.form.num = row.number;
-      this.index = index
+      this.index = index;
     },
     Confirm() {
       this.$refs.form.validate(valid => {
         if (!valid) {
-          return false
+          return false;
         } else {
-          this.dialogFormVisible = false
-          axios.post('/api/order/update', {
-            id: this.index + 1,
-            address: this.form.addEdit,
-            phone: this.form.phoneEdit,
-            status: this.form.statusEdit
-          }).then(() => {
-            this.loading = false;
-            this.$router.go(0)
-          }).catch(err => {
-            console.log(err)
-          })
+          this.dialogFormVisible = false;
+          axios
+            .post("/api/order/update", {
+              id: this.index + 1,
+              address: this.form.addEdit,
+              phone: this.form.phoneEdit,
+              status: this.form.statusEdit
+            })
+            .then(() => {
+              this.loading = false;
+              this.$message.success('修改成功')
+              this.reload();
+            })
+            .catch(err => {
+              console.log(err);
+            });
         }
-      })
+      });
     }
   },
   mounted() {
@@ -306,5 +340,8 @@ export default {
   }
 };
 </script>
-
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.layout {
+  margin-bottom: 10px;
+}
+</style>

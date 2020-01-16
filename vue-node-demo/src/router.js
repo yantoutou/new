@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Login from './pages/login.vue'
 import Manage from './pages/after/manage.vue'
 import Order from './pages/after/order'
+import Err from './pages/err'
 
 Vue.use(Router)
 
@@ -30,9 +31,16 @@ export default new Router({
         {
           path: 'order',
           name: 'order',
-          component: Order
+          component: Order,
+          meta: {
+            requireAuth: true
+          }
         }
       ]
+    },
+    {
+      path: '*',
+      component: Err
     }
   ]
 })
