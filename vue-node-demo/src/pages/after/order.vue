@@ -85,7 +85,7 @@
               ></el-table-column>
               <el-table-column label="操作" width="180">
                 <template slot-scope="scope">
-                  <el-button type="text" @click="edit(scope.row, scope.$index)"
+                  <el-button type="text" @click="edit(scope.row)"
                     >编辑</el-button
                   >
                 </template>
@@ -223,7 +223,6 @@ export default {
       status: "",
       time: "",
       dialogFormVisible: false,
-      index: 0,
       loading: true,
       total: 0,
       currentPage: 1,
@@ -234,7 +233,8 @@ export default {
         statusEdit: "",
         timeEdit: "",
         money: "",
-        num: ""
+        num: "",
+        id: ''
       },
       rules: {
         addEdit: [{ required: true, message: "请输入地址", trigger: "change" }],
@@ -322,7 +322,7 @@ export default {
         });
     },
     // 编辑
-    edit(row, index) {
+    edit(row) {
       this.dialogFormVisible = true;
       this.form.addEdit = row.address;
       this.form.phoneEdit = row.phone;
@@ -330,7 +330,7 @@ export default {
       this.form.timeEdit = row.time;
       this.form.money = row.money;
       this.form.num = row.number;
-      this.index = index;
+      this.form.id = row.id
     },
     Confirm() {
       this.$refs.form.validate(valid => {
@@ -340,7 +340,7 @@ export default {
           this.dialogFormVisible = false;
           axios
             .post("/api/order/update", {
-              id: this.index + 1,
+              id: this.form.id,
               address: this.form.addEdit,
               phone: this.form.phoneEdit,
               status: this.form.statusEdit
