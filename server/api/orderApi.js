@@ -29,20 +29,26 @@ router.post('/statusList', (req, res) => {
             res.json(result);
         }
     })
+    conn.end();
 })
 
 // 订单查询
-router.post('/orderSelect', (req,res) => {
+router.post('/orderSelect', (req, res) => {
     let params = req.body;
     let number = params.number;
     let status = params.status;
     let startTime = params.startTime;
     let endTime = params.endTime;
+    let page = params.page
     let sqlStr = ''
+    let sqlStr_page = ''
+    let index = (page - 1) * 7
     let conn = new DBHelper().getConn();
     let arr = []
+    let count = ''
     if (number.length == 0 && status.length == 0 && startTime == '' && endTime == '') {
         sqlStr = sql.order.select_list
+        sqlStr_page = sql.order.page
     } else if (number.length != 0 && status.length == 0 && startTime == '' && endTime == '') {
         sqlStr = sql.order.select_one
         arr = [status, number, startTime, endTime]
@@ -63,19 +69,27 @@ router.post('/orderSelect', (req,res) => {
         arr = [status, startTime, endTime]
     } else if (number.length != 0 && status.length != 0 && startTime != '' && endTime != '') {
         sqlStr = sql.order.select_NST
-        arr = [number,status, startTime, endTime]
+        arr = [number, status, startTime, endTime]
     }
     conn.query(sqlStr, arr, (err, result) => {
         if (err) {
             res.json(err)
         } else {
-            res.json(result)
+            count = result.length
         }
     })
+    conn.query(sqlStr_page, [index], (err, result) => {
+        if (err) {
+            console.log(err)
+        } else {
+            res.json({data: result, count: count})
+        }
+    })
+    conn.end();
 })
 
 // 订单修改
-router.post('/update', (req,res) => {
+router.post('/update', (req, res) => {
     let sqlStr = sql.order.update
     let params = req.body
     let conn = new DBHelper().getConn();
@@ -94,6 +108,23 @@ router.post('/update', (req,res) => {
             res.json(result)
         }
     })
+    conn.end();
+})
+
+// 分页
+router.post('/page', (req, res) => {
+    let sqlStr = sql.order.page
+    let page = req.body.page
+    let conn = new DBHelper().getConn();
+    let index = (page - 1) * 7
+    conn.query(sqlStr, [index], (err, result) => {
+        if (err) {
+            res.json(err)
+        } else {
+            res.json(result)
+        }
+    })
+    conn.end();
 })
 
 module.exports = router;

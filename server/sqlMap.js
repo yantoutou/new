@@ -30,7 +30,9 @@ var sqlMap = {
         // 订单查询 订单号、状态、时间
         select_NST: 'select * from orderList where number = ? and status = ? and time between ? and ?',
         // 订单修改
-        update: 'update orderList set phone = ?, address = ?, status = ?, label = ? where id = ?'
+        update: 'update orderList set phone = ?, address = ?, status = ?, label = ? where id = ?',
+        // 分页
+        page: 'select * from orderList limit ?,7'
     }
 }
 

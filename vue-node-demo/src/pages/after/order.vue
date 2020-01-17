@@ -29,9 +29,6 @@
                   ></el-option>
                 </el-select>
               </el-col>
-            </el-row>
-
-            <el-row :gutter="20">
               <el-col :span="10">
                 <el-date-picker
                   v-model="time"
@@ -49,7 +46,6 @@
                 >
               </el-col>
             </el-row>
-
             <el-table
               style="width: 100%"
               :data="tableData"
@@ -95,6 +91,15 @@
                 </template>
               </el-table-column>
             </el-table>
+            <el-pagination
+              @current-change="handleCurrentChange"
+              :current-page="currentPage"
+              layout="total, prev, pager, next, jumper"
+              :total="total"
+              :page-size="7"
+              class="page"
+            >
+            </el-pagination>
           </div>
         </el-card>
       </el-tab-pane>
@@ -196,7 +201,7 @@
 <script>
 import axios from "axios";
 export default {
-  inject: ['reload'],
+  inject: ["reload"],
   data() {
     var phoneEdit = (rule, value, callback) => {
       if (value === "") {
@@ -220,6 +225,9 @@ export default {
       dialogFormVisible: false,
       index: 0,
       loading: true,
+      total: 0,
+      currentPage: 1,
+      flag: 1,
       form: {
         addEdit: "",
         phoneEdit: "",
@@ -255,6 +263,7 @@ export default {
     },
     // 搜索
     search() {
+      this.flag = 2;
       let startTime;
       let endTime;
       if (this.time == "" || !this.time) {
@@ -269,10 +278,12 @@ export default {
           number: this.number,
           status: this.status,
           startTime,
-          endTime
+          endTime,
+          page: this.currentPage
         })
         .then(res => {
-          this.tableData = res.data;
+          this.tableData = res.data.data;
+          this.total = res.data.count
           this.loading = false;
         })
         .catch(err => {
@@ -281,8 +292,19 @@ export default {
     },
     // 获取列表
     getList() {
+      this.flag = 1
       axios
         .post("/api/order/orderList")
+        .then(res => {
+          this.total = res.data.length;
+        })
+        .catch(err => {
+          console.log(err);
+        });
+      axios
+        .post("/api/order/page", {
+          page: this.currentPage
+        })
         .then(res => {
           this.tableData = res.data;
           this.loading = false;
@@ -325,7 +347,7 @@ export default {
             })
             .then(() => {
               this.loading = false;
-              this.$message.success('修改成功')
+              this.$message.success("修改成功");
               this.reload();
             })
             .catch(err => {
@@ -333,6 +355,14 @@ export default {
             });
         }
       });
+    },
+    handleCurrentChange(val) {
+      this.currentPage = val;
+      if (this.flag == 1) {
+        this.getList()
+      } else {
+        this.search();
+      }
     }
   },
   mounted() {
@@ -343,5 +373,8 @@ export default {
 <style lang="less" scoped>
 .layout {
   margin-bottom: 10px;
+}
+.page {
+  float: right;
 }
 </style>
