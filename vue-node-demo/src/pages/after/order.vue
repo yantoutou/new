@@ -227,6 +227,7 @@ export default {
       total: 0,
       currentPage: 1,
       flag: 1,
+      isPage: 0,
       form: {
         addEdit: "",
         phoneEdit: "",
@@ -273,6 +274,11 @@ export default {
         startTime = this.time[0];
         endTime = this.time[1];
       }
+      if (this.isPage == 0) {
+        this.currentPage = 1
+      } else {
+        console.log(this.currentPage)
+      }
       axios
         .post("/api/order/orderSelect", {
           number: this.number,
@@ -289,6 +295,7 @@ export default {
         .catch(err => {
           console.log(err);
         });
+        this.isPage = 0
     },
     // 获取列表
     getList() {
@@ -361,6 +368,7 @@ export default {
       if (this.flag == 1) {
         this.getList()
       } else {
+        this.isPage = 1
         this.search();
       }
     }

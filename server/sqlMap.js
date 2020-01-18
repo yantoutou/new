@@ -32,7 +32,12 @@ var sqlMap = {
         // 订单修改
         update: 'update orderList set phone = ?, address = ?, status = ?, label = ? where id = ?',
         // 分页
-        page: 'select * from orderList limit ?,7'
+        page: 'select * from orderList limit ?,7',
+        page_one: 'select * from orderList where status = ? or number = ? or time between ? and ? limit ?,7',
+        page_NS: 'select * from orderList where number = ? and status = ? limit ?,7',
+        page_NT: 'select * from orderList where number = ? and time between ? and ? limit ?,7',
+        page_ST: 'select * from orderList where status = ? and time between ? and ? limit ?,7',
+        page_NST: 'select * from orderList where number = ? and status = ? and time between ? and ? limit ?,7'
     }
 }
 

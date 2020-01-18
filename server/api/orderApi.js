@@ -45,31 +45,47 @@ router.post('/orderSelect', (req, res) => {
     let index = (page - 1) * 7
     let conn = new DBHelper().getConn();
     let arr = []
+    let pageArr = []
     let count = ''
     if (number.length == 0 && status.length == 0 && startTime == '' && endTime == '') {
         sqlStr = sql.order.select_list
         sqlStr_page = sql.order.page
+        pageArr = [index]
     } else if (number.length != 0 && status.length == 0 && startTime == '' && endTime == '') {
         sqlStr = sql.order.select_one
+        sqlStr_page = sql.order.page_one
         arr = [status, number, startTime, endTime]
+        pageArr = [status, number, startTime, endTime, index]
     } else if (number.length == 0 && status.length != 0 && startTime == '' && endTime == '') {
         sqlStr = sql.order.select_one
+        sqlStr_page = sql.order.page_one
         arr = [status, number, startTime, endTime]
+        pageArr = [status, number, startTime, endTime, index]
     } else if (number.length == 0 && status.length == 0 && startTime != '' && endTime != '') {
         sqlStr = sql.order.select_one
+        sqlStr_page = sql.order.page_one
         arr = [status, number, startTime, endTime]
+        pageArr = [status, number, startTime, endTime, index]
     } else if (number.length != 0 && status.length != 0 && startTime == '' && endTime == '') {
         sqlStr = sql.order.select_NS
+        sqlStr_page = sql.order.page_NS
         arr = [number, status]
+        pageArr = [number, status, index]
     } else if (number.length != 0 && status.length == 0 && startTime != '' && endTime != '') {
         sqlStr = sql.order.select_NT
+        sqlStr_page = sql.order.page_NT
         arr = [number, startTime, endTime]
+        pageArr = [number, startTime, endTime, index]
     } else if (number.length == 0 && status.length != 0 && startTime != '' && endTime != '') {
         sqlStr = sql.order.select_ST
+        sqlStr_page = sql.order.page_ST
         arr = [status, startTime, endTime]
+        pageArr = [status, startTime, endTime, index]
     } else if (number.length != 0 && status.length != 0 && startTime != '' && endTime != '') {
         sqlStr = sql.order.select_NST
+        sqlStr_page = sql.order.page_NST
         arr = [number, status, startTime, endTime]
+        pageArr = [number, status, startTime, endTime, index]
     }
     conn.query(sqlStr, arr, (err, result) => {
         if (err) {
@@ -78,7 +94,7 @@ router.post('/orderSelect', (req, res) => {
             count = result.length
         }
     })
-    conn.query(sqlStr_page, [index], (err, result) => {
+    conn.query(sqlStr_page, pageArr, (err, result) => {
         if (err) {
             console.log(err)
         } else {
