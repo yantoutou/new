@@ -1,16 +1,16 @@
 <template>
   <div>
     <el-tabs v-model="card">
-      <el-tab-pane label="订单管理" name="first">
+      <el-tab-pane label="订单查询" name="first">
         <el-card>
           <div slot="header">
-            <span>订单管理</span>
+            <span>订单查询</span>
           </div>
           <div>
             <el-row :gutter="20" class="layout">
               <el-col :span="5">
                 <el-input
-                  placeholder="请输入订单号"
+                  placeholder="请输入订单编号"
                   v-model="number"
                   clearable
                 ></el-input>
@@ -80,7 +80,7 @@
               ></el-table-column>
               <el-table-column
                 prop="number"
-                label="订单号"
+                label="订单编号"
                 width="180"
               ></el-table-column>
               <el-table-column label="操作" width="180">
@@ -103,7 +103,7 @@
           </div>
         </el-card>
       </el-tab-pane>
-      <el-tab-pane label="物流管理" name="second">物流管理</el-tab-pane>
+      <el-tab-pane label="退货管理" name="second"><Return></Return></el-tab-pane>
     </el-tabs>
     <el-dialog
       title="订单修改"
@@ -180,10 +180,10 @@
         </el-row>
         <el-row>
           <el-col :span="15">
-            <el-form-item label="订单号" prop="numEdit">
+            <el-form-item label="订单编号" prop="numEdit">
               <el-input
                 v-model="form.num"
-                placeholder="请输入订单号"
+                placeholder="请输入订单编号"
                 disabled
               ></el-input>
             </el-form-item>
@@ -200,6 +200,7 @@
 
 <script>
 import axios from "axios";
+import Return from './return'
 export default {
   inject: ["reload"],
   data() {
@@ -246,6 +247,7 @@ export default {
       }
     };
   },
+  components: { Return },
   methods: {
     // 格式化时间
     formatterTime(row) {
@@ -257,8 +259,10 @@ export default {
           return "color: #8dd16c";
         } else if (row.row.status == 2) {
           return "color: #e6a23d";
-        } else {
+        } else if(row.row.status == 3) {
           return "color: #909399";
+        } else {
+          return 'color: red'
         }
       }
     },

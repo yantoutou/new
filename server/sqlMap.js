@@ -38,6 +38,9 @@ var sqlMap = {
         page_NT: 'select * from orderList where number = ? and time between ? and ? limit ?,7',
         page_ST: 'select * from orderList where status = ? and time between ? and ? limit ?,7',
         page_NST: 'select * from orderList where number = ? and status = ? and time between ? and ? limit ?,7'
+    },
+    returnGoods: {
+        select: 'select * from returnList'
     }
 }
 

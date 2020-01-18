@@ -114,8 +114,10 @@ router.post('/update', (req, res) => {
         label = '已完成'
     } else if (params.status == 2) {
         label = '进行中'
-    } else {
+    } else if(params.status == 3) {
         label = '已取消'
+    } else {
+        label = '未审核'
     }
     conn.query(sqlStr, [params.phone, params.address, params.status, label, params.id], (err, result) => {
         if (err) {
