@@ -40,7 +40,13 @@ var sqlMap = {
         page_NST: 'select * from orderList where number = ? and status = ? and time between ? and ? limit ?,7'
     },
     returnGoods: {
-        select: 'select * from returnList'
+        select: 'select * from returnList',
+        // 处理
+        update: 'update returnList set deal = "同意" where number = ?',
+        // 退回
+        updateReturn: 'update returnList set deal = "未处理" where number = ?',
+        // 订单编号查询
+        select_number: 'select * from returnList where number = ?'
     }
 }
 
