@@ -7,7 +7,7 @@
             <span>订单查询</span>
           </div>
           <div>
-            <el-row :gutter="20" class="layout">
+            <el-row :gutter="20">
               <el-col :span="5">
                 <el-input
                   placeholder="请输入订单编号"
@@ -103,7 +103,9 @@
           </div>
         </el-card>
       </el-tab-pane>
-      <el-tab-pane label="退货管理" name="second"><Return></Return></el-tab-pane>
+      <el-tab-pane label="退货管理" name="second"
+        ><Return></Return
+      ></el-tab-pane>
     </el-tabs>
     <el-dialog
       title="订单修改"
@@ -200,7 +202,7 @@
 
 <script>
 import axios from "axios";
-import Return from './return'
+import Return from "./return";
 export default {
   inject: ["reload"],
   data() {
@@ -236,7 +238,7 @@ export default {
         timeEdit: "",
         money: "",
         num: "",
-        id: ''
+        id: ""
       },
       rules: {
         addEdit: [{ required: true, message: "请输入地址", trigger: "change" }],
@@ -259,10 +261,10 @@ export default {
           return "color: #8dd16c";
         } else if (row.row.status == 2) {
           return "color: #e6a23d";
-        } else if(row.row.status == 3) {
+        } else if (row.row.status == 3) {
           return "color: #909399";
         } else {
-          return 'color: red'
+          return "color: red";
         }
       }
     },
@@ -279,9 +281,9 @@ export default {
         endTime = this.time[1];
       }
       if (this.isPage == 0) {
-        this.currentPage = 1
+        this.currentPage = 1;
       } else {
-        console.log(this.currentPage)
+        console.log(this.currentPage);
       }
       axios
         .post("/api/order/orderSelect", {
@@ -293,17 +295,17 @@ export default {
         })
         .then(res => {
           this.tableData = res.data.data;
-          this.total = res.data.count
+          this.total = res.data.count;
           this.loading = false;
         })
         .catch(err => {
           console.log(err);
         });
-        this.isPage = 0
+      this.isPage = 0;
     },
     // 获取列表
     getList() {
-      this.flag = 1
+      this.flag = 1;
       axios
         .post("/api/order/orderList")
         .then(res => {
@@ -341,7 +343,7 @@ export default {
       this.form.timeEdit = row.time;
       this.form.money = row.money;
       this.form.num = row.number;
-      this.form.id = row.id
+      this.form.id = row.id;
     },
     Confirm() {
       this.$refs.form.validate(valid => {
@@ -370,9 +372,9 @@ export default {
     handleCurrentChange(val) {
       this.currentPage = val;
       if (this.flag == 1) {
-        this.getList()
+        this.getList();
       } else {
-        this.isPage = 1
+        this.isPage = 1;
         this.search();
       }
     }
@@ -383,9 +385,6 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.layout {
-  margin-bottom: 10px;
-}
 .page {
   float: right;
 }
