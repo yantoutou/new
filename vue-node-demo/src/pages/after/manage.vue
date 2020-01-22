@@ -56,9 +56,9 @@
                 <i class="iconfont icon-zhanghao"></i>
                 <span slot="title">账号管理</span>
               </el-menu-item>
-              <el-menu-item index="/manage/set">
-                <i class="iconfont icon-NMStubiao-"></i>
-                <span slot="title">设置</span>
+              <el-menu-item index="/manage/manual">
+                <i class="el-icon-s-management"></i>
+                <span slot="title">使用手册</span>
               </el-menu-item>
             </el-menu>
           </div>

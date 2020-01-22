@@ -20,7 +20,7 @@
           </el-table-column>
           <el-table-column prop="money" label="退款金额" width="180">
           </el-table-column>
-          <el-table-column prop="time" label="申请时间" width="210" :formatter="formatterTime"> </el-table-column>
+          <el-table-column prop="time" label="申请时间" width="210"> </el-table-column>
           <el-table-column prop="user" label="申请人" width="180"> </el-table-column>
           <el-table-column prop="deal" label="商家处理" width="180"> </el-table-column>
           <el-table-column label="管理操作">
@@ -67,9 +67,6 @@ export default {
       if (row.row.deal == '未处理') {
         return 'background: oldlace'
       }
-    },
-    formatterTime(row) {
-      return this.$moment(row.time).format("YYYY-MM-DD HH:mm:ss");
     },
     getList() {
       axios.post('/api/return/selectList').then(res => {

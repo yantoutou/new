@@ -3,6 +3,7 @@ const router = express.Router();
 
 const DBHelper = require('../utils/DBHelper');
 const sql = require('../sqlMap');
+const moment = require('moment');
 
 // 订单列表
 router.post('/orderList', (req, res) => {
@@ -12,6 +13,9 @@ router.post('/orderList', (req, res) => {
         if (err) {
             res.json(err);
         } else {
+            result.forEach(item => {
+                item.time = moment(item.time).format('YYYY-MM-DD HH:mm:ss')
+            })
             res.json(result)
         }
     });
@@ -47,6 +51,7 @@ router.post('/orderSelect', (req, res) => {
     let arr = []
     let pageArr = []
     let count = ''
+    let ex = []
     if (number.length == 0 && status.length == 0 && startTime == '' && endTime == '') {
         sqlStr = sql.order.select_list
         sqlStr_page = sql.order.page
@@ -91,14 +96,21 @@ router.post('/orderSelect', (req, res) => {
         if (err) {
             res.json(err)
         } else {
+            ex = result
             count = result.length
         }
     })
     conn.query(sqlStr_page, pageArr, (err, result) => {
         if (err) {
-            console.log(err)
+            res.json(err)
         } else {
-            res.json({data: result, count: count})
+            result.forEach(item => {
+                item.time = moment(item.time).format('YYYY-MM-DD HH:mm:ss')
+            })
+            ex.forEach(item => {
+                item.time = moment(item.time).format('YYYY-MM-DD HH:mm:ss')
+            })
+            res.json({data: result, count: count, ex: ex})
         }
     })
     conn.end();
@@ -139,6 +151,9 @@ router.post('/page', (req, res) => {
         if (err) {
             res.json(err)
         } else {
+            result.forEach(item => {
+                item.time = moment(item.time).format('YYYY-MM-DD HH:mm:ss')
+            })
             res.json(result)
         }
     })

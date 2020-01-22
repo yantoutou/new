@@ -4,7 +4,7 @@ import Login from './pages/login.vue'
 import Manage from './pages/after/manage.vue'
 import Order from './pages/after/order'
 import Err from './pages/err'
-import Set from './pages/after/set'
+import Manual from './pages/after/manual'
 
 Vue.use(Router)
 
@@ -38,9 +38,9 @@ export default new Router({
           }
         },
         {
-          path: 'set',
-          name: 'set',
-          component: Set,
+          path: 'manual',
+          name: 'manual',
+          component: Manual,
           meta: {
             requireAuth: true
           }

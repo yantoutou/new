@@ -5,6 +5,9 @@
         <el-card>
           <div slot="header">
             <span>订单查询</span>
+            <span>
+              <el-button type="primary" class="export" @click="exportTable">导出</el-button>
+            </span>
           </div>
           <div>
             <el-row :gutter="20">
@@ -56,7 +59,6 @@
                 prop="time"
                 label="下单时间"
                 width="180"
-                :formatter="formatterTime"
               ></el-table-column>
               <el-table-column
                 prop="address"
@@ -219,6 +221,9 @@ export default {
       }
     };
     return {
+      autoWidth: true,
+      bookType: 'xlsx',
+      filename: '',
       tableData: [],
       card: "first",
       number: "",
@@ -231,6 +236,7 @@ export default {
       currentPage: 1,
       flag: 1,
       isPage: 0,
+      ex: [],
       form: {
         addEdit: "",
         phoneEdit: "",
@@ -251,10 +257,6 @@ export default {
   },
   components: { Return },
   methods: {
-    // 格式化时间
-    formatterTime(row) {
-      return this.$moment(row.time).format("YYYY-MM-DD HH:mm:ss");
-    },
     cellStyle(row) {
       if (row.column.label == "订单状态") {
         if (row.row.status == 1) {
@@ -297,6 +299,7 @@ export default {
           this.tableData = res.data.data;
           this.total = res.data.count;
           this.loading = false;
+          this.ex = res.data.ex
         })
         .catch(err => {
           console.log(err);
@@ -309,6 +312,7 @@ export default {
       axios
         .post("/api/order/orderList")
         .then(res => {
+          this.ex = res.data
           this.total = res.data.length;
         })
         .catch(err => {
@@ -377,6 +381,24 @@ export default {
         this.isPage = 1;
         this.search();
       }
+    },
+    exportTable() {
+      import('../../assets/js/Export2Excel.js').then(moudle => {
+        const tHeader = ['下单时间', '收货地址', '联系电话', '订单金额', '订单状态', '订单编号']
+        const filterVal = ['time', 'address', 'phone', 'money', 'label', 'number']
+        const list = this.ex
+        const data = this.formatJson(filterVal, list)
+        moudle.export_json_to_excel({
+          header: tHeader,
+          data,
+          filename: this.filename === '' ? 'filename' : this.filename,
+          autoWidth: this.autoWidth,
+          bookType: this.bookType
+        })
+      })
+    },
+    formatJson(filterVal, jsonData) {
+      return jsonData.map(v => filterVal.map(j => v[j]))
     }
   },
   mounted() {
@@ -386,6 +408,9 @@ export default {
 </script>
 <style lang="less" scoped>
 .page {
+  float: right;
+}
+.export {
   float: right;
 }
 </style>

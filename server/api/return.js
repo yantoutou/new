@@ -3,6 +3,7 @@ const router = express.Router();
 
 const DBHelper = require('../utils/DBHelper');
 const sql = require('../sqlMap');
+const moment = require('moment');
 
 // 退货列表
 router.post('/selectList', (req, res) => {
@@ -12,6 +13,9 @@ router.post('/selectList', (req, res) => {
         if (err) {
             res.json(err)
         } else {
+            result.forEach(item => {
+                item.time = moment(item.time).format('YYYY-MM-DD HH:mm:ss')
+            })
             res.json(result)
         }
     })
