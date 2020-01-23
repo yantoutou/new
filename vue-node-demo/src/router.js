@@ -5,6 +5,7 @@ import Manage from './pages/after/manage.vue'
 import Order from './pages/after/order'
 import Err from './pages/err'
 import Manual from './pages/after/manual'
+import Goods from './pages/after/goods'
 
 Vue.use(Router)
 
@@ -33,6 +34,14 @@ export default new Router({
           path: 'order',
           name: 'order',
           component: Order,
+          meta: {
+            requireAuth: true
+          }
+        },
+        {
+          path: 'goods',
+          name: 'goods',
+          component: Goods,
           meta: {
             requireAuth: true
           }

@@ -27,7 +27,7 @@
         <el-aside width="200px">
           <div class="content">
             <el-menu
-              default-active="/manage/order"
+              :default-active=active
               background-color="#3a3e51"
               text-color="#b5b6bd"
               @select="selectMenu"
@@ -36,7 +36,7 @@
                 <i class="iconfont icon-icon-test"></i>
                 <span slot="title">订单管理</span>
               </el-menu-item>
-              <el-menu-item index="2">
+              <el-menu-item index="/manage/goods">
                 <i class="iconfont icon-shangpinguanli"></i>
                 <span slot="title">商品管理</span>
               </el-menu-item>
@@ -76,18 +76,21 @@ import axios from "axios";
 export default {
   data() {
     return {
-      userName: ""
+      userName: "",
+      active: '/manage/order'
     };
   },
   methods: {
     selectMenu(key) {
       this.$router.push(key);
+      this.active = key
     },
     loginOut() {
       this.$router.replace("/");
     }
   },
   mounted() {
+    this.active = this.$route.path
     let name = sessionStorage.getItem("username");
     axios
       .post("/api/user/selectUser", {
