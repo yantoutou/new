@@ -77,8 +77,13 @@ export default {
   data() {
     return {
       userName: "",
-      active: '/manage/order'
+      active: ''
     };
+  },
+  watch: {
+    $route(to) {
+      this.active = to.path
+    }
   },
   methods: {
     selectMenu(key) {

@@ -47,6 +47,11 @@ var sqlMap = {
         updateReturn: 'update returnList set deal = "未处理" where number = ?',
         // 订单编号查询
         select_number: 'select * from returnList where number = ?'
+    },
+    goods: {
+        select: 'select * from goods',
+        search_one: 'select * from goods where name = ? or time between ? and ?',
+        search: 'select * from goods where name = ? and time between ? and ?'
     }
 }
 

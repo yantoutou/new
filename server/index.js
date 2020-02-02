@@ -6,6 +6,7 @@ const express = require('express');
 const userApi = require('./api/userApi');
 const orderApi = require('./api/orderApi');
 const returnGoods = require('./api/return');
+const goods = require('./api/goodsApi')
 
 let app = express();
 let server = http.createServer(app);
@@ -19,6 +20,7 @@ app.use(badyParser.urlencoded({
 app.use('/api/user', userApi);
 app.use('/api/order', orderApi);
 app.use('/api/return', returnGoods);
+app.use('/api/goods', goods);
 
 // 启动监听
 server.listen(8888, () => {
