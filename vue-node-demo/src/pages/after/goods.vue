@@ -11,6 +11,13 @@
               ></el-input>
             </el-form-item>
           </el-col>
+          <el-col :span="3" class="button">
+            <el-button type="success" icon="el-icon-circle-plus-outline"
+              >添加</el-button
+            >
+          </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="10">
             <el-form-item label="录入日期">
               <el-date-picker
@@ -24,29 +31,14 @@
               </el-date-picker>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
-            <el-checkbox-group v-model="checked" class="checked">
-              <el-checkbox-button
-                v-for="option in options"
-                :label="option"
-                :key="option"
-                >{{ option }}</el-checkbox-button
-              >
-            </el-checkbox-group>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="2">
-            <el-button type="success" icon="el-icon-circle-plus-outline"
-              >添加</el-button
-            >
-          </el-col>
-          <el-col :span="20">
-            <el-button type="danger" icon="el-icon-delete">删除</el-button>
-          </el-col>
-          <el-col :span="2">
+          <el-col :span="11">
             <el-button type="primary" icon="el-icon-search" @click="search"
               >搜索</el-button
+            >
+          </el-col>
+          <el-col :span="2">
+            <el-button type="danger" icon="el-icon-delete" class="button"
+              >批量删除</el-button
             >
           </el-col>
         </el-row>
@@ -105,8 +97,15 @@
         <el-table-column prop="inventory" label="库存" width="150">
         </el-table-column>
         <el-table-column label="操作" width="150" fixed="right">
-          <el-button type="primary" icon="el-icon-edit" circle></el-button>
-          <el-button type="danger" icon="el-icon-delete" circle></el-button>
+          <template slot-scope="scope">
+            <el-button type="primary" icon="el-icon-edit" circle></el-button>
+            <el-button
+              type="danger"
+              icon="el-icon-delete"
+              circle
+              @click="deleteOne(scope.row)"
+            ></el-button>
+          </template>
         </el-table-column>
       </el-table>
       <!-- <el-pagination
@@ -125,11 +124,10 @@
 <script>
 import axios from "axios";
 export default {
+  inject: ["reload"],
   data() {
     return {
       tableData: [],
-      options: ["折扣", "新品", "库存"],
-      checked: [],
       searchInput: "",
       searchTime: ""
     };
@@ -163,6 +161,31 @@ export default {
     },
     filterNew(value, row) {
       return row.new === value;
+    },
+    deleteOne(row) {
+      this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          axios.post('/api/goods/deleteOne', {
+            id: row.id
+          }).then((res) => {
+            this.tableData = res.data
+            this.reload();
+            this.$message({
+            type: "success",
+            message: "删除成功!"
+          });
+          }).catch((err) => {console.log(err)})
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
     }
   },
   mounted() {
@@ -181,10 +204,10 @@ export default {
 .search-card {
   margin-bottom: 15px;
 }
-.checked {
-  margin-left: 13px;
-}
 .page {
+  float: right;
+}
+.button {
   float: right;
 }
 </style>

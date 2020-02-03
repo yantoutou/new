@@ -51,4 +51,18 @@ router.post('/search', (req, res) => {
     })
 })
 
+// 删除单行数据
+router.post('/deleteOne', (req, res) => {
+    let conn = new DBHelper().getConn();
+    let sqlStr = sql.goods.delete_one
+    let params = req.body
+    conn.query(sqlStr, [params.id], (err, result) => {
+        if (err) {
+            res.json(err)
+        } else {
+            res.json(result)
+        }
+    })
+})
+
 module.exports = router;
