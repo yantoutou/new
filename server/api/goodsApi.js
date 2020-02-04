@@ -65,4 +65,19 @@ router.post('/deleteOne', (req, res) => {
     })
 })
 
+// 修改数据
+router.post('/edit', (req, res) => {
+    let conn = new DBHelper().getConn();
+    let sqlStr = sql.goods.edit
+    let params = req.body
+    conn.query(sqlStr, [params.name, params.money, params.checked1, params.checked2, params.id], (err, result) => {
+        if (err) {
+            res.json(err)
+        } else {
+            res.json(result)
+        }
+    })
+})
+
+
 module.exports = router;
