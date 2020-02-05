@@ -53,7 +53,7 @@
         </el-table-column>
         <el-table-column prop="img" label="商品图片" width="120">
           <template slot-scope="scope">
-            <img :src="scope.row.img" class="goods-img" />
+            <img :src="showImg(scope.row.img)" class="goods-img" />
           </template>
         </el-table-column>
         <el-table-column prop="time" label="录入日期" width="170">
@@ -181,7 +181,7 @@
           <el-row>
             <el-col>
               <el-form-item label="商品图片">
-                <img :src="form.img" class="goods-img" />
+                <img :src="showImg(form.img)" class="goods-img" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -274,6 +274,18 @@ export default {
     };
   },
   methods: {
+    showImg(icon) {
+      return require("../../../../server/uploads/"+icon);
+    },
+    upload() {
+        const formData = new FormData();
+        const file = this.$refs.upload.uploadFiles[0];
+        const headerConfig = { headers: { 'Content-Type': 'multipart/form-data' } };
+        formData.append('file', file.raw);
+        axios.post('/api/goods/upload', formData, headerConfig).then(res => {
+          console.log(res)
+        })
+      },
     fileChange(file) {
       this.file = file;
     },
@@ -373,14 +385,15 @@ export default {
     confirm() {
       this.$refs.form.validate(valid => {
         if (valid) {
-          if (this.file == "") {
-            this.success(this.form.img);
+          if (this.$refs.upload.uploadFiles.length == 0) {
+            this.success();
           } else {
             if (
               this.file.raw.type == "image/jpeg" ||
               this.file.raw.type == "image/png"
             ) {
-              this.success(this.file.url);
+              this.upload();
+              this.success();
             } else {
               this.$message.warning("只能上传jpg/png格式的图片");
             }
@@ -390,7 +403,7 @@ export default {
         }
       });
     },
-    success(url) {
+    success() {
       let checked1;
       let checked2;
       if (this.form.checked1 == true) {
@@ -409,8 +422,7 @@ export default {
           name: this.form.name,
           money: this.form.money,
           checked1,
-          checked2,
-          url
+          checked2
         })
         .then(() => {
           this.$message.success("修改成功");
@@ -423,7 +435,7 @@ export default {
     }
   },
   mounted() {
-    axios.post("/api/goods/showGoods").then(res => {
+      axios.post("/api/goods/showGoods").then(res => {
       this.tableData = res.data;
     });
   }

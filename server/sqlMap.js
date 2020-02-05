@@ -53,7 +53,8 @@ var sqlMap = {
         search_one: 'select * from goods where name = ? or time between ? and ?',
         search: 'select * from goods where name = ? and time between ? and ?',
         delete_one : 'delete from goods where id = ?',
-        edit: 'update goods set name = ?, money = ?, discount = ?, new = ? where id = ?'
+        edit: 'update goods set name = ?, money = ?, discount = ?, new = ? where id = ?',
+        upload: 'update goods set img = ? where id = ?'
     }
 }
 
