@@ -45,7 +45,7 @@
       </el-form>
     </el-card>
     <el-card shadow="never">
-      <el-table :data="tableData" stripe style="width: 100%" height="490">
+      <el-table :data="tableData" stripe style="width: 100%" height="490" v-loading='loading'>
         <el-table-column type="selection" width="55"> </el-table-column>
         <el-table-column prop="id" label="商品编号" width="100" fixed>
         </el-table-column>
@@ -251,6 +251,7 @@ export default {
       dialogImageUrl: "",
       dialogVisible: false,
       disabled: false,
+      loading: true,
       form: {
         id: "",
         name: "",
@@ -435,9 +436,12 @@ export default {
     }
   },
   mounted() {
+    setTimeout(() => {
       axios.post("/api/goods/showGoods").then(res => {
       this.tableData = res.data;
+      this.loading = false
     });
+    }, 1000)
   }
 };
 </script>
