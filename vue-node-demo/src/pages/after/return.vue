@@ -16,12 +16,12 @@
       </div>
       <div>
         <el-table :data="tableData" :cell-style="cellStyle" border height="550">
-          <el-table-column prop="number" label="退货单号" width="180">
+          <el-table-column prop="number" label="退货单号" width="170">
           </el-table-column>
-          <el-table-column prop="money" label="退款金额" width="180">
+          <el-table-column prop="money" label="退款金额" width="150">
           </el-table-column>
           <el-table-column prop="time" label="申请时间" width="210"> </el-table-column>
-          <el-table-column prop="user" label="申请人" width="180"> </el-table-column>
+          <el-table-column prop="user" label="申请人" width="150"> </el-table-column>
           <el-table-column prop="deal" label="商家处理" width="180"> </el-table-column>
           <el-table-column label="管理操作">
             <template slot-scope="scope">
@@ -47,7 +47,8 @@ export default {
   methods: {
     deal(row) {
       axios.post('/api/return/updateList', {
-        number: row.number
+        number: row.number,
+        id: row.id
       }).then(() => {
         row.deal = '同意'
       }).catch(err => {
@@ -56,7 +57,8 @@ export default {
     },
     returnDeal(row) {
       axios.post('/api/return/updateReturn', {
-        number: row.number
+        number: row.number,
+        id: row.id
       }).then(() => {
         row.deal = '未处理'
       }).catch(err => {

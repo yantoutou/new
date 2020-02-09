@@ -33,6 +33,11 @@ router.post('/updateList', (req, res) => {
             res.json(result)
         }
     })
+    conn.query(sql.returnGoods.updateCount, [params.id], (err, result) => {
+        if (err) {
+            res.json(err)
+        } else {}
+    })
 })
 
 // 退回
@@ -46,6 +51,11 @@ router.post('/updateReturn', (req, res) => {
         } else {
             res.json(result)
         }
+    })
+    conn.query(sql.returnGoods.updateReturnCount, [params.id], (err, result) => {
+        if (err) {
+            res.json(err)
+        } else {}
     })
 })
 

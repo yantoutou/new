@@ -12,7 +12,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="3" class="button">
-            <el-button type="success" icon="el-icon-circle-plus-outline"
+            <el-button
+              type="success"
+              icon="el-icon-circle-plus-outline"
+              @click="add"
               >添加</el-button
             >
           </el-col>
@@ -45,7 +48,13 @@
       </el-form>
     </el-card>
     <el-card shadow="never">
-      <el-table :data="tableData" stripe style="width: 100%" height="490" v-loading='loading'>
+      <el-table
+        :data="tableData"
+        stripe
+        style="width: 100%"
+        height="490"
+        v-loading="loading"
+      >
         <el-table-column type="selection" width="55"> </el-table-column>
         <el-table-column prop="id" label="商品编号" width="100" fixed>
         </el-table-column>
@@ -234,6 +243,88 @@
           <el-button type="primary" @click="confirm">确 定</el-button>
         </div>
       </el-dialog>
+      <el-dialog
+        title="添加商品"
+        :visible.sync="addFormVisible"
+        :modal-append-to-body="false"
+        v-if="addFormVisible"
+      >
+        <el-form
+          label-width="100px"
+          :model="addForm"
+          ref="addForm"
+        >
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="商品名称">
+                <el-input v-model="addForm.name"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="商品价格">
+                <el-input v-model="addForm.money" type="number"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item>
+                <el-checkbox v-model="addForm.checked1">折扣</el-checkbox>
+                <el-checkbox v-model="addForm.checked2">新品</el-checkbox>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-form-item label="上传图片">
+              <el-upload
+                action="#"
+                list-type="picture-card"
+                :auto-upload="false"
+                :limit="1"
+                ref="addUpload"
+                :on-exceed="onExceed"
+                :on-change="addFileChange"
+              >
+                <div slot="tip" class="el-upload__tip">
+                  只能上传一张jpg/png文件
+                </div>
+                <i slot="default" class="el-icon-plus"></i>
+                <div slot="file" slot-scope="{ file }">
+                  <img
+                    class="el-upload-list__item-thumbnail"
+                    :src="addFile.url"
+                    alt=""
+                  />
+                  <span class="el-upload-list__item-actions">
+                    <span
+                      class="el-upload-list__item-preview"
+                      @click="addHandlePictureCardPreview(file)"
+                    >
+                      <i class="el-icon-zoom-in"></i>
+                    </span>
+                    <span
+                      v-if="!disabled"
+                      class="el-upload-list__item-delete"
+                      @click="addHandleRemove(file)"
+                    >
+                      <i class="el-icon-delete"></i>
+                    </span>
+                  </span>
+                </div>
+              </el-upload>
+              <el-dialog :visible.sync="addDialogVisible" :modal="false">
+                <img width="100%" :src="addDialogImageUrl" alt="" />
+              </el-dialog>
+            </el-form-item>
+          </el-row>
+        </el-form>
+        <div slot="footer">
+          <el-button @click="addCancel">取 消</el-button>
+          <el-button type="primary" @click="addConfirm">确 定</el-button>
+        </div>
+      </el-dialog>
     </el-card>
   </div>
 </template>
@@ -249,9 +340,12 @@ export default {
       searchTime: "",
       dialogFormVisible: false,
       dialogImageUrl: "",
+      addDialogImageUrl: '',
       dialogVisible: false,
+      addDialogVisible: false,
       disabled: false,
       loading: true,
+      addFormVisible: false,
       form: {
         id: "",
         name: "",
@@ -263,7 +357,14 @@ export default {
         checked2: "",
         img: ""
       },
+      addForm: {
+        name: "",
+        money: "",
+        checked1: "",
+        checked2: ""
+      },
       file: "",
+      addFile: '',
       rules: {
         name: [
           { required: true, message: "请输入商品名称", trigger: "change" }
@@ -276,19 +377,24 @@ export default {
   },
   methods: {
     showImg(icon) {
-      return require("../../../../server/uploads/"+icon);
+      return require("../../../../server/uploads/" + icon);
     },
     upload() {
-        const formData = new FormData();
-        const file = this.$refs.upload.uploadFiles[0];
-        const headerConfig = { headers: { 'Content-Type': 'multipart/form-data' } };
-        formData.append('file', file.raw);
-        axios.post('/api/goods/upload', formData, headerConfig).then(res => {
-          console.log(res)
-        })
-      },
+      const formData = new FormData();
+      const file = this.$refs.upload.uploadFiles[0];
+      const headerConfig = {
+        headers: { "Content-Type": "multipart/form-data" }
+      };
+      formData.append("file", file.raw);
+      axios.post("/api/goods/upload", formData, headerConfig).then(res => {
+        console.log(res);
+      });
+    },
     fileChange(file) {
       this.file = file;
+    },
+    addFileChange(file) {
+      this.addFile = file
     },
     search() {
       let startTime;
@@ -372,9 +478,16 @@ export default {
     handleRemove() {
       this.$refs.upload.clearFiles();
     },
+    addHandleRemove() {
+      this.$refs.addUpload.clearFiles();
+    },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
+    },
+    addHandlePictureCardPreview(file) {
+      this.addDialogImageUrl = file.url;
+      this.addDialogVisible = true
     },
     onExceed() {
       this.$message.warning("当前限制选择1个文件");
@@ -433,15 +546,25 @@ export default {
           console.log(err);
         });
       this.dialogFormVisible = false;
+    },
+    add() {
+      this.addFormVisible = true;
+    },
+    addCancel() {
+      this.addFormVisible = false;
+      this.$message("操作已取消");
+    },
+    addConfirm() {
+      this.addFormVisible = false;
     }
   },
   mounted() {
     setTimeout(() => {
       axios.post("/api/goods/showGoods").then(res => {
-      this.tableData = res.data;
-      this.loading = false
-    });
-    }, 1000)
+        this.tableData = res.data;
+        this.loading = false;
+      });
+    }, 1000);
   }
 };
 </script>
