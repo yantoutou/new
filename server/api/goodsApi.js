@@ -122,4 +122,10 @@ router.post("/upload", upload.single('file'), (req, res) => {
   })
 });
 
+// 增加商品
+router.post('/addGoods', upload.single('file'), (req, res) => {
+  let conn = new DBHelper().getConn();
+  console.log(req.file)
+})
+
 module.exports = router;

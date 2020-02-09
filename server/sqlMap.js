@@ -45,8 +45,8 @@ var sqlMap = {
         update: 'update returnList set deal = "同意" where number = ?',
         // 退回
         updateReturn: 'update returnList set deal = "未处理" where number = ?',
-        updateCount: 'update goods set count = count - 1 where id = ?',
-        updateReturnCount: 'update goods set count = count + 1 where id = ?',
+        updateCount: 'update goods set count = count - 1, inventory = inventory + 1 where id = ?',
+        updateReturnCount: 'update goods set count = count + 1, inventory = inventory - 1 where id = ?',
         // 订单编号查询
         select_number: 'select * from returnList where number = ?'
     },

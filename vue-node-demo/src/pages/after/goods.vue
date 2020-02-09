@@ -206,7 +206,7 @@
                 :on-change="fileChange"
               >
                 <div slot="tip" class="el-upload__tip">
-                  只能上传一张jpg/png文件，且上传之后会替代原图片
+                  只能上传一张jpg/png文件，且不超过500kb
                 </div>
                 <i slot="default" class="el-icon-plus"></i>
                 <div slot="file" slot-scope="{ file }">
@@ -253,18 +253,26 @@
           label-width="100px"
           :model="addForm"
           ref="addForm"
+          :rules="addRules"
         >
           <el-row>
             <el-col :span="12">
-              <el-form-item label="商品名称">
+              <el-form-item label="商品名称" prop="name">
                 <el-input v-model="addForm.name"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="商品价格">
+              <el-form-item label="商品价格" prop="money">
                 <el-input v-model="addForm.money" type="number"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="库存" prop="inventory">
+                <el-input v-model="addForm.inventory" type="number"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -277,7 +285,7 @@
             </el-col>
           </el-row>
           <el-row>
-            <el-form-item label="上传图片">
+            <el-form-item label="上传图片" :required="true">
               <el-upload
                 action="#"
                 list-type="picture-card"
@@ -288,7 +296,7 @@
                 :on-change="addFileChange"
               >
                 <div slot="tip" class="el-upload__tip">
-                  只能上传一张jpg/png文件
+                  只能上传一张jpg/png文件, 且不超过500kb
                 </div>
                 <i slot="default" class="el-icon-plus"></i>
                 <div slot="file" slot-scope="{ file }">
@@ -340,7 +348,7 @@ export default {
       searchTime: "",
       dialogFormVisible: false,
       dialogImageUrl: "",
-      addDialogImageUrl: '',
+      addDialogImageUrl: "",
       dialogVisible: false,
       addDialogVisible: false,
       disabled: false,
@@ -360,17 +368,29 @@ export default {
       addForm: {
         name: "",
         money: "",
+        inventory: "",
         checked1: "",
         checked2: ""
       },
       file: "",
-      addFile: '',
+      addFile: "",
       rules: {
         name: [
           { required: true, message: "请输入商品名称", trigger: "change" }
         ],
         money: [
           { required: true, message: "请输入商品价格", trigger: "change" }
+        ]
+      },
+      addRules: {
+        name: [
+          { required: true, message: "请输入商品名称", trigger: "change" }
+        ],
+        money: [
+          { required: true, message: "请输入商品价格", trigger: "change" }
+        ],
+        inventory: [
+          { required: true, message: "请输入库存数量", trigger: "change" }
         ]
       }
     };
@@ -394,7 +414,7 @@ export default {
       this.file = file;
     },
     addFileChange(file) {
-      this.addFile = file
+      this.addFile = file;
     },
     search() {
       let startTime;
@@ -487,7 +507,7 @@ export default {
     },
     addHandlePictureCardPreview(file) {
       this.addDialogImageUrl = file.url;
-      this.addDialogVisible = true
+      this.addDialogVisible = true;
     },
     onExceed() {
       this.$message.warning("当前限制选择1个文件");
@@ -506,8 +526,13 @@ export default {
               this.file.raw.type == "image/jpeg" ||
               this.file.raw.type == "image/png"
             ) {
-              this.upload();
-              this.success();
+              let size = this.$refs.upload.uploadFiles[0].size / 1024;
+              if (size > 500) {
+                this.$message.error("请选择500kb以内的图片");
+              } else {
+                this.upload();
+                this.success();
+              }
             } else {
               this.$message.warning("只能上传jpg/png格式的图片");
             }
@@ -555,7 +580,40 @@ export default {
       this.$message("操作已取消");
     },
     addConfirm() {
-      this.addFormVisible = false;
+      this.$refs.addForm.validate(valid => {
+        if (valid) {
+          if (this.$refs.addUpload.uploadFiles.length == 0) {
+            this.$message.error("请选择上传图片");
+          } else {
+            if (
+              this.addFile.raw.type == "image/jpeg" ||
+              this.addFile.raw.type == "image/png"
+            ) {
+              let size = this.$refs.addUpload.uploadFiles[0].size / 1024;
+              if (size > 500) {
+                this.$message.error("请选择500kb以内的图片");
+              } else {
+                /* const formData = new FormData();
+              const file = this.$refs.addUpload.uploadFiles[0];
+              const headerConfig = {
+                headers: { "Content-Type": "multipart/form-data" }
+              };
+              formData.append("file", file.raw);
+              axios
+                .post("/api/goods/addGoods", formData, headerConfig)
+                .then(res => {
+                  console.log(res);
+                }); */
+                this.addFormVisible = false;
+              }
+            } else {
+              this.$message.error("只能上传jpg/png格式的图片");
+            }
+          }
+        } else {
+          return false;
+        }
+      });
     }
   },
   mounted() {
@@ -582,5 +640,9 @@ export default {
 }
 .button {
   float: right;
+}
+.font {
+  color: #f56c6c;
+  margin: 20px 0 0 0;
 }
 </style>
