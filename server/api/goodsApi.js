@@ -6,6 +6,13 @@ const sql = require("../sqlMap");
 const moment = require("moment");
 
 var id = ''
+var name = ''
+var time = ''
+var money = ''
+var checked1 = ''
+var checked2 = ''
+var count = ''
+var inventory = ''
 
 var multer = require("multer");
 
@@ -123,9 +130,38 @@ router.post("/upload", upload.single('file'), (req, res) => {
 });
 
 // 增加商品
-router.post('/addGoods', upload.single('file'), (req, res) => {
+router.post('/addGoodsUpload', upload.single('file'), (req, res) => {
   let conn = new DBHelper().getConn();
-  console.log(req.file)
+  let sqlStr = sql.goods.addGoods;
+  if (checked1 == true) {
+    checked1 = 1
+  } else {
+    checked1 = 0
+  }
+  if (checked2 == true) {
+    checked2 = 1
+  } else {
+    checked2 = 0
+  }
+  conn.query(sqlStr, [name, req.file.filename, time, money, checked1, checked2, count, inventory], (err, result) => {
+    if (err) {
+      res.json(err)
+    } else {
+      res.json(result)
+    }
+  })
+})
+
+router.post('/addGoods', (req, res) => {
+  let conn = new DBHelper().getConn();
+  let params = req.body
+  name = params.name
+  time = params.time
+  money = params.money
+  checked1 = params.checked1
+  checked2 = params.checked2
+  count = params.count
+  inventory = params.inventory
 })
 
 module.exports = router;

@@ -338,225 +338,244 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from 'axios'
+import moment from 'moment'
 export default {
-  inject: ["reload"],
+  inject: ['reload'],
   data() {
+    var inventory = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入库存数量'))
+        } else {
+          if (value < 0) {
+            callback(new Error('库存数量不能小于0'))
+          } else if (value % 1 != 0) {
+            callback(new Error('库存数量不能为小数'))
+          } else {
+            callback()
+          }
+        }
+      },
+      money = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入商品价格'))
+        } else {
+          if (value < 0) {
+            callback(new Error('商品价格不能小于0'))
+          } else {
+            callback()
+          }
+        }
+      }
     return {
       tableData: [],
-      searchInput: "",
-      searchTime: "",
+      searchInput: '',
+      searchTime: '',
       dialogFormVisible: false,
-      dialogImageUrl: "",
-      addDialogImageUrl: "",
+      dialogImageUrl: '',
+      addDialogImageUrl: '',
       dialogVisible: false,
       addDialogVisible: false,
       disabled: false,
       loading: true,
       addFormVisible: false,
       form: {
-        id: "",
-        name: "",
-        time: "",
-        money: "",
-        count: "",
-        inventory: "",
-        checked1: "",
-        checked2: "",
-        img: ""
+        id: '',
+        name: '',
+        time: '',
+        money: '',
+        count: '',
+        inventory: '',
+        checked1: '',
+        checked2: '',
+        img: ''
       },
       addForm: {
-        name: "",
-        money: "",
-        inventory: "",
-        checked1: "",
-        checked2: ""
+        name: '',
+        money: '',
+        inventory: '',
+        checked1: '',
+        checked2: ''
       },
-      file: "",
-      addFile: "",
+      file: '',
+      addFile: '',
       rules: {
         name: [
-          { required: true, message: "请输入商品名称", trigger: "change" }
+          { required: true, message: '请输入商品名称', trigger: 'change' }
         ],
-        money: [
-          { required: true, message: "请输入商品价格", trigger: "change" }
-        ]
+        money: [{ required: true, validator: money, trigger: 'change' }]
       },
       addRules: {
         name: [
-          { required: true, message: "请输入商品名称", trigger: "change" }
+          { required: true, message: '请输入商品名称', trigger: 'change' }
         ],
-        money: [
-          { required: true, message: "请输入商品价格", trigger: "change" }
-        ],
-        inventory: [
-          { required: true, message: "请输入库存数量", trigger: "change" }
-        ]
+        money: [{ required: true, validator: money, trigger: 'change' }],
+        inventory: [{ required: true, validator: inventory, trigger: 'change' }]
       }
-    };
+    }
   },
   methods: {
     showImg(icon) {
-      return require("../../../../server/uploads/" + icon);
+      return require('../../../../server/uploads/' + icon)
     },
     upload() {
-      const formData = new FormData();
-      const file = this.$refs.upload.uploadFiles[0];
+      const formData = new FormData()
+      const file = this.$refs.upload.uploadFiles[0]
       const headerConfig = {
-        headers: { "Content-Type": "multipart/form-data" }
-      };
-      formData.append("file", file.raw);
-      axios.post("/api/goods/upload", formData, headerConfig).then(res => {
-        console.log(res);
-      });
+        headers: { 'Content-Type': 'multipart/form-data' }
+      }
+      formData.append('file', file.raw)
+      axios.post('/api/goods/upload', formData, headerConfig).then(res => {
+        console.log(res)
+      })
     },
     fileChange(file) {
-      this.file = file;
+      this.file = file
     },
     addFileChange(file) {
-      this.addFile = file;
+      this.addFile = file
     },
     search() {
-      let startTime;
-      let endTime;
-      if (this.searchTime == "" || !this.searchTime) {
-        startTime = "";
-        endTime = "";
+      let startTime
+      let endTime
+      if (this.searchTime == '' || !this.searchTime) {
+        startTime = ''
+        endTime = ''
       } else {
-        startTime = this.searchTime[0];
-        endTime = this.searchTime[1];
+        startTime = this.searchTime[0]
+        endTime = this.searchTime[1]
       }
       axios
-        .post("/api/goods/search", {
+        .post('/api/goods/search', {
           name: this.searchInput,
           startTime,
           endTime
         })
         .then(res => {
-          this.tableData = res.data;
+          this.tableData = res.data
         })
         .catch(err => {
-          console.log(err);
-        });
+          console.log(err)
+        })
     },
     filterDiscount(value, row) {
-      return row.discount === value;
+      return row.discount === value
     },
     filterNew(value, row) {
-      return row.new === value;
+      return row.new === value
     },
     deleteOne(row) {
-      this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
+      this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
         .then(() => {
           axios
-            .post("/api/goods/deleteOne", {
+            .post('/api/goods/deleteOne', {
               id: row.id
             })
             .then(res => {
-              this.tableData = res.data;
-              this.reload();
+              this.tableData = res.data
+              this.reload()
               this.$message({
-                type: "success",
-                message: "删除成功!"
-              });
+                type: 'success',
+                message: '删除成功!'
+              })
             })
             .catch(err => {
-              console.log(err);
-            });
+              console.log(err)
+            })
         })
         .catch(() => {
           this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
-        });
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
     },
     edit(row) {
-      this.dialogFormVisible = true;
-      this.form.id = row.id;
-      this.form.name = row.name;
-      this.form.time = row.time;
-      this.form.money = row.money;
-      this.form.count = row.count;
-      this.form.inventory = row.inventory;
+      this.dialogFormVisible = true
+      this.form.id = row.id
+      this.form.name = row.name
+      this.form.time = row.time
+      this.form.money = row.money
+      this.form.count = row.count
+      this.form.inventory = row.inventory
       if (row.discount == 1) {
-        this.form.checked1 = true;
+        this.form.checked1 = true
       } else {
-        this.form.checked1 = false;
+        this.form.checked1 = false
       }
       if (row.new == 1) {
-        this.form.checked2 = true;
+        this.form.checked2 = true
       } else {
-        this.form.checked2 = false;
+        this.form.checked2 = false
       }
-      this.form.img = row.img;
+      this.form.img = row.img
     },
     handleRemove() {
-      this.$refs.upload.clearFiles();
+      this.$refs.upload.clearFiles()
     },
     addHandleRemove() {
-      this.$refs.addUpload.clearFiles();
+      this.$refs.addUpload.clearFiles()
     },
     handlePictureCardPreview(file) {
-      this.dialogImageUrl = file.url;
-      this.dialogVisible = true;
+      this.dialogImageUrl = file.url
+      this.dialogVisible = true
     },
     addHandlePictureCardPreview(file) {
-      this.addDialogImageUrl = file.url;
-      this.addDialogVisible = true;
+      this.addDialogImageUrl = file.url
+      this.addDialogVisible = true
     },
     onExceed() {
-      this.$message.warning("当前限制选择1个文件");
+      this.$message.warning('当前限制选择1个文件')
     },
     cancel() {
-      this.dialogFormVisible = false;
-      this.$message("操作已取消");
+      this.dialogFormVisible = false
+      this.$message('操作已取消')
     },
     confirm() {
       this.$refs.form.validate(valid => {
         if (valid) {
           if (this.$refs.upload.uploadFiles.length == 0) {
-            this.success();
+            this.success()
           } else {
             if (
-              this.file.raw.type == "image/jpeg" ||
-              this.file.raw.type == "image/png"
+              this.file.raw.type == 'image/jpeg' ||
+              this.file.raw.type == 'image/png'
             ) {
-              let size = this.$refs.upload.uploadFiles[0].size / 1024;
+              let size = this.$refs.upload.uploadFiles[0].size / 1024
               if (size > 500) {
-                this.$message.error("请选择500kb以内的图片");
+                this.$message.error('请选择500kb以内的图片')
               } else {
-                this.upload();
-                this.success();
+                this.upload()
+                this.success()
               }
             } else {
-              this.$message.warning("只能上传jpg/png格式的图片");
+              this.$message.warning('只能上传jpg/png格式的图片')
             }
           }
         } else {
-          return false;
+          return false
         }
-      });
+      })
     },
     success() {
-      let checked1;
-      let checked2;
+      let checked1
+      let checked2
       if (this.form.checked1 == true) {
-        checked1 = 1;
+        checked1 = 1
       } else {
-        checked1 = 0;
+        checked1 = 0
       }
       if (this.form.checked2 == true) {
-        checked2 = 1;
+        checked2 = 1
       } else {
-        checked2 = 0;
+        checked2 = 0
       }
       axios
-        .post("/api/goods/edit", {
+        .post('/api/goods/edit', {
           id: this.form.id,
           name: this.form.name,
           money: this.form.money,
@@ -564,67 +583,76 @@ export default {
           checked2
         })
         .then(() => {
-          this.$message.success("修改成功");
-          this.reload();
+          this.$message.success('修改成功')
+          this.reload()
         })
         .catch(err => {
-          console.log(err);
-        });
-      this.dialogFormVisible = false;
+          console.log(err)
+        })
+      this.dialogFormVisible = false
     },
     add() {
-      this.addFormVisible = true;
+      this.addFormVisible = true
     },
     addCancel() {
-      this.addFormVisible = false;
-      this.$message("操作已取消");
+      this.addFormVisible = false
+      this.$message('操作已取消')
     },
     addConfirm() {
       this.$refs.addForm.validate(valid => {
         if (valid) {
           if (this.$refs.addUpload.uploadFiles.length == 0) {
-            this.$message.error("请选择上传图片");
+            this.$message.error('请选择上传图片')
           } else {
             if (
-              this.addFile.raw.type == "image/jpeg" ||
-              this.addFile.raw.type == "image/png"
+              this.addFile.raw.type == 'image/jpeg' ||
+              this.addFile.raw.type == 'image/png'
             ) {
-              let size = this.$refs.addUpload.uploadFiles[0].size / 1024;
+              let size = this.$refs.addUpload.uploadFiles[0].size / 1024
               if (size > 500) {
-                this.$message.error("请选择500kb以内的图片");
+                this.$message.error('请选择500kb以内的图片')
               } else {
-                /* const formData = new FormData();
-              const file = this.$refs.addUpload.uploadFiles[0];
-              const headerConfig = {
-                headers: { "Content-Type": "multipart/form-data" }
-              };
-              formData.append("file", file.raw);
-              axios
-                .post("/api/goods/addGoods", formData, headerConfig)
-                .then(res => {
-                  console.log(res);
-                }); */
-                this.addFormVisible = false;
+                const formData = new FormData()
+                const file = this.$refs.addUpload.uploadFiles[0]
+                const headerConfig = {
+                  headers: { 'Content-Type': 'multipart/form-data' }
+                }
+                formData.append('file', file.raw)
+                axios.post('/api/goods/addGoods', {
+                  name: this.addForm.name,
+                  time: moment().format("YYYY-MM-DD HH:mm:ss"),
+                  money: this.addForm.money,
+                  checked1: this.addForm.checked1,
+                  checked2: this.addForm.checked2,
+                  count: 0,
+                  inventory: this.addForm.inventory
+                }).then(res => console.log(res.data))
+                axios
+                  .post('/api/goods/addGoodsUpload', formData, headerConfig)
+                  .then(() => {
+                    this.addFormVisible = false
+                    this.$message.success('添加成功')
+                  })
               }
             } else {
-              this.$message.error("只能上传jpg/png格式的图片");
+              this.$message.error('只能上传jpg/png格式的图片')
             }
           }
         } else {
-          return false;
+          return false
         }
-      });
+      })
     }
   },
   mounted() {
     setTimeout(() => {
-      axios.post("/api/goods/showGoods").then(res => {
-        this.tableData = res.data;
-        this.loading = false;
-      });
-    }, 1000);
+      axios.post('/api/goods/showGoods').then(res => {
+        this.tableData = res.data
+        this.loading = false
+      })
+    }, 1000)
   }
-};
+}
 </script>
 
 <style lang="less" scoped>
