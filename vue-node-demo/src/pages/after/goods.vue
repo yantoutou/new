@@ -40,7 +40,11 @@
             >
           </el-col>
           <el-col :span="2">
-            <el-button type="danger" icon="el-icon-delete" class="button"
+            <el-button
+              type="danger"
+              icon="el-icon-delete"
+              class="button"
+              @click="deleteSome"
               >批量删除</el-button
             >
           </el-col>
@@ -54,6 +58,7 @@
         style="width: 100%"
         height="490"
         v-loading="loading"
+        @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55"> </el-table-column>
         <el-table-column prop="id" label="商品编号" width="100" fixed>
@@ -122,15 +127,6 @@
           </template>
         </el-table-column>
       </el-table>
-      <!-- <el-pagination
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        layout="total, prev, pager, next, jumper"
-        :total="total"
-        :page-size="7"
-        class="page"
-      >
-      </el-pagination> -->
       <el-dialog
         title="编辑商品"
         :visible.sync="dialogFormVisible"
@@ -379,6 +375,7 @@ export default {
       disabled: false,
       loading: true,
       addFormVisible: false,
+      deleteArr: [],
       form: {
         id: '',
         name: '',
@@ -618,15 +615,17 @@ export default {
                   headers: { 'Content-Type': 'multipart/form-data' }
                 }
                 formData.append('file', file.raw)
-                axios.post('/api/goods/addGoods', {
-                  name: this.addForm.name,
-                  time: moment().format("YYYY-MM-DD HH:mm:ss"),
-                  money: this.addForm.money,
-                  checked1: this.addForm.checked1,
-                  checked2: this.addForm.checked2,
-                  count: 0,
-                  inventory: this.addForm.inventory
-                }).then(res => console.log(res.data))
+                axios
+                  .post('/api/goods/addGoods', {
+                    name: this.addForm.name,
+                    time: moment().format('YYYY-MM-DD HH:mm:ss'),
+                    money: this.addForm.money,
+                    checked1: this.addForm.checked1,
+                    checked2: this.addForm.checked2,
+                    count: 0,
+                    inventory: this.addForm.inventory
+                  })
+                  .then(res => console.log(res.data))
                 axios
                   .post('/api/goods/addGoodsUpload', formData, headerConfig)
                   .then(() => {
@@ -642,6 +641,46 @@ export default {
           return false
         }
       })
+    },
+    handleSelectionChange(val) {
+      let arr = []
+      val.forEach(item => {
+        arr.push(item.id)
+      })
+      this.deleteArr = arr
+    },
+    deleteSome() {
+      if (this.deleteArr.length == 0) {
+        this.$message.warning('请选择删除文件')
+      } else {
+        this.$confirm('此操作将永久删除所选文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+          .then(() => {
+            axios
+              .post('/api/goods/deleteSome', {
+                deleteArr: this.deleteArr
+              })
+              .then(() => {
+                this.reload()
+                this.$message({
+                  type: 'success',
+                  message: '删除成功!'
+                })
+              })
+              .catch(err => {
+                console.log(err)
+              })
+          })
+          .catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除'
+            })
+          })
+      }
     }
   },
   mounted() {
