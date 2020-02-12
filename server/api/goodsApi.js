@@ -35,53 +35,47 @@ var storage = multer.diskStorage({
 var upload = multer({ storage: storage })
 router.use(upload.single('file'))
 
-// 商品列表
-router.post('/showGoods', (req, res) => {
-  let conn = new DBHelper().getConn()
-  let data
-  let len
-  conn.query(sql.goods.select_section, [req.body.limit], (err, result) => {
-    if (err) {
-      res.json(err)
-    } else {
-      result.forEach(item => {
-        item.time = moment(item.time).format('YYYY-MM-DD HH:mm:ss')
-      })
-      data = result
-    }
-  })
-  conn.query(sql.goods.select, (err, result) => {
-    len = result.length
-    res.json({len: len, resu: data})
-  })
-})
-
 // 搜索
 router.post('/search', (req, res) => {
   let conn = new DBHelper().getConn()
   let sqlStr = ''
+  let sqlLen = ''
   let params = req.body
   let arr = []
+  let arrLen = []
+  let len
   if (params.name != '' && params.endTime == '' && params.startTime == '') {
     sqlStr = sql.goods.search_one
-    arr = [params.name, params.startTime, params.endTime]
+    sqlLen = sql.goods.search_one_len
+    arr = [params.name, params.startTime, params.endTime, params.limit]
+    arrLen = [params.name, params.startTime, params.endTime]
   } else if (
     params.name == '' &&
     params.endTime != '' &&
     params.startTime != ''
   ) {
     sqlStr = sql.goods.search_one
-    arr = [params.name, params.startTime, params.endTime]
+    sqlLen = sql.goods.search_one_len
+    arr = [params.name, params.startTime, params.endTime, params.limit]
+    arrLen = [params.name, params.startTime, params.endTime]
   } else if (
     params.name != '' &&
     params.endTime != '' &&
     params.startTime != ''
   ) {
     sqlStr = sql.goods.search
-    arr = [params.name, params.startTime, params.endTime]
+    sqlLen = sql.goods.search_len
+    arr = [params.name, params.startTime, params.endTime, params.limit]
+    arrLen = [params.name, params.startTime, params.endTime]
   } else {
-    sqlStr = sql.goods.select
+    sqlStr = sql.goods.select_section
+    sqlLen = sql.goods.select
+    arr = [params.limit]
+    arrLen = []
   }
+  conn.query(sqlLen, arrLen, (err, result) => {
+    len = result.length
+  })
   conn.query(sqlStr, arr, (err, result) => {
     if (err) {
       res.json(err)
@@ -89,7 +83,7 @@ router.post('/search', (req, res) => {
       result.forEach(item => {
         item.time = moment(item.time).format('YYYY-MM-DD HH:mm:ss')
       })
-      res.json(result)
+      res.json({data: result, len: len})
     }
   })
 })
@@ -208,5 +202,6 @@ router.post('/deleteSome', (req, res) => {
     }
   })
 })
+
 
 module.exports = router

@@ -129,7 +129,7 @@
         </el-table-column>
         <div slot="append" style="text-align: center">
           <p v-if="showMore">加载中...</p>
-          <p v-if='nomore'>没有更多了</p>
+          <p v-if="nomore">没有更多了</p>
         </div>
       </el-table>
       <el-dialog
@@ -385,6 +385,7 @@ export default {
       nomore: false,
       len: '',
       dom: '',
+      limit: 10,
       form: {
         id: '',
         name: '',
@@ -441,28 +442,69 @@ export default {
     addFileChange(file) {
       this.addFile = file
     },
-    search() {
+    searchGoods() {
       let startTime
       let endTime
       if (this.searchTime == '' || !this.searchTime) {
         startTime = ''
         endTime = ''
       } else {
-        startTime = this.searchTime[0]
-        endTime = this.searchTime[1]
+        startTime = moment(this.searchTime[0]).format('YYYY-MM-DD HH:mm:ss')
+        endTime = moment(this.searchTime[1]).format('YYYY-MM-DD HH:mm:ss')
       }
-      axios
-        .post('/api/goods/search', {
-          name: this.searchInput,
-          startTime,
-          endTime
-        })
-        .then(res => {
-          this.tableData = res.data
-        })
-        .catch(err => {
-          console.log(err)
-        })
+      setTimeout(() => {
+        axios
+          .post('/api/goods/search', {
+            name: this.searchInput,
+            startTime,
+            endTime,
+            limit: this.limit
+          })
+          .then(res => {
+            this.tableData = res.data.data
+            this.loading = false
+            this.len = res.data.len
+            if (this.tableData.length == this.len && this.len != 0) {
+              this.showMore = false
+              this.nomore = true
+            } else if (this.len == 0) {
+              this.showMore = false
+              this.nomore = false
+            }
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      }, 1000)
+    },
+    search() {
+      this.loading = true
+      this.$refs.table.bodyWrapper.scrollTop = 0
+      this.limit = 10
+      this.searchGoods()
+      this.dom = this.$refs.table.bodyWrapper
+      this.dom.addEventListener('scroll', () => {
+        // 滚动距离
+        let scrollTop = this.dom.scrollTop
+        // 变量windowHeight是可视区的高度
+        let windowHeight = this.dom.clientHeight || this.dom.clientHeight
+        // 变量scrollHeight是滚动条的总高度
+        let scrollHeight = this.dom.scrollHeight || this.dom.scrollHeight
+        if (scrollTop + windowHeight === scrollHeight) {
+          if (this.tableData.length == this.len && this.len != 0) {
+            this.showMore = false
+            this.nomore = true
+          } else if (this.len == 0) {
+            this.showMore = false
+            this.nomore = false
+          } else {
+            this.showMore = true
+            this.nomore = false
+            this.limit = this.tableData.length + 10
+            this.searchGoods();
+          }
+        }
+      })
     },
     filterDiscount(value, row) {
       return row.discount === value
@@ -690,42 +732,11 @@ export default {
             })
           })
       }
-    },
-    show(limit) {
-      if (!limit) {
-        limit = 10
-      }
-      setTimeout(() => {
-        axios.post('/api/goods/showGoods', {
-          limit: limit
-        }).then(res => {
-          this.len = res.data.len
-          this.tableData = res.data.resu
-          this.loading = false
-        })
-      }, 1000)
     }
   },
   mounted() {
-    this.dom = this.$refs.table.bodyWrapper
-    this.dom.addEventListener('scroll', () => {
-      // 滚动距离
-      let scrollTop = this.dom.scrollTop
-      // 变量windowHeight是可视区的高度
-      let windowHeight = this.dom.clientHeight || this.dom.clientHeight
-      // 变量scrollHeight是滚动条的总高度
-      let scrollHeight = this.dom.scrollHeight || this.dom.scrollHeight
-      if (scrollTop + windowHeight === scrollHeight) {
-        if (this.tableData.length == this.len) {
-          this.showMore = false
-          this.nomore = true
-        } else {
-          let limit = this.tableData.length + 10
-          this.show(limit);
-        }
-      }
-    })
-    this.show()
+    this.loading = true
+    this.search()
   }
 }
 </script>
