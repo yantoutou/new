@@ -58,6 +58,7 @@
         style="width: 100%"
         height="490"
         v-loading="loading"
+        ref="table"
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55"> </el-table-column>
@@ -126,6 +127,10 @@
             ></el-button>
           </template>
         </el-table-column>
+        <div slot="append" style="text-align: center">
+          <p v-if="showMore">加载中...</p>
+          <p v-if='nomore'>没有更多了</p>
+        </div>
       </el-table>
       <el-dialog
         title="编辑商品"
@@ -376,6 +381,10 @@ export default {
       loading: true,
       addFormVisible: false,
       deleteArr: [],
+      showMore: true,
+      nomore: false,
+      len: '',
+      dom: '',
       form: {
         id: '',
         name: '',
@@ -681,15 +690,42 @@ export default {
             })
           })
       }
+    },
+    show(limit) {
+      if (!limit) {
+        limit = 10
+      }
+      setTimeout(() => {
+        axios.post('/api/goods/showGoods', {
+          limit: limit
+        }).then(res => {
+          this.len = res.data.len
+          this.tableData = res.data.resu
+          this.loading = false
+        })
+      }, 1000)
     }
   },
   mounted() {
-    setTimeout(() => {
-      axios.post('/api/goods/showGoods').then(res => {
-        this.tableData = res.data
-        this.loading = false
-      })
-    }, 1000)
+    this.dom = this.$refs.table.bodyWrapper
+    this.dom.addEventListener('scroll', () => {
+      // 滚动距离
+      let scrollTop = this.dom.scrollTop
+      // 变量windowHeight是可视区的高度
+      let windowHeight = this.dom.clientHeight || this.dom.clientHeight
+      // 变量scrollHeight是滚动条的总高度
+      let scrollHeight = this.dom.scrollHeight || this.dom.scrollHeight
+      if (scrollTop + windowHeight === scrollHeight) {
+        if (this.tableData.length == this.len) {
+          this.showMore = false
+          this.nomore = true
+        } else {
+          let limit = this.tableData.length + 10
+          this.show(limit);
+        }
+      }
+    })
+    this.show()
   }
 }
 </script>

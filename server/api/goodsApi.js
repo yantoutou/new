@@ -38,15 +38,21 @@ router.use(upload.single('file'))
 // 商品列表
 router.post('/showGoods', (req, res) => {
   let conn = new DBHelper().getConn()
-  conn.query(sql.goods.select, (err, result) => {
+  let data
+  let len
+  conn.query(sql.goods.select_section, [req.body.limit], (err, result) => {
     if (err) {
       res.json(err)
     } else {
       result.forEach(item => {
         item.time = moment(item.time).format('YYYY-MM-DD HH:mm:ss')
       })
-      res.json(result)
+      data = result
     }
+  })
+  conn.query(sql.goods.select, (err, result) => {
+    len = result.length
+    res.json({len: len, resu: data})
   })
 })
 
