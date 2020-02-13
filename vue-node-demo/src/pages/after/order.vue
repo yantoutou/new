@@ -6,7 +6,9 @@
           <div slot="header">
             <span>订单查询</span>
             <span>
-              <el-button type="primary" class="export" @click="exportTable">导出</el-button>
+              <el-button type="primary" class="export" @click="exportTable"
+                >导出</el-button
+              >
             </span>
           </div>
           <div>
@@ -199,96 +201,109 @@
         <el-button type="primary" @click="Confirm">确 定</el-button>
       </div>
     </el-dialog>
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      :modal-append-to-body="false"
+      width="30%"
+    >
+      <span>将导出所选{{ ex.length }}条数据</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="exCancel">取 消</el-button>
+        <el-button type="primary" @click="exForm">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import axios from "axios";
-import Return from "./return";
+import axios from 'axios'
+import Return from './return'
 export default {
-  inject: ["reload"],
+  inject: ['reload'],
   data() {
     var phoneEdit = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请输入电话号"));
+      if (value === '') {
+        callback(new Error('请输入电话号'))
       } else {
-        var reg = /^1[3456789]\d{9}$/;
+        var reg = /^1[3456789]\d{9}$/
         if (!reg.test(this.form.phoneEdit)) {
-          callback(new Error("请输入有效的手机号码"));
+          callback(new Error('请输入有效的手机号码'))
         } else {
-          callback();
+          callback()
         }
       }
-    };
+    }
     return {
       autoWidth: true,
       bookType: 'xlsx',
       filename: '',
       tableData: [],
-      card: "first",
-      number: "",
+      card: 'first',
+      number: '',
       statusList: [],
-      status: "",
-      time: "",
+      status: '',
+      time: '',
       dialogFormVisible: false,
       loading: true,
       total: 0,
       currentPage: 1,
       flag: 1,
       isPage: 0,
+      dialogVisible: false,
       ex: [],
       form: {
-        addEdit: "",
-        phoneEdit: "",
-        statusEdit: "",
-        timeEdit: "",
-        money: "",
-        num: "",
-        id: ""
+        addEdit: '',
+        phoneEdit: '',
+        statusEdit: '',
+        timeEdit: '',
+        money: '',
+        num: '',
+        id: ''
       },
       rules: {
-        addEdit: [{ required: true, message: "请输入地址", trigger: "change" }],
+        addEdit: [{ required: true, message: '请输入地址', trigger: 'change' }],
         statusEdit: [
-          { required: true, message: "请选择状态", trigger: "change" }
+          { required: true, message: '请选择状态', trigger: 'change' }
         ],
-        phoneEdit: [{ required: true, validator: phoneEdit, trigger: "change" }]
+        phoneEdit: [{ required: true, validator: phoneEdit, trigger: 'change' }]
       }
-    };
+    }
   },
   components: { Return },
   methods: {
     cellStyle(row) {
-      if (row.column.label == "订单状态") {
+      if (row.column.label == '订单状态') {
         if (row.row.status == 1) {
-          return "color: #8dd16c";
+          return 'color: #8dd16c'
         } else if (row.row.status == 2) {
-          return "color: #e6a23d";
+          return 'color: #e6a23d'
         } else if (row.row.status == 3) {
-          return "color: #909399";
+          return 'color: #909399'
         } else {
-          return "color: red";
+          return 'color: red'
         }
       }
     },
     // 搜索
     search() {
-      this.flag = 2;
-      let startTime;
-      let endTime;
-      if (this.time == "" || !this.time) {
-        startTime = "";
-        endTime = "";
+      this.flag = 2
+      let startTime
+      let endTime
+      if (this.time == '' || !this.time) {
+        startTime = ''
+        endTime = ''
       } else {
-        startTime = this.time[0];
-        endTime = this.time[1];
+        startTime = this.time[0]
+        endTime = this.time[1]
       }
       if (this.isPage == 0) {
-        this.currentPage = 1;
+        this.currentPage = 1
       } else {
-        console.log(this.currentPage);
+        console.log(this.currentPage)
       }
       axios
-        .post("/api/order/orderSelect", {
+        .post('/api/order/orderSelect', {
           number: this.number,
           status: this.status,
           startTime,
@@ -296,96 +311,115 @@ export default {
           page: this.currentPage
         })
         .then(res => {
-          this.tableData = res.data.data;
-          this.total = res.data.count;
-          this.loading = false;
+          this.tableData = res.data.data
+          this.total = res.data.count
+          this.loading = false
           this.ex = res.data.ex
         })
         .catch(err => {
-          console.log(err);
-        });
-      this.isPage = 0;
+          console.log(err)
+        })
+      this.isPage = 0
     },
     // 获取列表
     getList() {
-      this.flag = 1;
+      this.flag = 1
       axios
-        .post("/api/order/orderList")
+        .post('/api/order/orderList')
         .then(res => {
           this.ex = res.data
-          this.total = res.data.length;
+          this.total = res.data.length
         })
         .catch(err => {
-          console.log(err);
-        });
+          console.log(err)
+        })
       axios
-        .post("/api/order/page", {
+        .post('/api/order/page', {
           page: this.currentPage
         })
         .then(res => {
-          this.tableData = res.data;
-          this.loading = false;
+          this.tableData = res.data
+          this.loading = false
         })
         .catch(err => {
-          console.log(err);
-        });
+          console.log(err)
+        })
       axios
-        .post("/api/order/statusList")
+        .post('/api/order/statusList')
         .then(res => {
-          this.statusList = res.data;
+          this.statusList = res.data
         })
         .catch(err => {
-          console.log(err);
-        });
+          console.log(err)
+        })
     },
     // 编辑
     edit(row) {
-      this.dialogFormVisible = true;
-      this.form.addEdit = row.address;
-      this.form.phoneEdit = row.phone;
-      this.form.statusEdit = row.status;
-      this.form.timeEdit = row.time;
-      this.form.money = row.money;
-      this.form.num = row.number;
-      this.form.id = row.id;
+      this.dialogFormVisible = true
+      this.form.addEdit = row.address
+      this.form.phoneEdit = row.phone
+      this.form.statusEdit = row.status
+      this.form.timeEdit = row.time
+      this.form.money = row.money
+      this.form.num = row.number
+      this.form.id = row.id
     },
     Confirm() {
       this.$refs.form.validate(valid => {
         if (!valid) {
-          return false;
+          return false
         } else {
-          this.dialogFormVisible = false;
+          this.dialogFormVisible = false
           axios
-            .post("/api/order/update", {
+            .post('/api/order/update', {
               id: this.form.id,
               address: this.form.addEdit,
               phone: this.form.phoneEdit,
               status: this.form.statusEdit
             })
             .then(() => {
-              this.loading = false;
-              this.$message.success("修改成功");
-              this.reload();
+              this.loading = false
+              this.$message.success('修改成功')
+              this.reload()
             })
             .catch(err => {
-              console.log(err);
-            });
+              console.log(err)
+            })
         }
-      });
+      })
     },
     handleCurrentChange(val) {
-      this.currentPage = val;
+      this.currentPage = val
       if (this.flag == 1) {
-        this.getList();
+        this.getList()
       } else {
-        this.isPage = 1;
-        this.search();
+        this.isPage = 1
+        this.search()
       }
     },
-    exportTable() {
+    exCancel() {
+      this.dialogVisible = false
+      this.$message('操作已取消')
+    },
+    exForm() {
+      this.dialogVisible = false
       import('../../assets/js/Export2Excel.js').then(moudle => {
-        const tHeader = ['下单时间', '收货地址', '联系电话', '订单金额', '订单状态', '订单编号']
-        const filterVal = ['time', 'address', 'phone', 'money', 'label', 'number']
+        const tHeader = [
+          '下单时间',
+          '收货地址',
+          '联系电话',
+          '订单金额',
+          '订单状态',
+          '订单编号'
+        ]
+        const filterVal = [
+          'time',
+          'address',
+          'phone',
+          'money',
+          'label',
+          'number'
+        ]
         const list = this.ex
         const data = this.formatJson(filterVal, list)
         moudle.export_json_to_excel({
@@ -397,14 +431,17 @@ export default {
         })
       })
     },
+    exportTable() {
+      this.dialogVisible = true
+    },
     formatJson(filterVal, jsonData) {
       return jsonData.map(v => filterVal.map(j => v[j]))
     }
   },
   mounted() {
-    this.getList();
+    this.getList()
   }
-};
+}
 </script>
 <style lang="less" scoped>
 .page {
