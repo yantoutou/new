@@ -6,6 +6,7 @@ import Order from './pages/after/order'
 import Err from './pages/err'
 import Manual from './pages/after/manual'
 import Goods from './pages/after/goods'
+import Work from './pages/after/work'
 
 Vue.use(Router)
 
@@ -25,11 +26,19 @@ export default new Router({
       path: '/manage',
       name: 'manage',
       component: Manage,
-      redirect: '/manage/order',
+      redirect: '/manage/work',
       meta: {
         requireAuth: true
       },
       children: [
+        {
+          path: 'work',
+          name: 'work',
+          component: Work,
+          meta: {
+            requireAuth: true
+          }
+        },
         {
           path: 'order',
           name: 'order',
