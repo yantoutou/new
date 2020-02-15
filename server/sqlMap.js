@@ -61,6 +61,10 @@ var sqlMap = {
         edit: 'update goods set name = ?, money = ?, discount = ?, new = ? where id = ?',
         upload: 'update goods set img = ? where id = ?',
         addGoods: 'insert into goods(name, img, time, money, discount, new, count, inventory) values (?, ?, ?, ?, ?, ?, ?, ?)'
+    },
+    work: {
+        returnNumber: 'select * from returnList where deal = "未处理"',
+        orderNumber: 'select * from orderList where status = 5'
     }
 }
 
