@@ -64,7 +64,8 @@ var sqlMap = {
     },
     work: {
         returnNumber: 'select * from returnList where deal = "未处理"',
-        orderNumber: 'select * from orderList where status = 5'
+        orderNumber: 'select * from orderList where status = 5',
+        sale: 'select * from orderList where time between ? and ? and status in(1,2,4,5)'
     }
 }
 

@@ -6,9 +6,11 @@ import 'element-ui/lib/theme-chalk/index.css';
 import less from 'less'
 import './assets/iconfont/iconfont.css'
 import moment from 'moment'
+import echarts from 'echarts'
 
 Vue.config.productionTip = false
 Vue.prototype.$moment = moment;
+Vue.prototype.$echarts = echarts
 
 // 路由拦截
 router.beforeEach((to, from, next) => {

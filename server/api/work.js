@@ -5,6 +5,7 @@ const DBHelper = require('../utils/DBHelper')
 const sql = require('../sqlMap')
 const moment = require('moment')
 
+// 获取待办列表
 router.post('/todoNumber', (req, res) => {
   let conn = new DBHelper().getConn()
   let sql_return = sql.work.returnNumber
@@ -23,10 +24,23 @@ router.post('/todoNumber', (req, res) => {
       res.json(err)
     } else {
       orderLen = result.length
-      res.json({return: returnLen, order: orderLen})
+      res.json({ return: returnLen, order: orderLen })
     }
   })
-  conn.end()
+})
+
+// 获取每周销量
+router.post('/sales', (req, res) => {
+  let conn = new DBHelper().getConn()
+  let sqlStr = sql.work.sale
+  let params = req.body
+  conn.query(sqlStr, [params.startTime, params.endTime], (err, result) => {
+    if (err) {
+      res.json(err)
+    } else {
+      res.json(result.length)
+    }
+  })
 })
 
 module.exports = router
