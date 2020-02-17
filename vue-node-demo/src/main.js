@@ -7,6 +7,7 @@ import less from 'less'
 import './assets/iconfont/iconfont.css'
 import moment from 'moment'
 import echarts from 'echarts'
+import  'echarts/theme/macarons.js'
 
 Vue.config.productionTip = false
 Vue.prototype.$moment = moment;

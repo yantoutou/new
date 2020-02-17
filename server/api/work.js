@@ -43,4 +43,31 @@ router.post('/sales', (req, res) => {
   })
 })
 
+// 获取所有的商品编号
+router.post('/goodsId', (req, res) => {
+  let conn = new DBHelper().getConn()
+  let sqlStr = sql.work.goodsId
+  conn.query(sqlStr, (err, result) => {
+    if (err) {
+      res.json(err)
+    } else {
+      res.json(result)
+    }
+  })
+})
+
+// 获取商品对应订单量
+router.post('/goodsNum', (req, res) => {
+  let conn = new DBHelper().getConn()
+  let sqlStr = sql.work.goodsNum
+  let params = req.body
+  conn.query(sqlStr, [params.id], (err, result) => {
+    if (err) {
+      res.json(err)
+    } else {
+      res.json({value: result.length, name: params.id})
+    }
+  })
+})
+
 module.exports = router

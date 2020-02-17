@@ -49,6 +49,16 @@
     <el-card class="echarts-card">
       <div id="myChart"></div>
     </el-card>
+    <el-row class="three-card" :gutter="40">
+      <el-col :span="12">
+        <el-card class="pie-card">
+          <div id="pieChart"></div>
+        </el-card>
+      </el-col>
+      <el-col :span="12">
+        <el-card></el-card>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -60,18 +70,59 @@ export default {
     return {
       returnNum: '',
       orderNum: '',
-      sales: []
+      sales: [],
+      goodsId: [],
+      sortArr: [],
+      nameArr: []
     }
   },
   methods: {
     returnClick() {
       this.$router.push('/manage/order')
     },
-    drawLine() {
-      let myChart = this.$echarts.init(document.getElementById('myChart'))
+    pieDraw() {
+      console.log(this.nameArr)
+      let myChart = this.$echarts.init(document.getElementById('pieChart'), 'macarons')
       myChart.setOption({
         title: {
-          text: '销量'
+          text: '商品销量',
+          left: 'center'
+        },
+        tooltip: {
+          trigger: 'item',
+          formatter: '{a}: {b} <br> 销售数量: {c} <br> 所占比例: {d}%'
+        },
+        legend: {
+          type: 'scroll',
+          orient: 'vertical',
+          left: 'left',
+          bottom: '10',
+          data: this.nameArr
+        },
+        series: [
+          {
+            name: '商品编号',
+            type: 'pie',
+            radius: '55%',
+            center: ['55%', '60%'],
+            data: this.sortArr,
+            emphasis: {
+              itemStyle: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.5)'
+              }
+            }
+          }
+        ]
+      })
+    },
+    drawLine() {
+      let myChart = this.$echarts.init(document.getElementById('myChart'),'macarons')
+      myChart.setOption({
+        title: {
+          text: '销量',
+          left: 'center'
         },
         tooltip: {
           trigger: 'axis',
@@ -113,8 +164,8 @@ export default {
           }
         },
         grid: {
-          left: '0%',
-          right: '32%',
+          left: '3%',
+          right: '5%',
           bottom: '30%',
           containLabel: true
         },
@@ -139,10 +190,23 @@ export default {
             data: this.sales
           }
         ],
-        color: '#e58dc2'
+        color: '#d47070'
       })
     },
     getList() {
+      axios.post('/api/work/goodsId').then(res => {
+        this.goodsId = res.data
+        this.goodsId.forEach(item => {
+          axios
+            .post('/api/work/goodsNum', {
+              id: item.id
+            })
+            .then(res => {
+              this.sortArr.push(res.data)
+              this.nameArr.push(res.data.name)
+            })
+        })
+      })
       for (let i = 1; i < 8; i++) {
         let startTime = moment()
           .weekday(i)
@@ -168,6 +232,7 @@ export default {
   mounted() {
     this.getList()
     setTimeout(this.drawLine, 300)
+    setTimeout(this.pieDraw, 300)
   }
 }
 </script>
@@ -224,12 +289,23 @@ export default {
   }
 }
 .echarts-card {
-  width: 63%;
+  width: 97%;
   height: 400px;
   margin-top: 36px;
   #myChart {
-    width: 1024px;
+    width: 1100px;
     height: 500px;
+  }
+}
+.three-card {
+  margin-top: 36px;
+  .pie-card {
+    width: 97%;
+    height: 450px;
+  }
+  #pieChart {
+    width: 100%;
+    height: 400px;
   }
 }
 </style>
