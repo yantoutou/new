@@ -46,19 +46,26 @@
         </el-card>
       </el-col>
     </el-row>
-    <el-card class="echarts-card">
-      <div id="myChart"></div>
-    </el-card>
-    <el-row class="three-card" :gutter="40">
+    <el-row class="three-card" :gutter="0">
       <el-col :span="12">
         <el-card class="pie-card">
           <div id="pieChart"></div>
         </el-card>
       </el-col>
       <el-col :span="12">
-        <el-card></el-card>
+        <el-card class="user-card">
+          新注册用户
+          <el-table :data="tableData" style="width: 100%" v-if="showTable">
+            <el-table-column width="180">
+            </el-table-column>
+          </el-table>
+          <h1 class="null-text" v-if="showNull">今日还没有新注册的用户哦！</h1>
+        </el-card>
       </el-col>
     </el-row>
+    <el-card class="echarts-card">
+      <div id="myChart"></div>
+    </el-card>
   </div>
 </template>
 
@@ -73,7 +80,10 @@ export default {
       sales: [],
       goodsId: [],
       sortArr: [],
-      nameArr: []
+      nameArr: [],
+      tableData: [],
+      showTable: false,
+      showNull: false
     }
   },
   methods: {
@@ -81,7 +91,6 @@ export default {
       this.$router.push('/manage/order')
     },
     pieDraw() {
-      console.log(this.nameArr)
       let myChart = this.$echarts.init(document.getElementById('pieChart'), 'macarons')
       myChart.setOption({
         title: {
@@ -118,10 +127,10 @@ export default {
       })
     },
     drawLine() {
-      let myChart = this.$echarts.init(document.getElementById('myChart'),'macarons')
+      let myChart = this.$echarts.init(document.getElementById('myChart'), 'macarons')
       myChart.setOption({
         title: {
-          text: '销量',
+          text: '本周销量',
           left: 'center'
         },
         tooltip: {
@@ -227,6 +236,13 @@ export default {
         this.returnNum = res.data.return
         this.orderNum = res.data.order
       })
+      if (this.tableData.length == 0) {
+        this.showNull = true
+        this.showTable = false
+      } else {
+        this.showTable = true
+        this.showNull = false
+      }
     }
   },
   mounted() {
@@ -300,12 +316,22 @@ export default {
 .three-card {
   margin-top: 36px;
   .pie-card {
-    width: 97%;
+    width: 94%;
     height: 450px;
   }
   #pieChart {
     width: 100%;
     height: 400px;
+  }
+  .user-card {
+    width: 94%;
+    height: 450px;
+    text-align: center;
+    color: #008acd;
+    .null-text {
+      line-height: 350px;
+      color: #95706d;
+    }
   }
 }
 </style>
