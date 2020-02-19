@@ -59,6 +59,11 @@ router.post('/registered', (req, res) => {
     let sqlStr_user = sql.user.add;
     let sqlStr_admin = sql.admin.add;
     let conn = new DBHelper().getConn();
+    if (params.gender == 'b') {
+        gender = '男'
+    } else {
+        gender = '女'
+    }
     if (params.password1 != params.password2) {
         res.json({
             code: 1,
@@ -66,7 +71,7 @@ router.post('/registered', (req, res) => {
         })
     } else {
         if (params.identity == 'user') {
-            conn.query(sqlStr_user, [params.name, params.password1, params.nickName], (err, result) => {
+            conn.query(sqlStr_user, [params.name, params.password1, params.nickName, gender], (err, result) => {
                 if (err) {
                     res.json(err);
                 } else {

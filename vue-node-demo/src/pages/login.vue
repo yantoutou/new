@@ -24,6 +24,25 @@
             </el-form-item>
           </el-col>
         </el-row>
+        <el-row v-if="showN">
+          <el-col :offset="10">
+            <el-form-item prop="gender">
+              <el-select
+                v-model="form.gender"
+                placeholder="性别"
+                class="login-select"
+                clearable
+              >
+                <el-option
+                  v-for="item in genderSelect"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-row>
           <el-col :span="5" :offset="10">
             <el-form-item prop="userName">
@@ -89,7 +108,9 @@
         </el-col>
       </el-row>
       <div v-if="showR">
-        <el-button type="warning" class="registered-button" @click="registered">注册</el-button>
+        <el-button type="warning" class="registered-button" @click="registered"
+          >注册</el-button
+        >
         <el-button type="info" class="cancel-button" @click="cancel">取消</el-button>
       </div>
       <div class="registered" v-if="showL">
@@ -101,181 +122,187 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from 'axios'
 export default {
   data() {
     // 用户名验证
     var userName = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请输入用户名"));
+      if (value === '') {
+        callback(new Error('请输入用户名'))
       }
       axios
-        .post("/api/user/selectUser", {
+        .post('/api/user/selectUser', {
           name: this.form.userName,
           identity: this.form.identity
         })
         .then(res => {
           if (this.showR == true) {
             if (res.data.length != 0) {
-              callback(new Error("用户名重复"));
+              callback(new Error('用户名重复'))
             } else {
-              callback();
+              callback()
             }
           } else {
-            callback();
+            callback()
           }
         })
         .catch(err => {
-          console.log(err);
-        });
-    };
+          console.log(err)
+        })
+    }
     return {
       form: {
-        userName: "", // 用户名
-        passWord1: "", // 密码
-        identity: "", // 身份
-        nickName: "", // 昵称
-        passWord2: "" // 确认密码
+        userName: '', // 用户名
+        passWord1: '', // 密码
+        identity: '', // 身份
+        nickName: '', // 昵称
+        passWord2: '', // 确认密码
+        gender: ''
       },
       showR: false, // 注册
       showL: true, // 登录
       showN: false, // 昵称
       userIdentity: [
         {
-          value: "user",
-          label: "普通用户"
+          value: 'user',
+          label: '普通用户'
         },
         {
-          value: "admin",
-          label: "管理员"
+          value: 'admin',
+          label: '管理员'
+        }
+      ],
+      genderSelect: [
+        {
+          value: 'b',
+          label: '男'
+        },
+        {
+          value: 'g',
+          label: '女'
         }
       ],
       rules: {
-        identity: [
-          { required: true, message: "请选择身份", trigger: "change" }
-        ],
-        userName: [{ validator: userName, trigger: "change" }],
-        nickName: [
-          { required: true, message: "请输入昵称", trigger: "change" }
-        ],
-        passWord1: [
-          { required: true, message: "请输入密码", trigger: "change" }
-        ],
-        passWord2: [
-          { required: true, message: "请再次输入密码", trigger: "change" }
-        ]
+        identity: [{ required: true, message: '请选择身份', trigger: 'change' }],
+        gender: [{ required: true, message: '请选择性别', trigger: 'change' }],
+        userName: [{ validator: userName, trigger: 'change' }],
+        nickName: [{ required: true, message: '请输入昵称', trigger: 'change' }],
+        passWord1: [{ required: true, message: '请输入密码', trigger: 'change' }],
+        passWord2: [{ required: true, message: '请再次输入密码', trigger: 'change' }]
       }
-    };
+    }
   },
   methods: {
     // 登录
     login() {
       this.$refs.form.validate(valid => {
         if (valid) {
-          let name = this.form.userName;
-          let password = this.form.passWord1;
-          let identity = this.form.identity;
+          let name = this.form.userName
+          let password = this.form.passWord1
+          let identity = this.form.identity
           axios
-            .post("/api/user/login", {
+            .post('/api/user/login', {
               name,
               password,
               identity
             })
             .then(res => {
               if (res.data.code == 1) {
-                if (res.data.identity == "user") {
-                  sessionStorage.setItem("token", 'true');
-                  this.$router.replace({ path: "/about" });
+                if (res.data.identity == 'user') {
+                  sessionStorage.setItem('token', 'true')
+                  this.$router.replace({ path: '/about' })
                 } else {
-                  sessionStorage.setItem("token", 'true');
-                  sessionStorage.setItem("username", name);
-                  this.$router.replace({ path: "/manage" });
+                  sessionStorage.setItem('token', 'true')
+                  sessionStorage.setItem('username', name)
+                  this.$router.replace({ path: '/manage' })
                 }
               } else {
-                this.$message.error("身份有误或用户名密码错误");
+                this.$message.error('身份有误或用户名密码错误')
               }
             })
             .catch(err => {
-              console.log(err);
-            });
+              console.log(err)
+            })
         } else {
-          return false;
+          return false
         }
-      });
+      })
     },
     showRegistered() {
-      this.showR = true;
-      this.showN = true;
-      this.showL = false;
-      this.$refs.form.resetFields();
-      this.reset();
+      this.showR = true
+      this.showN = true
+      this.showL = false
+      this.$refs.form.resetFields()
+      this.reset()
     },
     // 注册
     registered() {
       this.$refs.form.validate(valid => {
         if (valid) {
-          let identity = this.form.identity;
-          let name = this.form.userName;
-          let nickName = this.form.nickName;
-          let password1 = this.form.passWord1;
-          let password2 = this.form.passWord2;
+          let identity = this.form.identity
+          let name = this.form.userName
+          let nickName = this.form.nickName
+          let password1 = this.form.passWord1
+          let password2 = this.form.passWord2
+          let gender = this.form.gender
           axios
-            .post("/api/user/registered", {
+            .post('/api/user/registered', {
               identity,
               name,
               nickName,
               password1,
-              password2
+              password2,
+              gender
             })
             .then(res => {
               if (res.data.code == 1) {
-                this.$message.error(res.data.msg);
+                this.$message.error(res.data.msg)
               } else {
-                if (res.data.identity == "user") {
-                  sessionStorage.setItem("token", 'true');
-                  this.$router.replace({ path: "/about" });
+                if (res.data.identity == 'user') {
+                  sessionStorage.setItem('token', 'true')
+                  this.$router.replace({ path: '/about' })
                 } else {
-                  sessionStorage.setItem("token", 'true');
-                  this.$router.replace({ path: "/manage/order" });
+                  sessionStorage.setItem('token', 'true')
+                  this.$router.replace({ path: '/manage/order' })
                 }
               }
             })
             .catch(err => {
-              console.log(err);
-            });
+              console.log(err)
+            })
         } else {
-          return false;
+          return false
         }
-      });
+      })
     },
     // 取消按钮
     cancel() {
-      this.showL = true;
-      this.showR = false;
-      this.showN = false;
-      this.$refs.form.resetFields();
-      this.reset();
+      this.showL = true
+      this.showR = false
+      this.showN = false
+      this.$refs.form.resetFields()
+      this.reset()
     },
     // 重置
     reset() {
-      this.form.identity = "";
-      this.form.userName = "";
-      this.password1 = "";
-      this.passWord2 = "";
-      this.nickName = "";
+      this.form.identity = ''
+      this.form.userName = ''
+      this.password1 = ''
+      this.passWord2 = ''
+      this.nickName = ''
     },
     // 下拉框更改时
     change() {
-      if (this.showR == true && this.form.identity == "admin") {
-        this.showN = false;
+      if (this.showR == true && this.form.identity == 'admin') {
+        this.showN = false
       } else if (this.showR == false) {
-        this.showN = false;
+        this.showN = false
       } else {
-        this.showN = true;
+        this.showN = true
       }
     }
   }
-};
+}
 </script>
 
 <style lang="less" scoped>
@@ -289,7 +316,7 @@ export default {
   z-index: -10;
   zoom: 1;
   background-color: #fff;
-  background: url("../assets/background.png");
+  background: url('../assets/background.png');
   background-repeat: no-repeat;
   background-size: cover;
   -webkit-background-size: cover;

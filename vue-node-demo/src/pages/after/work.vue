@@ -54,11 +54,7 @@
       </el-col>
       <el-col :span="12">
         <el-card class="user-card">
-          新注册用户
-          <el-table :data="tableData" style="width: 100%" v-if="showTable">
-            <el-table-column width="180"> </el-table-column>
-          </el-table>
-          <h1 class="null-text" v-if="showNull">今日还没有新注册的用户哦！</h1>
+          <div id="userChart"></div>
         </el-card>
       </el-col>
     </el-row>
@@ -80,14 +76,63 @@ export default {
       goodsId: [],
       sortArr: [],
       nameArr: [],
-      tableData: [],
       showTable: false,
-      showNull: false
+      showNull: false,
+      b: '',
+      g: ''
     }
   },
   methods: {
     returnClick() {
       this.$router.push('/manage/order')
+    },
+    UserChart() {
+      let myChart = this.$echarts.init(document.getElementById('userChart'), 'macarons')
+      myChart.setOption({
+        title: {
+          text: '用户画像',
+          left: 'center'
+        },
+        tooltip: {
+          trigger: 'item',
+          formatter: '{b}: {c} ({d}%)'
+        },
+        legend: {
+          orient: 'vertical',
+          left: 10,
+          data: ['男', '女']
+        },
+        series: [
+          {
+            name: '访问来源',
+            type: 'pie',
+            radius: ['50%', '70%'],
+            avoidLabelOverlap: false,
+            label: {
+              normal: {
+                show: false,
+                position: 'center'
+              },
+              emphasis: {
+                show: true,
+                textStyle: {
+                  fontSize: '30',
+                  fontWeight: 'bold'
+                }
+              }
+            },
+            labelLine: {
+              normal: {
+                show: false
+              }
+            },
+            data: [
+              { value: this.b, name: '男' },
+              { value: this.g, name: '女' }
+            ]
+          }
+        ]
+      })
     },
     pieDraw() {
       let myChart = this.$echarts.init(document.getElementById('pieChart'), 'macarons')
@@ -209,6 +254,11 @@ export default {
         })
         this.pieDraw()
       })
+      axios.post('/api/work/user').then(res => {
+        this.b = res.data.b
+        this.g = res.data.g
+        this.UserChart()
+      })
       for (let i = 1; i < 8; i++) {
         let startTime = moment()
           .weekday(i)
@@ -229,13 +279,6 @@ export default {
         this.returnNum = res.data.return
         this.orderNum = res.data.order
       })
-      if (this.tableData.length == 0) {
-        this.showNull = true
-        this.showTable = false
-      } else {
-        this.showTable = true
-        this.showNull = false
-      }
     }
   },
   mounted() {
@@ -320,9 +363,9 @@ export default {
     height: 450px;
     text-align: center;
     color: #008acd;
-    .null-text {
-      line-height: 350px;
-      color: #95706d;
+    #userChart {
+      width: 100%;
+      height: 450px;
     }
   }
 }

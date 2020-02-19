@@ -56,4 +56,26 @@ router.post('/goodsSale', (req, res) => {
   })
 })
 
+// 获取用户信息
+router.post('/user', (req, res) => {
+  let conn = new DBHelper().getConn()
+  let sqlB = sql.work.user_b
+  let sqlD = sql.work.user_g
+  let length
+  conn.query(sqlB, (err, result) => {
+    if (err) {
+      res.json(err)
+    } else {
+      length = result.length
+    }
+  })
+  conn.query(sqlD, (err, result) => {
+    if (err) {
+      res.json(err)
+    } else {
+      res.json({b: length, g: result.length})
+    }
+  })
+})
+
 module.exports = router

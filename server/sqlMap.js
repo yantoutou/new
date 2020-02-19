@@ -2,7 +2,7 @@
 var sqlMap = {
     user: {
         // 添加用户
-        add: 'insert into user(name, password, nickname) values (?, ?, ?)',
+        add: 'insert into user(name, password, nickname, gender, img) values (?, ?, ?, ?, "file-1581411637655.png")',
         // 查询用户
         select_user: 'select * from user where name = ? and password = ?',
         select: 'select * from user where name = ?'
@@ -67,6 +67,9 @@ var sqlMap = {
         orderNumber: 'select * from orderList where status = 5',
         sale: 'select * from orderList where time between ? and ? and status in(1,2,4,5)',
         goodsValue: 'select count as `value`, id as `name` from goods',
+        table: 'select * from user where time between ? and ?',
+        user_b: 'select * from user where gender = "男"',
+        user_g: 'select * from user where gender = "女"'
     }
 }
 
