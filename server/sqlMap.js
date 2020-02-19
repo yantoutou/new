@@ -66,8 +66,7 @@ var sqlMap = {
         returnNumber: 'select * from returnList where deal = "未处理"',
         orderNumber: 'select * from orderList where status = 5',
         sale: 'select * from orderList where time between ? and ? and status in(1,2,4,5)',
-        goodsId: 'select id from goods',
-        goodsNum: 'select * from orderList where goodsId = ?'
+        goodsValue: 'select count as `value`, id as `name` from goods',
     }
 }
 

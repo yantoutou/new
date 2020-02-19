@@ -56,8 +56,7 @@
         <el-card class="user-card">
           新注册用户
           <el-table :data="tableData" style="width: 100%" v-if="showTable">
-            <el-table-column width="180">
-            </el-table-column>
+            <el-table-column width="180"> </el-table-column>
           </el-table>
           <h1 class="null-text" v-if="showNull">今日还没有新注册的用户哦！</h1>
         </el-card>
@@ -203,18 +202,12 @@ export default {
       })
     },
     getList() {
-      axios.post('/api/work/goodsId').then(res => {
-        this.goodsId = res.data
-        this.goodsId.forEach(item => {
-          axios
-            .post('/api/work/goodsNum', {
-              id: item.id
-            })
-            .then(res => {
-              this.sortArr.push(res.data)
-              this.nameArr.push(res.data.name)
-            })
+      axios.post('/api/work/goodsSale').then(res => {
+        res.data.forEach(item => {
+          this.nameArr.push(item.name)
+          this.sortArr.push(item)
         })
+        this.pieDraw()
       })
       for (let i = 1; i < 8; i++) {
         let startTime = moment()
@@ -247,8 +240,7 @@ export default {
   },
   mounted() {
     this.getList()
-    setTimeout(this.drawLine, 300)
-    setTimeout(this.pieDraw, 300)
+    setTimeout(this.drawLine, 100)
   }
 }
 </script>
