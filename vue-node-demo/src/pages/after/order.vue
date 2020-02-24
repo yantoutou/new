@@ -21,11 +21,7 @@
                 ></el-input>
               </el-col>
               <el-col :span="5">
-                <el-select
-                  v-model="status"
-                  placeholder="请选择订单状态"
-                  clearable
-                >
+                <el-select v-model="status" placeholder="请选择订单状态" clearable>
                   <el-option
                     v-for="item in statusList"
                     :key="item.value"
@@ -57,11 +53,7 @@
               :cell-style="cellStyle"
               v-loading="loading"
             >
-              <el-table-column
-                prop="time"
-                label="下单时间"
-                width="180"
-              ></el-table-column>
+              <el-table-column prop="time" label="下单时间" width="180"></el-table-column>
               <el-table-column
                 prop="address"
                 label="收货地址"
@@ -89,9 +81,7 @@
               ></el-table-column>
               <el-table-column label="操作" width="180">
                 <template slot-scope="scope">
-                  <el-button type="text" @click="edit(scope.row)"
-                    >编辑</el-button
-                  >
+                  <el-button type="text" @click="edit(scope.row)">编辑</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -107,9 +97,7 @@
           </div>
         </el-card>
       </el-tab-pane>
-      <el-tab-pane label="退货管理" name="second"
-        ><Return></Return
-      ></el-tab-pane>
+      <el-tab-pane label="退货管理" name="second"><Return></Return></el-tab-pane>
     </el-tabs>
     <el-dialog
       title="订单修改"
@@ -131,11 +119,7 @@
         </el-row>
         <el-row>
           <el-col :span="15">
-            <el-form-item
-              label="收货地址"
-              prop="addEdit"
-              :hide-required-asterisk="true"
-            >
+            <el-form-item label="收货地址" prop="addEdit" :hide-required-asterisk="true">
               <el-input
                 v-model="form.addEdit"
                 placeholder="请输入地址"
@@ -158,22 +142,14 @@
         <el-row>
           <el-col :span="15">
             <el-form-item label="订单金额" prop="moneyEdit">
-              <el-input
-                v-model="form.money"
-                placeholder="请输入金额"
-                disabled
-              ></el-input>
+              <el-input v-model="form.money" placeholder="请输入金额" disabled></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="15">
             <el-form-item label="订单状态" prop="statusEdit">
-              <el-select
-                v-model="form.statusEdit"
-                placeholder="请选择状态"
-                clearable
-              >
+              <el-select v-model="form.statusEdit" placeholder="请选择状态" clearable>
                 <el-option
                   v-for="item in statusList"
                   :key="item.value"
@@ -219,6 +195,7 @@
 <script>
 import axios from 'axios'
 import Return from './return'
+import moment from 'moment'
 export default {
   inject: ['reload'],
   data() {
@@ -263,9 +240,7 @@ export default {
       },
       rules: {
         addEdit: [{ required: true, message: '请输入地址', trigger: 'change' }],
-        statusEdit: [
-          { required: true, message: '请选择状态', trigger: 'change' }
-        ],
+        statusEdit: [{ required: true, message: '请选择状态', trigger: 'change' }],
         phoneEdit: [{ required: true, validator: phoneEdit, trigger: 'change' }]
       }
     }
@@ -287,6 +262,17 @@ export default {
     },
     // 搜索
     search() {
+      let logName = sessionStorage.getItem('username')
+      axios
+        .post('/api/log/addLog', {
+          name: logName,
+          operation: '订单查询',
+          time: moment().format('YYYY-MM-DD HH:mm:ss'),
+          content: '搜索'
+        })
+        .then(res => {
+          console.log(res)
+        })
       this.flag = 2
       let startTime
       let endTime
@@ -365,6 +351,17 @@ export default {
       this.form.id = row.id
     },
     Confirm() {
+      let logName = sessionStorage.getItem('username')
+      axios
+        .post('/api/log/addLog', {
+          name: logName,
+          operation: '订单查询',
+          time: moment().format('YYYY-MM-DD HH:mm:ss'),
+          content: '修改订单信息'
+        })
+        .then(res => {
+          console.log(res)
+        })
       this.$refs.form.validate(valid => {
         if (!valid) {
           return false
@@ -402,6 +399,17 @@ export default {
       this.$message('操作已取消')
     },
     exForm() {
+      let logName = sessionStorage.getItem('username')
+      axios
+        .post('/api/log/addLog', {
+          name: logName,
+          operation: '订单查询',
+          time: moment().format('YYYY-MM-DD HH:mm:ss'),
+          content: '导出'
+        })
+        .then(res => {
+          console.log(res)
+        })
       this.dialogVisible = false
       import('../../assets/js/Export2Excel.js').then(moudle => {
         const tHeader = [
@@ -412,14 +420,7 @@ export default {
           '订单状态',
           '订单编号'
         ]
-        const filterVal = [
-          'time',
-          'address',
-          'phone',
-          'money',
-          'label',
-          'number'
-        ]
+        const filterVal = ['time', 'address', 'phone', 'money', 'label', 'number']
         const list = this.ex
         const data = this.formatJson(filterVal, list)
         moudle.export_json_to_excel({

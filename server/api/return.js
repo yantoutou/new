@@ -73,6 +73,9 @@ router.post('/selectNumber', (req, res) => {
         if (err) {
             res.json(err)
         } else {
+            result.forEach(item => {
+                item.time = moment(item.time).format('YYYY-MM-DD HH:mm:ss')
+            })
             res.json(result)
         }
     })

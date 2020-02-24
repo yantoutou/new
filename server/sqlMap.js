@@ -70,6 +70,10 @@ var sqlMap = {
         table: 'select * from user where time between ? and ?',
         user_b: 'select * from user where gender = "男"',
         user_g: 'select * from user where gender = "女"'
+    },
+    log: {
+        getList: 'select * from log',
+        add: 'insert into log(name, operation, time, content) values (?, ?, ?, ?)'
     }
 }
 

@@ -57,9 +57,9 @@
                   <i class="iconfont icon-zhanghao"></i>
                   <span slot="title">账号管理</span>
                 </el-menu-item>
-                <el-menu-item index="/manage/manual">
+                <el-menu-item index="/manage/log">
                   <i class="el-icon-s-management"></i>
-                  <span slot="title">使用手册</span>
+                  <span slot="title">日志中心</span>
                 </el-menu-item>
               </el-menu>
             </div>
@@ -94,6 +94,10 @@ export default {
     },
     loginOut() {
       this.$router.replace('/')
+      history.pushState(null, null, document.URL)
+      window.addEventListener('popstate', function() {
+        history.pushState(null, null, document.URL)
+      })
     }
   },
   mounted() {

@@ -4,7 +4,7 @@ import Login from './pages/login.vue'
 import Manage from './pages/after/manage.vue'
 import Order from './pages/after/order'
 import Err from './pages/err'
-import Manual from './pages/after/manual'
+import Log from './pages/after/log'
 import Goods from './pages/after/goods'
 import Work from './pages/after/work'
 
@@ -56,9 +56,9 @@ export default new Router({
           }
         },
         {
-          path: 'manual',
-          name: 'manual',
-          component: Manual,
+          path: 'log',
+          name: 'log',
+          component: Log,
           meta: {
             requireAuth: true
           }

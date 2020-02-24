@@ -37,6 +37,7 @@
 
 <script>
 import axios from "axios";
+import moment from 'moment'
 export default {
   data() {
     return {
@@ -46,6 +47,17 @@ export default {
   },
   methods: {
     deal(row) {
+      let logName = sessionStorage.getItem('username')
+      axios
+        .post('/api/log/addLog', {
+          name: logName,
+          operation: '退货管理',
+          time: moment().format('YYYY-MM-DD HH:mm:ss'),
+          content: '处理'
+        })
+        .then(res => {
+          console.log(res)
+        })
       axios.post('/api/return/updateList', {
         number: row.number,
         id: row.id
@@ -56,6 +68,17 @@ export default {
       })
     },
     returnDeal(row) {
+      let logName = sessionStorage.getItem('username')
+      axios
+        .post('/api/log/addLog', {
+          name: logName,
+          operation: '退货管理',
+          time: moment().format('YYYY-MM-DD HH:mm:ss'),
+          content: '退回'
+        })
+        .then(res => {
+          console.log(res)
+        })
       axios.post('/api/return/updateReturn', {
         number: row.number,
         id: row.id
@@ -78,6 +101,17 @@ export default {
       })
     },
     search() {
+      let logName = sessionStorage.getItem('username')
+      axios
+        .post('/api/log/addLog', {
+          name: logName,
+          operation: '退货管理',
+          time: moment().format('YYYY-MM-DD HH:mm:ss'),
+          content: '搜索'
+        })
+        .then(res => {
+          console.log(res)
+        })
       axios.post('/api/return/selectNumber', {
         number: this.input
       }).then(res => {
