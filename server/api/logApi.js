@@ -8,15 +8,26 @@ const moment = require('moment')
 // 获取日志列表
 router.post('/getList', (req, res) => {
     let conn = new DBHelper().getConn()
-    let sqlStr = sql.log.getList
-    conn.query(sqlStr, (err, result) => {
+    let sqlStr_list = sql.log.getList
+    let sqlStr_all = sql.log.getAll
+    let len
+    let page = req.body.currentPage
+    let index = (page - 1) * 10
+    conn.query(sqlStr_all, (err, result) => {
+        if (err) {
+            res.json(err)
+        } else {
+            len = result.length
+        }
+    })
+    conn.query(sqlStr_list, [index], (err, result) => {
         if (err) {
             res.json(err)
         } else {
             result.forEach(item => {
                 item.time = moment(item.time).format('YYYY-MM-DD HH:mm:ss')
             })
-            res.json(result)
+            res.json({data: result, len: len})
         }
     })
 })

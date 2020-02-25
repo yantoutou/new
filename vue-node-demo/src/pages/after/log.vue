@@ -6,8 +6,19 @@
       <el-table-column prop="id" label="编号" width="100"> </el-table-column>
       <el-table-column prop="name" label="操作人" width="250"> </el-table-column>
       <el-table-column prop="operation" label="操作" width="250"> </el-table-column>
-      <el-table-column prop="time" label="操作时间" width='350'> </el-table-column>
+      <el-table-column prop="time" label="操作时间" width="350"> </el-table-column>
       <el-table-column prop="content" label="操作内容"> </el-table-column>
+      <div slot="append">
+        <el-pagination
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          layout="total, prev, pager, next, jumper"
+          :total="total"
+          :page-size="10"
+          class="page"
+        >
+        </el-pagination>
+      </div>
     </el-table>
   </div>
 </template>
@@ -17,14 +28,23 @@ import axios from 'axios'
 export default {
   data() {
     return {
-      tableData: []
+      tableData: [],
+      total: 0,
+      currentPage: 1
     }
   },
   methods: {
     getList() {
-      axios.post('/api/log/getList').then(res => {
-        this.tableData = res.data
+      axios.post('/api/log/getList', {
+        currentPage: this.currentPage
+      }).then(res => {
+        this.tableData = res.data.data
+        this.total = res.data.len
       })
+    },
+    handleCurrentChange(val) {
+      this.currentPage = val
+      this.getList()
     }
   },
   mounted() {
@@ -33,4 +53,8 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="less" scoped>
+.page {
+  float: right;
+}
+</style>

@@ -72,7 +72,8 @@ var sqlMap = {
         user_g: 'select * from user where gender = "女"'
     },
     log: {
-        getList: 'select * from log',
+        getList: 'select * from log limit ?,10',
+        getAll: 'select * from log',
         add: 'insert into log(name, operation, time, content) values (?, ?, ?, ?)'
     }
 }
