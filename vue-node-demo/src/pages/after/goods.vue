@@ -5,17 +5,11 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="商品名称">
-              <el-input
-                placeholder="请输入商品名称"
-                v-model="searchInput"
-              ></el-input>
+              <el-input placeholder="请输入商品名称" v-model="searchInput"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="3" class="button">
-            <el-button
-              type="success"
-              icon="el-icon-circle-plus-outline"
-              @click="add"
+            <el-button type="success" icon="el-icon-circle-plus-outline" @click="add"
               >添加</el-button
             >
           </el-col>
@@ -62,19 +56,15 @@
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55"> </el-table-column>
-        <el-table-column prop="id" label="商品编号" width="100" fixed>
-        </el-table-column>
-        <el-table-column prop="name" label="商品名称" width="120">
-        </el-table-column>
+        <el-table-column prop="id" label="商品编号" width="100" fixed> </el-table-column>
+        <el-table-column prop="name" label="商品名称" width="120"> </el-table-column>
         <el-table-column prop="img" label="商品图片" width="120">
           <template slot-scope="scope">
             <img :src="showImg(scope.row.img)" class="goods-img" />
           </template>
         </el-table-column>
-        <el-table-column prop="time" label="录入日期" width="170">
-        </el-table-column>
-        <el-table-column prop="money" label="商品价格" width="150">
-        </el-table-column>
+        <el-table-column prop="time" label="录入日期" width="170"> </el-table-column>
+        <el-table-column prop="money" label="商品价格" width="150"> </el-table-column>
         <el-table-column
           prop="discount"
           label="折扣"
@@ -107,10 +97,8 @@
             <i class="el-icon-close" v-else></i>
           </template>
         </el-table-column>
-        <el-table-column prop="count" label="销量" width="140">
-        </el-table-column>
-        <el-table-column prop="inventory" label="库存" width="150">
-        </el-table-column>
+        <el-table-column prop="count" label="销量" width="140"> </el-table-column>
+        <el-table-column prop="inventory" label="库存" width="150"> </el-table-column>
         <el-table-column label="操作" width="150" fixed="right">
           <template slot-scope="scope">
             <el-button
@@ -211,11 +199,7 @@
                 </div>
                 <i slot="default" class="el-icon-plus"></i>
                 <div slot="file" slot-scope="{ file }">
-                  <img
-                    class="el-upload-list__item-thumbnail"
-                    :src="file.url"
-                    alt=""
-                  />
+                  <img class="el-upload-list__item-thumbnail" :src="file.url" alt="" />
                   <span class="el-upload-list__item-actions">
                     <span
                       class="el-upload-list__item-preview"
@@ -250,12 +234,7 @@
         :modal-append-to-body="false"
         v-if="addFormVisible"
       >
-        <el-form
-          label-width="100px"
-          :model="addForm"
-          ref="addForm"
-          :rules="addRules"
-        >
+        <el-form label-width="100px" :model="addForm" ref="addForm" :rules="addRules">
           <el-row>
             <el-col :span="12">
               <el-form-item label="商品名称" prop="name">
@@ -301,11 +280,7 @@
                 </div>
                 <i slot="default" class="el-icon-plus"></i>
                 <div slot="file" slot-scope="{ file }">
-                  <img
-                    class="el-upload-list__item-thumbnail"
-                    :src="addFile.url"
-                    alt=""
-                  />
+                  <img class="el-upload-list__item-thumbnail" :src="addFile.url" alt="" />
                   <span class="el-upload-list__item-actions">
                     <span
                       class="el-upload-list__item-preview"
@@ -386,6 +361,7 @@ export default {
       len: '',
       dom: '',
       limit: 10,
+      flag: 0,
       form: {
         id: '',
         name: '',
@@ -407,15 +383,11 @@ export default {
       file: '',
       addFile: '',
       rules: {
-        name: [
-          { required: true, message: '请输入商品名称', trigger: 'change' }
-        ],
+        name: [{ required: true, message: '请输入商品名称', trigger: 'change' }],
         money: [{ required: true, validator: money, trigger: 'change' }]
       },
       addRules: {
-        name: [
-          { required: true, message: '请输入商品名称', trigger: 'change' }
-        ],
+        name: [{ required: true, message: '请输入商品名称', trigger: 'change' }],
         money: [{ required: true, validator: money, trigger: 'change' }],
         inventory: [{ required: true, validator: inventory, trigger: 'change' }]
       }
@@ -478,6 +450,17 @@ export default {
       }, 1000)
     },
     search() {
+      let logName = sessionStorage.getItem('username')
+      axios
+        .post('/api/log/addLog', {
+          name: logName,
+          operation: '商品管理',
+          time: moment().format('YYYY-MM-DD HH:mm:ss'),
+          content: '搜索'
+        })
+        .then(res => {
+          console.log(res)
+        })
       this.loading = true
       this.$refs.table.bodyWrapper.scrollTop = 0
       this.limit = 10
@@ -501,7 +484,7 @@ export default {
             this.showMore = true
             this.nomore = false
             this.limit = this.tableData.length + 10
-            this.searchGoods();
+            this.searchGoods()
           }
         }
       })
@@ -526,6 +509,17 @@ export default {
             .then(res => {
               this.tableData = res.data
               this.reload()
+              let logName = sessionStorage.getItem('username')
+              axios
+                .post('/api/log/addLog', {
+                  name: logName,
+                  operation: '商品管理',
+                  time: moment().format('YYYY-MM-DD HH:mm:ss'),
+                  content: '单条删除商品'
+                })
+                .then(res => {
+                  console.log(res)
+                })
               this.$message({
                 type: 'success',
                 message: '删除成功!'
@@ -589,10 +583,7 @@ export default {
           if (this.$refs.upload.uploadFiles.length == 0) {
             this.success()
           } else {
-            if (
-              this.file.raw.type == 'image/jpeg' ||
-              this.file.raw.type == 'image/png'
-            ) {
+            if (this.file.raw.type == 'image/jpeg' || this.file.raw.type == 'image/png') {
               let size = this.$refs.upload.uploadFiles[0].size / 1024
               if (size > 500) {
                 this.$message.error('请选择500kb以内的图片')
@@ -631,6 +622,17 @@ export default {
           checked2
         })
         .then(() => {
+          let logName = sessionStorage.getItem('username')
+          axios
+            .post('/api/log/addLog', {
+              name: logName,
+              operation: '商品管理',
+              time: moment().format('YYYY-MM-DD HH:mm:ss'),
+              content: '商品信息修改'
+            })
+            .then(res => {
+              console.log(res)
+            })
           this.$message.success('修改成功')
           this.reload()
         })
@@ -682,6 +684,17 @@ export default {
                   .then(() => {
                     this.addFormVisible = false
                     this.$message.success('添加成功')
+                    let logName = sessionStorage.getItem('username')
+                    axios
+                      .post('/api/log/addLog', {
+                        name: logName,
+                        operation: '商品管理',
+                        time: moment().format('YYYY-MM-DD HH:mm:ss'),
+                        content: '添加商品'
+                      })
+                      .then(res => {
+                        console.log(res)
+                      })
                   })
               }
             } else {
@@ -716,6 +729,17 @@ export default {
               })
               .then(() => {
                 this.reload()
+                let logName = sessionStorage.getItem('username')
+                axios
+                  .post('/api/log/addLog', {
+                    name: logName,
+                    operation: '商品管理',
+                    time: moment().format('YYYY-MM-DD HH:mm:ss'),
+                    content: '批量删除'
+                  })
+                  .then(res => {
+                    console.log(res)
+                  })
                 this.$message({
                   type: 'success',
                   message: '删除成功!'
