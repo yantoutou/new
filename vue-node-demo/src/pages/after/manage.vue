@@ -17,8 +17,10 @@
                     退出登录
                   </a>
                 </el-dropdown-item>
-                <el-dropdown-item
-                  ><i class="el-icon-setting"></i>个人设置</el-dropdown-item
+                <el-dropdown-item>
+                  <a @click="set"
+                    ><i class="el-icon-setting"></i>个人设置</a
+                  ></el-dropdown-item
                 >
               </el-dropdown-menu>
             </el-dropdown>
@@ -98,6 +100,12 @@ export default {
       window.addEventListener('popstate', function() {
         history.pushState(null, null, document.URL)
       })
+    },
+    set() {
+      let newpage = this.$router.resolve({
+        name: 'set',
+      })
+      window.open(newpage.href, '_blank')
     }
   },
   mounted() {

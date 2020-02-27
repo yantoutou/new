@@ -11,7 +11,7 @@ var sqlMap = {
         // 查询管理员
         select_admin: 'select * from admin where name = ? and password = ?',
         //添加管理员
-        add: 'insert into admin(name, password) values (?, ?)',
+        add: 'insert into admin(name, password, img) values (?, ?, "file-1581411637655.png")',
         select: 'select * from admin where name = ?'
     },
     order: {
@@ -75,6 +75,9 @@ var sqlMap = {
         getList: 'select * from log limit ?,10',
         getAll: 'select * from log',
         add: 'insert into log(name, operation, time, content) values (?, ?, ?, ?)'
+    },
+    set: {
+        selectUser: 'select * from admin where name = ?'
     }
 }
 

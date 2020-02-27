@@ -7,13 +7,15 @@ import Err from './pages/err'
 import Log from './pages/after/log'
 import Goods from './pages/after/goods'
 import Work from './pages/after/work'
+import Set from './pages/after/set'
 
 Vue.use(Router)
 
 export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
-  routes: [{
+  routes: [
+    {
       path: '/',
       redirect: '/login'
     },
@@ -64,6 +66,14 @@ export default new Router({
           }
         }
       ]
+    },
+    {
+      path: '/set',
+      name: 'set',
+      component: Set,
+      meta: {
+        requireAuth: true
+      }
     },
     {
       path: '*',
