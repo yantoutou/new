@@ -77,7 +77,8 @@ var sqlMap = {
         add: 'insert into log(name, operation, time, content) values (?, ?, ?, ?)'
     },
     set: {
-        selectUser: 'select * from admin where name = ?'
+        selectUser: 'select * from admin where name = ?',
+        upload: 'update admin set img = ? where name = ?'
     }
 }
 

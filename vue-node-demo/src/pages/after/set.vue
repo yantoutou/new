@@ -92,7 +92,15 @@ export default {
           if (size > 500) {
             this.$message.error('请选择500kb以内的图片')
           } else {
-              // 在这里进行上传操作
+            const formData = new FormData()
+            const file = this.$refs.upload.uploadFiles[0]
+            const headerConfig = {
+              headers: { 'Content-Type': 'multipart/form-data' }
+            }
+            formData.append('file', file.raw)
+            axios.post('/api/set/upload', formData, headerConfig).then(() => {
+              this.$message.success('修改成功')
+            })
           }
         } else {
           this.$message.warning('只能上传jpg/png格式的图片')
