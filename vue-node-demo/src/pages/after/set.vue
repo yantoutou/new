@@ -49,17 +49,20 @@
         </el-col>
       </el-row>
       <el-divider></el-divider>
-      <el-form label-width="100px">
-        <el-form-item label="旧密码">
-          <el-input></el-input>
+      <el-form label-width="100px" :model="form" :rules="rules" ref="form">
+        <el-form-item label="旧密码" prop="prePassword">
+          <el-input v-model="form.prePassword" show-password></el-input>
         </el-form-item>
-        <el-form-item label="新密码">
-          <el-input></el-input>
+        <el-form-item label="新密码" prop='newPassword'>
+          <el-input v-model="form.newPassword" show-password></el-input>
         </el-form-item>
-        <el-form-item label="确认新密码">
-          <el-input></el-input>
+        <el-form-item label="确认新密码" prop='confirmNew'>
+          <el-input v-model="form.confirmNew" show-password></el-input>
         </el-form-item>
       </el-form>
+      <div style="float: right">
+        <el-button type="success" size="mini" @click="savePassword">保存</el-button>
+      </div>
     </div>
   </div>
 </template>
@@ -67,10 +70,21 @@
 <script>
 import axios from 'axios'
 export default {
+  inject: ['reload'],
   data() {
     return {
       img: '',
-      userName: ''
+      userName: '',
+      form: {
+        prePassword: '',
+        newPassword: '',
+        confirmNew: ''
+      },
+      rules: {
+        prePassword: [{ required: true, message: '请输入旧密码', trigger: 'change' }],
+        newPassword: [{ required: true, message: '请输入新密码', trigger: 'change' }],
+        confirmNew: [{ required: true, message: '请确认新密码', trigger: 'change' }]
+      }
     }
   },
   methods: {
@@ -106,6 +120,28 @@ export default {
           this.$message.warning('只能上传jpg/png格式的图片')
         }
       }
+    },
+    savePassword() {
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          let userName = sessionStorage.getItem('username')
+          axios.post('/api/set/editPassword', {
+            pre: this.form.prePassword,
+            new: this.form.newPassword,
+            confirm: this.form.confirmNew,
+            userName
+          }).then(res => {
+            if (res.data.code != 0) {
+              this.$message.error(res.data.msg)
+            } else {
+              this.$message.success(res.data.msg)
+              this.reload()
+            }
+          })
+        } else {
+          return false
+        }
+      })
     }
   },
   mounted() {

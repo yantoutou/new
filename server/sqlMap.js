@@ -78,7 +78,9 @@ var sqlMap = {
     },
     set: {
         selectUser: 'select * from admin where name = ?',
-        upload: 'update admin set img = ? where name = ?'
+        upload: 'update admin set img = ? where name = ?',
+        edit: 'select * from admin where name = ? and password = ?',
+        setPassword: 'update admin set password = ? where name = ?'
     }
 }
 

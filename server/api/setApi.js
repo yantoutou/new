@@ -47,4 +47,30 @@ router.post('/upload', upload.single('file'), (req, res) => {
   })
 })
 
+// 修改密码
+router.post('/editPassword', (req, res) => {
+  let conn = new DBHelper().getConn()
+  let sqlStr = sql.set.edit
+  let params = req.body
+  if (params.new == params.confirm) {
+    conn.query(sqlStr, [params.userName, params.pre], (err, result) => {
+      if (err) {
+        res.json(err)
+      } else {
+        if (result.length == 0) {
+          res.json({code: 2, msg: '密码输入不正确'})
+        } else if (result.length != 0 && params.pre == params.new) {
+          res.json({code: 3, msg: '新密码不能与原密码相同'})
+        } else {
+          conn.query(sql.set.setPassword, [params.new, params.userName], (err, result) => {
+            res.json({code: 0, msg: '密码修改成功！'})
+          })
+        }
+      }
+    })
+  } else {
+    res.json({code: 1, msg: '两次输入的新密码不一致'})
+  }
+})
+
 module.exports = router
