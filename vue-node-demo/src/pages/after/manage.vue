@@ -5,6 +5,7 @@
         <el-header>
           <div class="top">
             <h1>烟草专卖后台管理系统</h1>
+             <img :src="showImg(head)" class="head" />
             <el-dropdown class="dropdown" placement="top-start">
               <span>
                 {{ userName }}
@@ -81,7 +82,8 @@ export default {
   data() {
     return {
       userName: '',
-      active: ''
+      active: '',
+      head: ''
     }
   },
   watch: {
@@ -93,6 +95,9 @@ export default {
     selectMenu(key) {
       this.$router.push(key)
       this.active = key
+    },
+    showImg(icon) {
+      return require('../../../../server/uploads/' + icon)
     },
     loginOut() {
       this.$router.replace('/')
@@ -117,6 +122,7 @@ export default {
       })
       .then(res => {
         this.userName = res.data[0].name
+        this.head = res.data[0].img
       })
       .catch(err => {
         console.log(err)
@@ -143,6 +149,13 @@ export default {
     height: 68px;
     display: flex;
     z-index: 100;
+    .head {
+      position: relative;
+      top: 10px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50px;
+    }
     h1 {
       width: 88%;
       line-height: 68px;
