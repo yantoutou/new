@@ -8,6 +8,7 @@ import Log from './pages/after/log'
 import Goods from './pages/after/goods'
 import Work from './pages/after/work'
 import Set from './pages/after/set'
+import Return from './pages/after/return'
 
 Vue.use(Router)
 
@@ -45,6 +46,14 @@ export default new Router({
           path: 'order',
           name: 'order',
           component: Order,
+          meta: {
+            requireAuth: true
+          }
+        },
+        {
+          path: 'return',
+          name: 'return',
+          component: Return,
           meta: {
             requireAuth: true
           }

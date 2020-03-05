@@ -5,7 +5,7 @@
         <el-header>
           <div class="top">
             <h1>烟草专卖后台管理系统</h1>
-             <img :src="showImg(head)" class="head" />
+            <img :src="showImg(head)" class="head" />
             <el-dropdown class="dropdown" placement="top-start">
               <span>
                 {{ userName }}
@@ -44,6 +44,10 @@
                   <i class="iconfont icon-icon-test"></i>
                   <span slot="title">订单管理</span>
                 </el-menu-item>
+                <el-menu-item index="/manage/return">
+                  <i class="el-icon-truck"></i>
+                  <span slot="title">退货管理</span>
+                </el-menu-item>
                 <el-menu-item index="/manage/goods">
                   <i class="iconfont icon-shangpinguanli"></i>
                   <span slot="title">商品管理</span>
@@ -55,10 +59,6 @@
                 <el-menu-item index="5">
                   <i class="iconfont icon-gonggao"></i>
                   <span slot="title">公告管理</span>
-                </el-menu-item>
-                <el-menu-item index="5">
-                  <i class="iconfont icon-zhanghao"></i>
-                  <span slot="title">账号管理</span>
                 </el-menu-item>
                 <el-menu-item index="/manage/log">
                   <i class="el-icon-s-management"></i>
@@ -108,7 +108,7 @@ export default {
     },
     set() {
       let newpage = this.$router.resolve({
-        name: 'set',
+        name: 'set'
       })
       window.open(newpage.href, '_blank')
     }

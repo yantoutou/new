@@ -1,10 +1,9 @@
 <template>
   <div>
-    <el-tabs v-model="card">
-      <el-tab-pane label="订单查询" name="first">
+    <div>订单查询</div>
+    <el-divider></el-divider>
         <el-card>
           <div slot="header">
-            <span>订单查询</span>
             <span>
               <el-button type="primary" class="export" @click="exportTable"
                 >导出</el-button
@@ -96,9 +95,6 @@
             </el-pagination>
           </div>
         </el-card>
-      </el-tab-pane>
-      <el-tab-pane label="退货管理" name="second"><Return></Return></el-tab-pane>
-    </el-tabs>
     <el-dialog
       title="订单修改"
       :visible.sync="dialogFormVisible"
@@ -194,7 +190,6 @@
 
 <script>
 import axios from 'axios'
-import Return from './return'
 import moment from 'moment'
 export default {
   inject: ['reload'],
@@ -216,7 +211,6 @@ export default {
       bookType: 'xlsx',
       filename: '',
       tableData: [],
-      card: 'first',
       number: '',
       statusList: [],
       status: '',
@@ -245,7 +239,6 @@ export default {
       }
     }
   },
-  components: { Return },
   methods: {
     cellStyle(row) {
       if (row.column.label == '订单状态') {

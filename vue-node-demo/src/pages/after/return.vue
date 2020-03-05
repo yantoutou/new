@@ -1,11 +1,10 @@
 <template>
   <div>
+    <div>退货管理</div>
+    <el-divider></el-divider>
     <el-card>
       <div slot="header">
         <el-row>
-          <el-col :span="17">
-            <span>退货管理</span>
-          </el-col>
           <el-col :span="5">
             <el-input v-model="input" placeholder="请输入退货单号" clearable></el-input>
           </el-col>
