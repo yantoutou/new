@@ -24,8 +24,8 @@
           <el-table-column prop="deal" label="商家处理" width="180"> </el-table-column>
           <el-table-column label="管理操作">
             <template slot-scope="scope">
-              <el-button type="success" :disabled='scope.row.deal == "同意"' @click="deal(scope.row)">处理</el-button>
-              <el-button type="warning" :disabled='scope.row.deal == "未处理"' @click="returnDeal(scope.row)">退回</el-button>
+              <el-button type="success" @click="deal(scope.row)" v-if='scope.row.deal == "未处理"'>处理</el-button>
+              <el-button type="warning" @click="returnDeal(scope.row)" v-else>退回</el-button>
             </template>
           </el-table-column>
         </el-table>

@@ -52,7 +52,7 @@
                   <i class="iconfont icon-shangpinguanli"></i>
                   <span slot="title">商品管理</span>
                 </el-menu-item>
-                <el-menu-item index="4">
+                <el-menu-item index="/manage/message">
                   <i class="iconfont icon-liuyan"></i>
                   <span slot="title">留言管理</span>
                 </el-menu-item>

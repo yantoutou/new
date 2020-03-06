@@ -10,6 +10,7 @@ const goods = require('./api/goodsApi')
 const work = require('./api/work')
 const log = require('./api/logApi')
 const set = require('./api/setApi')
+const message = require('./api/messageApi')
 
 let app = express();
 let server = http.createServer(app);
@@ -27,6 +28,7 @@ app.use('/api/goods', goods);
 app.use('/api/work', work)
 app.use('/api/log', log)
 app.use('/api/set', set)
+app.use('/api/message', message)
 
 // 启动监听
 server.listen(8888, () => {

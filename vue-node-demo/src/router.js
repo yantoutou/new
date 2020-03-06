@@ -9,6 +9,7 @@ import Goods from './pages/after/goods'
 import Work from './pages/after/work'
 import Set from './pages/after/set'
 import Return from './pages/after/return'
+import Message from './pages/after/message'
 
 Vue.use(Router)
 
@@ -54,6 +55,14 @@ export default new Router({
           path: 'return',
           name: 'return',
           component: Return,
+          meta: {
+            requireAuth: true
+          }
+        },
+        {
+          path: 'message',
+          name: 'message',
+          component: Message,
           meta: {
             requireAuth: true
           }
