@@ -35,4 +35,19 @@ router.post('/ignore', (req, res) => {
   }
 })
 
+router.post('/apply', (req, res) => {
+  let conn = new DBHelper().getConn()
+  let sqlStrA = sql.message.apply
+  let sqlStrE = sql.message.edit
+  let params = req.body
+  conn.query(sqlStrA, [params.userId, params.apply, params.content, params.time])
+  conn.query(sqlStrE, [params.id], (err, result) => {
+    if (err) {
+      res.json(err)
+    } else {
+      res.json(result)
+    }
+  })
+})
+
 module.exports = router

@@ -18,22 +18,46 @@
       <el-table-column prop="value" label="状态" width="180"> </el-table-column>
       <el-table-column prop="manage" label="管理">
         <template slot-scope="scope">
-          <el-link type="warning" :disabled='scope.row.status == "2" || scope.row.status == "3"'>回复</el-link>
+          <el-link
+            type="warning"
+            :disabled="scope.row.status == '2' || scope.row.status == '3'"
+            @click="apply(scope.row)"
+            >回复</el-link
+          >
           <el-divider direction="vertical"></el-divider>
-           <el-link type="info" :disabled='scope.row.status == "2" || scope.row.status == "3"' @click='ignore(scope.row)'>忽略</el-link>
+          <el-link
+            type="info"
+            :disabled="scope.row.status == '2' || scope.row.status == '3'"
+            @click="ignore(scope.row)"
+            >忽略</el-link
+          >
         </template>
       </el-table-column>
     </el-table>
+    <el-dialog :visible.sync="dialogTableVisible" :modal-append-to-body="false">
+      <el-input type="textarea" :rows="10" placeholder="请输入内容" v-model="textarea">
+      </el-input>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancel">取 消</el-button>
+        <el-button type="success" @click="send">发送</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+import moment from 'moment'
 export default {
   inject: ['reload'],
   data() {
     return {
-      tableData: []
+      tableData: [],
+      dialogTableVisible: false,
+      textarea: '',
+      content: '',
+      userId: '',
+      id: ''
     }
   },
   methods: {
@@ -49,13 +73,41 @@ export default {
       }
     },
     ignore(row) {
-      axios.post('/api/message/ignore', {
-        operation: 'ignore',
-        id: row.id
-      }).then(() => {
-        this.$message.success('已忽略')
-        this.reload();
-      })
+      axios
+        .post('/api/message/ignore', {
+          operation: 'ignore',
+          id: row.id
+        })
+        .then(() => {
+          this.$message.success('已忽略')
+          this.reload()
+        })
+    },
+    cancel() {
+      this.dialogTableVisible = false
+      this.$message('操作已取消')
+    },
+    apply(row) {
+      this.dialogTableVisible = true
+      this.content = row.content
+      this.userId = row.userId
+      this.id = row.id
+    },
+    send() {
+      if (this.textarea == '') {
+        this.$message.error('请输入内容')
+      } else {
+        axios.post('/api/message/apply', {
+          userId: this.userId,
+          content: this.content,
+          apply: this.textarea,
+          time: moment().format('YYYY-MM-DD HH:mm:ss'),
+          id: this.id
+        }).then(() => {
+          this.$message.success('回复成功')
+          this.reload()
+        })
+      }
     }
   },
   mounted() {
