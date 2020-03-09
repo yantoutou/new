@@ -7,15 +7,26 @@ const moment = require('moment')
 
 router.post('/showList', (req, res) => {
   let conn = new DBHelper().getConn()
-  let sqlStr = sql.message.selectAll
-  conn.query(sqlStr, (err, result) => {
+  let sqlStrA = sql.message.selectAll
+  let sqlStrP = sql.message.selectPage
+  let page = req.body.currentPage
+  let index = (page - 1) * 10
+  let count
+  conn.query(sqlStrA, (err, result) => {
+    if (err) {
+      res.json(err)
+    } else {
+      count = result.length
+    }
+  })
+  conn.query(sqlStrP, [index], (err, result) => {
     if (err) {
       res.json(err)
     } else {
       result.forEach(item => {
         item.time = moment(item.time).format('YYYY-MM-DD HH:mm:ss')
       })
-      res.json(result)
+      res.json({data: result, count: count})
     }
   })
 })

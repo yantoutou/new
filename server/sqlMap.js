@@ -84,6 +84,7 @@ var sqlMap = {
     },
     message: {
         selectAll: 'select * from message',
+        selectPage: 'select * from message limit ?,10',
         ignore: 'update message set status = "3",value = "忽略" where id = ?',
         apply: 'insert into apply(id, apply, content, time) values (?, ?, ?, ?)',
         edit: 'update message set status = "2",value = "已回复" where id = ?'

@@ -2,6 +2,36 @@
   <div>
     <div>留言管理</div>
     <el-divider></el-divider>
+    <el-form>
+      <el-row gutter="20">
+        <el-col :span="4">
+          <el-form-item>
+            <el-input v-model="form.name" placeholder="请输入名称"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item>
+            <el-input v-model="form.phone" placeholder="请输入手机号"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item>
+            <el-select v-model="form.value" placeholder="请选择状态" clearable>
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-button type="primary" round>搜索</el-button>
+        </el-col>
+      </el-row>
+    </el-form>
     <el-table :data="tableData" border style="width: 100%" :cell-style="cellStyle">
       <el-table-column prop="id" label="ID" width="120"> </el-table-column>
       <el-table-column prop="name" label="姓名" width="150"> </el-table-column>
@@ -33,6 +63,17 @@
           >
         </template>
       </el-table-column>
+      <div slot="append">
+        <el-pagination
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          layout="total, prev, pager, next, jumper"
+          :total="total"
+          :page-size="10"
+          class="page"
+        >
+        </el-pagination>
+      </div>
     </el-table>
     <el-dialog :visible.sync="dialogTableVisible" :modal-append-to-body="false">
       <el-input type="textarea" :rows="10" placeholder="请输入内容" v-model="textarea">
@@ -57,7 +98,28 @@ export default {
       textarea: '',
       content: '',
       userId: '',
-      id: ''
+      id: '',
+      currentPage: 1,
+      total: 0,
+      form: {
+        name: '',
+        phone: '',
+        value: ''
+      },
+      options: [
+        {
+          value: '1',
+          label: '已回复'
+        },
+        {
+          value: '1',
+          label: '未回复'
+        },
+        {
+          value: '1',
+          label: '忽略'
+        }
+      ]
     }
   },
   methods: {
@@ -97,25 +159,43 @@ export default {
       if (this.textarea == '') {
         this.$message.error('请输入内容')
       } else {
-        axios.post('/api/message/apply', {
-          userId: this.userId,
-          content: this.content,
-          apply: this.textarea,
-          time: moment().format('YYYY-MM-DD HH:mm:ss'),
-          id: this.id
-        }).then(() => {
-          this.$message.success('回复成功')
-          this.reload()
-        })
+        axios
+          .post('/api/message/apply', {
+            userId: this.userId,
+            content: this.content,
+            apply: this.textarea,
+            time: moment().format('YYYY-MM-DD HH:mm:ss'),
+            id: this.id
+          })
+          .then(() => {
+            this.$message.success('回复成功')
+            this.reload()
+          })
       }
+    },
+    handleCurrentChange(val) {
+      this.currentPage = val
+      this.getList()
+    },
+    getList() {
+      axios
+        .post('/api/message/showList', {
+          currentPage: this.currentPage
+        })
+        .then(res => {
+          this.tableData = res.data.data
+          this.total = res.data.count
+        })
     }
   },
   mounted() {
-    axios.post('/api/message/showList').then(res => {
-      this.tableData = res.data
-    })
+    this.getList()
   }
 }
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.page {
+  float: right;
+}
+</style>
