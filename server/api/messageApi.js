@@ -8,25 +8,11 @@ const moment = require('moment')
 router.post('/showList', (req, res) => {
   let conn = new DBHelper().getConn()
   let sqlStrA = sql.message.selectAll
-  let sqlStrP = sql.message.selectPage
-  let page = req.body.currentPage
-  let index = (page - 1) * 10
-  let count
   conn.query(sqlStrA, (err, result) => {
     if (err) {
       res.json(err)
     } else {
-      count = result.length
-    }
-  })
-  conn.query(sqlStrP, [index], (err, result) => {
-    if (err) {
-      res.json(err)
-    } else {
-      result.forEach(item => {
-        item.time = moment(item.time).format('YYYY-MM-DD HH:mm:ss')
-      })
-      res.json({data: result, count: count})
+      res.json(result.length)
     }
   })
 })
@@ -56,6 +42,64 @@ router.post('/apply', (req, res) => {
     if (err) {
       res.json(err)
     } else {
+      res.json(result)
+    }
+  })
+})
+
+router.post('/search', (req, res) => {
+  let conn = new DBHelper().getConn()
+  let params = req.body
+  let sqlStr
+  let arr = []
+  if (params.name == '' && params.value == '') {
+    sqlStr = sql.message.selectAll
+  } else if (params.name != '' && params.value == '') {
+    sqlStr = sql.message.selectName
+    arr = [params.name]
+  } else if (params.name == '' && params.value != '') {
+    sqlStr = sql.message.selectValue
+    arr = [params.value]
+  } else {
+    sqlStr = sql.message.selectBoth
+    arr = [params.name, params.value]
+  }
+  conn.query(sqlStr, arr, (err, result) => {
+    if (err) {
+      res.json(err)
+    } else {
+      res.json(result.length)
+    }
+  })
+})
+
+router.post('/page', (req, res) => {
+  let conn = new DBHelper().getConn()
+  let params = req.body
+  let sqlStr = sql.message.selectPage
+  let page = params.currentPage
+  let index = (page - 1) * 10
+  let arr = []
+  if (params.name == '' && params.value == '') {
+    sqlStr = sql.message.selectPage
+    arr = [index]
+  } else if (params.name != '' && params.value == '') {
+    sqlStr = sql.message.selectNamePage
+    arr = [params.name, index]
+  } else if (params.name == '' && params.value != '') {
+    sqlStr = sql.message.selectValuePage
+    arr = [params.value, index]
+  } else {
+    sqlStr = sql.message.selectBothPage
+    arr = [params.name, params.value, index]
+  }
+  conn.query(sqlStr, arr, (err, result) => {
+    if (err) {
+      res.json(err)
+    } else {
+      result.forEach(item => {
+        item.time = moment(item.time).format('YYYY-MM-DD HH:mm:ss')
+      })
       res.json(result)
     }
   })

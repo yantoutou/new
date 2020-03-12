@@ -3,15 +3,10 @@
     <div>留言管理</div>
     <el-divider></el-divider>
     <el-form>
-      <el-row gutter="20">
+      <el-row :gutter="20">
         <el-col :span="4">
           <el-form-item>
             <el-input v-model="form.name" placeholder="请输入名称"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="4">
-          <el-form-item>
-            <el-input v-model="form.phone" placeholder="请输入手机号"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="4">
@@ -28,7 +23,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="4">
-          <el-button type="primary" round>搜索</el-button>
+          <el-button type="primary" round @click="search">搜索</el-button>
         </el-col>
       </el-row>
     </el-form>
@@ -103,12 +98,11 @@ export default {
       total: 0,
       form: {
         name: '',
-        phone: '',
         value: ''
       },
       options: [
         {
-          value: '1',
+          value: '2',
           label: '已回复'
         },
         {
@@ -116,7 +110,7 @@ export default {
           label: '未回复'
         },
         {
-          value: '1',
+          value: '3',
           label: '忽略'
         }
       ]
@@ -175,7 +169,20 @@ export default {
     },
     handleCurrentChange(val) {
       this.currentPage = val
-      this.getList()
+      this.page(val)
+    },
+    page(page, name, value) {
+      if (!name) name = ''
+      if (!value) value = ''
+       axios
+        .post('/api/message/page', {
+          currentPage: page,
+          name: name,
+          value: value
+        })
+        .then(res => {
+          this.tableData = res.data
+        })
     },
     getList() {
       axios
@@ -183,13 +190,25 @@ export default {
           currentPage: this.currentPage
         })
         .then(res => {
-          this.tableData = res.data.data
-          this.total = res.data.count
+          this.total = res.data
         })
+    },
+    search() {
+      this.currentPage = 1
+      axios
+        .post('/api/message/search', {
+          name: this.form.name,
+          value: this.form.value
+        })
+        .then(res => {
+          this.total = res.data
+        })
+      this.page(1, this.form.name, this.form.value)
     }
   },
   mounted() {
     this.getList()
+    this.page(1)
   }
 }
 </script>
