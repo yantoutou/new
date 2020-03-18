@@ -41,6 +41,7 @@ var sqlMap = {
     },
     returnGoods: {
         select: 'select * from returnList',
+        select_limit: 'select * from returnList limit 0, ?',
         // 处理
         update: 'update returnList set deal = "同意" where number = ?',
         // 退回
@@ -48,7 +49,8 @@ var sqlMap = {
         updateCount: 'update goods set count = count - 1, inventory = inventory + 1 where id = ?',
         updateReturnCount: 'update goods set count = count + 1, inventory = inventory - 1 where id = ?',
         // 订单编号查询
-        select_number: 'select * from returnList where number = ?'
+        select_number: 'select * from returnList where number = ?',
+        select_number_limit: 'select * from returnList where number = ? limit 0,?'
     },
     goods: {
         select: 'select * from goods',
