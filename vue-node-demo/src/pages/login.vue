@@ -210,7 +210,8 @@ export default {
               if (res.data.code == 1) {
                 if (res.data.identity == 'user') {
                   sessionStorage.setItem('token', 'true')
-                  this.$router.replace({ path: '/about' })
+                  sessionStorage.setItem('username', name)
+                  this.$router.replace({ path: '/sale' })
                 } else {
                   sessionStorage.setItem('token', 'true')
                   sessionStorage.setItem('username', name)
@@ -260,7 +261,8 @@ export default {
               } else {
                 if (res.data.identity == 'user') {
                   sessionStorage.setItem('token', 'true')
-                  this.$router.replace({ path: '/about' })
+                  sessionStorage.setItem('username', name)
+                  this.$router.replace({ path: '/sale' })
                 } else {
                   sessionStorage.setItem('token', 'true')
                   this.$router.replace({ path: '/manage/order' })

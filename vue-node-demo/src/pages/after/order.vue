@@ -2,99 +2,73 @@
   <div>
     <div>订单查询</div>
     <el-divider></el-divider>
-        <el-card>
-          <div slot="header">
-            <span>
-              <el-button type="primary" class="export" @click="exportTable"
-                >导出</el-button
-              >
-            </span>
-          </div>
-          <div>
-            <el-row :gutter="20">
-              <el-col :span="5">
-                <el-input
-                  placeholder="请输入订单编号"
-                  v-model="number"
-                  clearable
-                ></el-input>
-              </el-col>
-              <el-col :span="5">
-                <el-select v-model="status" placeholder="请选择订单状态" clearable>
-                  <el-option
-                    v-for="item in statusList"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  ></el-option>
-                </el-select>
-              </el-col>
-              <el-col :span="10">
-                <el-date-picker
-                  v-model="time"
-                  type="datetimerange"
-                  align="right"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                  :default-time="['00:00:00', '23:59:59']"
-                >
-                </el-date-picker>
-              </el-col>
-              <el-col :span="3">
-                <el-button type="primary" icon="el-icon-search" @click="search"
-                  >搜索</el-button
-                >
-              </el-col>
-            </el-row>
-            <el-table
-              style="width: 100%"
-              :data="tableData"
-              :cell-style="cellStyle"
-              v-loading="loading"
+    <el-card>
+      <div slot="header">
+        <span>
+          <el-button type="primary" class="export" @click="exportTable">导出</el-button>
+        </span>
+      </div>
+      <div>
+        <el-row :gutter="20">
+          <el-col :span="5">
+            <el-input placeholder="请输入订单编号" v-model="number" clearable></el-input>
+          </el-col>
+          <el-col :span="5">
+            <el-select v-model="status" placeholder="请选择订单状态" clearable>
+              <el-option
+                v-for="item in statusList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-col>
+          <el-col :span="10">
+            <el-date-picker
+              v-model="time"
+              type="datetimerange"
+              align="right"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              :default-time="['00:00:00', '23:59:59']"
             >
-              <el-table-column prop="time" label="下单时间" width="180"></el-table-column>
-              <el-table-column
-                prop="address"
-                label="收货地址"
-                width="180"
-              ></el-table-column>
-              <el-table-column
-                prop="phone"
-                label="联系电话"
-                width="180"
-              ></el-table-column>
-              <el-table-column
-                prop="money"
-                label="订单金额"
-                width="180"
-              ></el-table-column>
-              <el-table-column
-                prop="label"
-                label="订单状态"
-                width="180"
-              ></el-table-column>
-              <el-table-column
-                prop="number"
-                label="订单编号"
-                width="180"
-              ></el-table-column>
-              <el-table-column label="操作" width="180">
-                <template slot-scope="scope">
-                  <el-button type="text" @click="edit(scope.row)">编辑</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-            <el-pagination
-              @current-change="handleCurrentChange"
-              :current-page="currentPage"
-              layout="total, prev, pager, next, jumper"
-              :total="total"
-              :page-size="7"
-              class="page"
+            </el-date-picker>
+          </el-col>
+          <el-col :span="3">
+            <el-button type="primary" icon="el-icon-search" @click="search"
+              >搜索</el-button
             >
-            </el-pagination>
-          </div>
-        </el-card>
+          </el-col>
+        </el-row>
+        <el-table
+          style="width: 100%"
+          :data="tableData"
+          :cell-style="cellStyle"
+          v-loading="loading"
+        >
+          <el-table-column prop="time" label="下单时间" width="180"></el-table-column>
+          <el-table-column prop="address" label="收货地址" width="180"></el-table-column>
+          <el-table-column prop="phone" label="联系电话" width="180"></el-table-column>
+          <el-table-column prop="money" label="订单金额" width="180"></el-table-column>
+          <el-table-column prop="label" label="订单状态" width="180"></el-table-column>
+          <el-table-column prop="number" label="订单编号" width="180"></el-table-column>
+          <el-table-column label="操作" width="180">
+            <template slot-scope="scope">
+              <el-button type="text" @click="edit(scope.row)">编辑</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-pagination
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          layout="total, prev, pager, next, jumper"
+          :total="total"
+          :page-size="7"
+          class="page"
+        >
+        </el-pagination>
+      </div>
+    </el-card>
     <el-dialog
       title="订单修改"
       :visible.sync="dialogFormVisible"

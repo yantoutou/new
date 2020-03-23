@@ -11,6 +11,7 @@ const work = require('./api/work')
 const log = require('./api/logApi')
 const set = require('./api/setApi')
 const message = require('./api/messageApi')
+const sale = require('./api/saleUser')
 
 let app = express();
 let server = http.createServer(app);
@@ -29,6 +30,7 @@ app.use('/api/work', work)
 app.use('/api/log', log)
 app.use('/api/set', set)
 app.use('/api/message', message)
+app.use('/api/sale', sale)
 
 // 启动监听
 server.listen(8888, () => {
