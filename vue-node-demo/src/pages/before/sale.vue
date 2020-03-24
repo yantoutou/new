@@ -12,6 +12,8 @@
             <span><i class="el-icon-s-order"></i>我的订单</span>
             <el-divider direction="vertical"></el-divider>
             <span @click="loginOut()">退出登录</span>
+            <el-divider direction="vertical"></el-divider>
+            <span @click="personSet">个人设置</span>
           </div>
         </div>
         <div class="wrap">
@@ -210,6 +212,9 @@ export default {
       axios.post('/api/sale/hotList').then(res => {
         this.tableData = res.data
       })
+    },
+    personSet() {
+      this.$router.push('/userSet')
     }
   },
   mounted() {

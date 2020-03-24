@@ -11,6 +11,7 @@ import Set from './pages/after/set'
 import Return from './pages/after/return'
 import Message from './pages/after/message'
 import Sale from './pages/before/sale'
+import userSet from './pages/before/set'
 
 Vue.use(Router)
 
@@ -98,6 +99,14 @@ export default new Router({
       path: '/set',
       name: 'set',
       component: Set,
+      meta: {
+        requireAuth: true
+      }
+    },
+    {
+      path: '/userSet',
+      name: 'userSet',
+      component: userSet,
       meta: {
         requireAuth: true
       }

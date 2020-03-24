@@ -73,4 +73,11 @@ router.post('/editPassword', (req, res) => {
   }
 })
 
+router.post('/getMessage', (req, res) => {
+  let conn = new DBHelper().getConn()
+  conn.query(sql.set.getUser, [req.body.name], (err, result) => {
+    res.json(result)
+  })
+})
+
 module.exports = router
