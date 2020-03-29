@@ -12,6 +12,7 @@ import Return from './pages/after/return'
 import Message from './pages/after/message'
 import Sale from './pages/before/sale'
 import userSet from './pages/before/set'
+import myOrder from './pages/before/myOrder'
 
 Vue.use(Router)
 
@@ -91,6 +92,14 @@ export default new Router({
       path: '/sale',
       name: 'sale',
       component: Sale,
+      meta: {
+        requireAuth: true
+      }
+    },
+    {
+      path: '/myOrder',
+      name: 'myOrder',
+      component: myOrder,
       meta: {
         requireAuth: true
       }
