@@ -160,4 +160,15 @@ router.post('/page', (req, res) => {
     conn.end();
 })
 
+// 我的订单
+router.post('/selectOrder', (req, res) => {
+    let conn = new DBHelper().getConn()
+    conn.query(sql.order.selectById, req.body.id, (err, result) => {
+        result.forEach(item => {
+            item.time = moment(item.time).format('YYYY-MM-DD')
+        })
+        res.json(result)
+    })
+})
+
 module.exports = router;

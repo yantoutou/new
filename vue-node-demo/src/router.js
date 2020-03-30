@@ -13,6 +13,7 @@ import Message from './pages/after/message'
 import Sale from './pages/before/sale'
 import userSet from './pages/before/set'
 import myOrder from './pages/before/myOrder'
+import HomePage from './pages/before/homePage'
 
 Vue.use(Router)
 
@@ -102,7 +103,17 @@ export default new Router({
       component: myOrder,
       meta: {
         requireAuth: true
-      }
+      },
+      children: [
+        {
+          path: 'homePage',
+          name: 'homePage',
+          component: HomePage,
+          meta: {
+            requireAuth: true
+          }
+        }
+      ]
     },
     {
       path: '/set',

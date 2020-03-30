@@ -9,7 +9,7 @@
             <el-divider direction="vertical"></el-divider>
             <span><i class="el-icon-shopping-cart-2"></i>购物车</span>
             <el-divider direction="vertical"></el-divider>
-            <span><i class="el-icon-s-order"></i>我的订单</span>
+            <span @click="order"><i class="el-icon-s-order"></i>我的订单</span>
             <el-divider direction="vertical"></el-divider>
             <span @click="loginOut()">退出登录</span>
             <el-divider direction="vertical"></el-divider>
@@ -198,6 +198,12 @@ export default {
     goHome() {
       let newpage = this.$router.resolve({
         name: 'sale'
+      })
+      window.open(newpage.href, '_blank')
+    },
+    order() {
+      let newpage = this.$router.resolve({
+        name: 'myOrder'
       })
       window.open(newpage.href, '_blank')
     },

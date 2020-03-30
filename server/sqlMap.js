@@ -37,7 +37,9 @@ var sqlMap = {
         page_NS: 'select * from orderList where number = ? and status = ? limit ?,7',
         page_NT: 'select * from orderList where number = ? and time between ? and ? limit ?,7',
         page_ST: 'select * from orderList where status = ? and time between ? and ? limit ?,7',
-        page_NST: 'select * from orderList where number = ? and status = ? and time between ? and ? limit ?,7'
+        page_NST: 'select * from orderList where number = ? and status = ? and time between ? and ? limit ?,7',
+        // 根据用户id查询
+        selectById: 'select * from orderList where userId = ?'
     },
     returnGoods: {
         select: 'select * from returnList',
