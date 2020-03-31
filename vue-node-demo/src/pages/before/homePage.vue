@@ -6,36 +6,27 @@
           <el-tab-pane label="所有订单" name="order">
             <el-row>
               <el-col :span="14">
-                <el-input class="input" placeholder="请输入订单号进行搜索">
-                  <template slot="append">搜索订单</template>
+                <el-input
+                  class="input"
+                  placeholder="请输入订单号进行搜索"
+                  v-model="form.number"
+                >
+                  <template slot="append">
+                    <div @click="search">搜索订单</div>
+                  </template>
                 </el-input>
               </el-col>
               <el-col :span="3" class="searchMore">
-                <span @click="more">{{text}}</span>
+                <span @click="more">{{ text }}</span>
               </el-col>
             </el-row>
             <el-form label-width="80px" v-if="showMore">
               <el-row :gutter="20">
                 <el-col :span="7">
                   <el-form-item label="商品名称">
-                    <el-input placeholder="请输入商品名称"></el-input>
+                    <el-input placeholder="请输入商品名称" v-model="form.name"></el-input>
                   </el-form-item>
                 </el-col>
-                <el-col :span="6">
-                  <el-form-item label="订单状态">
-                    <el-select placeholder="请选择">
-                      <el-option
-                        v-for="item in statusList"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      >
-                      </el-option>
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-              <el-row>
                 <el-col :span="12">
                   <el-form-item label="交易时间">
                     <el-date-picker
@@ -43,6 +34,7 @@
                       range-separator="至"
                       start-placeholder="开始日期"
                       end-placeholder="结束日期"
+                      v-model="form.time"
                     >
                     </el-date-picker>
                   </el-form-item>
@@ -68,6 +60,17 @@
                 </template>
               </el-table-column>
             </el-table>
+            <div class="page">
+              <el-pagination
+                @current-change="handleCurrentChange"
+                :current-page="currentPage"
+                layout="total, prev, pager, next, jumper"
+                :total="total"
+                :page-size="10"
+                background
+              >
+              </el-pagination>
+            </div>
           </el-tab-pane>
           <el-tab-pane label="已完成" name="complete">配置管理</el-tab-pane>
           <el-tab-pane label="进行中" name="ongoing">角色管理</el-tab-pane>
@@ -82,6 +85,7 @@
 
 <script>
 import axios from 'axios'
+import moment from 'moment'
 export default {
   data() {
     return {
@@ -93,7 +97,15 @@ export default {
         more: '高级搜索',
         nomore: '收起'
       },
-      text: ''
+      text: '',
+      total: 0,
+      currentPage: 1,
+      form: {
+        number: '',
+        name: '',
+        time: ''
+      },
+      id: ''
     }
   },
   methods: {
@@ -105,17 +117,42 @@ export default {
           identity: 'user'
         })
         .then(res => {
+          this.id = res.data[0].id
           axios
             .post('/api/order/selectOrder', {
-              id: res.data[0].id
+              id: res.data[0].id,
+              page: this.currentPage
             })
             .then(res => {
-              this.tableData = res.data
+              this.tableData = res.data.res
+              this.total = res.data.total
             })
         })
       axios.post('/api/order/statusList').then(res => {
         this.statusList = res.data
       })
+    },
+    handleCurrentChange(val) {
+      this.currentPage = val
+        let startTime
+        let endTime
+      if (this.form.time == '' || !this.form.time) {
+        startTime = '',
+        endTime = ''
+      } else {
+        startTime = moment(this.form.time[0]).format('YYYY-MM-DD 00:00:00')
+        endTime = moment(this.form.time[1]).format('YYYY-MM-DD 23:59:59')
+      }
+        axios.post('/api/order/userPage', {
+          number: this.form.number,
+          name: this.form.name,
+          startTime,
+          endTime,
+          id: this.id,
+          page: this.currentPage
+        }).then(res => {
+          this.tableData = res.data
+        })
     },
     showImg(icon) {
       return require('../../../../server/uploads/' + icon)
@@ -128,6 +165,28 @@ export default {
         this.showMore = true
         this.text = this.showText.nomore
       }
+    },
+    search() {
+      this.currentPage = 1
+      let startTime
+      let endTime
+      if (this.form.time == '' || !this.form.time) {
+        startTime = '',
+        endTime = ''
+      } else {
+        startTime = moment(this.form.time[0]).format('YYYY-MM-DD 00:00:00')
+        endTime = moment(this.form.time[1]).format('YYYY-MM-DD 23:59:59')
+      }
+      axios.post('/api/order/userOrder', {
+        number: this.form.number,
+        name: this.form.name,
+        startTime,
+        endTime,
+        id: this.id
+      }).then(res => {
+        this.total = res.data.total
+        this.tableData = res.data.res
+      })
     }
   },
   mounted() {
@@ -160,6 +219,9 @@ export default {
     .goodsImg {
       width: 100px;
       cursor: pointer;
+    }
+    .page {
+      float: right;
     }
   }
 }

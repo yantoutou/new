@@ -163,7 +163,114 @@ router.post('/page', (req, res) => {
 // 我的订单
 router.post('/selectOrder', (req, res) => {
     let conn = new DBHelper().getConn()
-    conn.query(sql.order.selectById, req.body.id, (err, result) => {
+    let total
+    let page = req.body.page
+    let index = (page - 1) * 10
+    conn.query(sql.order.selectById, [req.body.id], (err, result) => {
+        total = result.length
+    })
+    conn.query(sql.order.selectByIdPage, [req.body.id, index], (err, result) => {
+        result.forEach(item => {
+            item.time = moment(item.time).format('YYYY-MM-DD')
+        })
+        res.json({res: result, total: total})
+    })
+})
+
+// 用户订单查询
+router.post('/userOrder', (req, res) => {
+    let conn = new DBHelper().getConn()
+    let params = req.body
+    let sqlStr
+    let sqlStr_page
+    let arrPage = []
+    let arr = []
+    let total
+    if (params.number == '' && params.name == '' && params.startTime == '' && params.endTime == '') {
+        sqlStr = sql.order.selectById
+        sqlStr_page = sql.order.selectByIdPage
+        arr = [params.id]
+        arrPage = [params.id, 0]
+    } else if (params.number != '' && params.name == '' && params.startTime == '' && params.endTime == '') {
+        sqlStr = sql.order.selectByNumber
+        sqlStr_page = sql.order.selectByNumberP
+        arr = [params.id, params.number]
+        arrPage = [params.id, params.number, 0]
+    } else if (params.number == '' && params.name != '' && params.startTime == '' && params.endTime == '') {
+        sqlStr = sql.order.selectByName
+        sqlStr_page = sql.order.selectByNameP
+        arr = [params.id, params.name]
+        arrPage = [params.id, params.name, 0]
+    } else if (params.number == '' && params.name == '' && params.startTime != '' && params.endTime != '') {
+        sqlStr = sql.order.selectByTime
+        sqlStr_page = sql.order.selectByTimeP
+        arr = [params.id, params.startTime, params.endTime]
+        arrPage = [params.id, params.startTime, params.endTime, 0]
+    } else if (params.number != '' && params.name != '' && params.startTime == '' && params.endTime == '') {
+        sqlStr = sql.order.selectByNN
+        sqlStr_page = sql.order.selectByNNP
+        arr = [params.id, params.number, params.name]
+        arrPage = [params.id, params.number, params.name, 0]
+    } else if (params.number != '' && params.name == '' && params.startTime != '' && params.endTime != '') {
+        sqlStr = sql.order.selectByNumT
+        sqlStr_page = sql.order.selectByNumTP
+        arr = [params.id, params.number, params.startTime, params.endTime]
+        arrPage = [params.id, params.number, params.startTime, params.endTime, 0]
+    } else if (params.number == '' && params.name != '' && params.startTime != '' && params.endTime != '') {
+        sqlStr = sql.order.selectByNameT
+        sqlStr_page = sql.order.selectByNameTP
+        arr = [params.id, params.name, params.startTime, params.endTime]
+        arrPage = [params.id, params.name, params.startTime, params.endTime, 0]
+    } else {
+        sqlStr = sql.order.selectByAll
+        sqlStr_page = sql.order.selectByAllP
+        arr = [params.id, params.number, params.name, params.startTime, params.endTime]
+        arrPage = [params.id, params.number, params.name, params.startTime, params.endTime, 0]
+    }
+    conn.query(sqlStr, arr, (err, result) => {
+        total = result.length
+    })
+    conn.query(sqlStr_page, arrPage, (err, result) => {
+        result.forEach(item => {
+            item.time = moment(item.time).format('YYYY-MM-DD')
+        })
+        res.json({res: result, total: total})
+    })
+})
+
+router.post('/userPage', (req, res) => {
+    let conn = new DBHelper().getConn()
+    let params = req.body
+    let sqlStr_page
+    let arrPage = []
+    let page = params.page
+    let index = (page - 1) * 10
+    if (params.number == '' && params.name == '' && params.startTime == '' && params.endTime == '') {
+        sqlStr_page = sql.order.selectByIdPage
+        arrPage = [params.id, index]
+    } else if (params.number != '' && params.name == '' && params.startTime == '' && params.endTime == '') {
+        sqlStr_page = sql.order.selectByNumberP
+        arrPage = [params.id, params.number, index]
+    } else if (params.number == '' && params.name != '' && params.startTime == '' && params.endTime == '') {
+        sqlStr_page = sql.order.selectByNameP
+        arrPage = [params.id, params.name, index]
+    } else if (params.number == '' && params.name == '' && params.startTime != '' && params.endTime != '') {
+        sqlStr_page = sql.order.selectByTimeP
+        arrPage = [params.id, params.startTime, params.endTime, index]
+    } else if (params.number != '' && params.name != '' && params.startTime == '' && params.endTime == '') {
+        sqlStr_page = sql.order.selectByNNP
+        arrPage = [params.id, params.number, params.name, index]
+    } else if (params.number != '' && params.name == '' && params.startTime != '' && params.endTime != '') {
+        sqlStr_page = sql.order.selectByNumTP
+        arrPage = [params.id, params.number, params.startTime, params.endTime, index]
+    } else if (params.number == '' && params.name != '' && params.startTime != '' && params.endTime != '') {
+        sqlStr_page = sql.order.selectByNameTP
+        arrPage = [params.id, params.name, params.startTime, params.endTime, index]
+    } else {
+        sqlStr_page = sql.order.selectByAllP
+        arrPage = [params.id, params.number, params.name, params.startTime, params.endTime, index]
+    }
+    conn.query(sqlStr_page, arrPage, (err, result) => {
         result.forEach(item => {
             item.time = moment(item.time).format('YYYY-MM-DD')
         })

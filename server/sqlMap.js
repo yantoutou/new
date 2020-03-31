@@ -39,7 +39,22 @@ var sqlMap = {
         page_ST: 'select * from orderList where status = ? and time between ? and ? limit ?,7',
         page_NST: 'select * from orderList where number = ? and status = ? and time between ? and ? limit ?,7',
         // 根据用户id查询
-        selectById: 'select * from orderList where userId = ?'
+        selectById: 'select * from orderList where userId = ?',
+        selectByIdPage: 'select * from orderList where userId = ? limit ?,10',
+        selectByNumber: 'select * from orderList where userId = ? and number = ?',
+        selectByNumberP: 'select * from orderList where userId = ? and number = ? limit ?,10',
+        selectByName: 'select * from orderList where userId = ? and goodsName = ?',
+        selectByNameP: 'select * from orderList where userId = ? and goodsName = ? limit ?,10',
+        selectByTime: 'select * from orderList where userId = ? and time between ? and ?',
+        selectByTimeP: 'select * from orderList where userId = ? and time between ? and ? limit ?,10',
+        selectByNN: 'select * from orderList where userId = ? and number = ? and goodsName = ?',
+        selectByNNP: 'select * from orderList where userId = ? and number = ? and goodsName = ? limit ?,10',
+        selectByNumT: 'select * from orderList where userId = ? and number = ? and time between ? and ?',
+        selectByNumTP: 'select * from orderList where userId = ? and number = ? and time between ? and ? limit ?,10',
+        selectByNameT: 'select * from orderList where userId = ? and goodsName = ? and time between ? and ?',
+        selectByNameTP: 'select * from orderList where userId = ? and goodsName = ? and time between ? and ? limit ?,10',
+        selectByAll: 'select * from orderList where userId = ? and number = ? and goodsName = ? and time between ? and ?',
+        selectByAllP: 'select * from orderList where userId = ? and number = ? and goodsName = ? and time between ? and ? limit ?,10'
     },
     returnGoods: {
         select: 'select * from returnList',
