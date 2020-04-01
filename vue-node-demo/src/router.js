@@ -14,6 +14,7 @@ import Sale from './pages/before/sale'
 import userSet from './pages/before/set'
 import myOrder from './pages/before/myOrder'
 import HomePage from './pages/before/homePage'
+import allOrders from './pages/before/allOrders'
 
 Vue.use(Router)
 
@@ -111,7 +112,17 @@ export default new Router({
           component: HomePage,
           meta: {
             requireAuth: true
-          }
+          },
+          children: [
+            {
+              path: 'order',
+              name: 'allOrders',
+              component: allOrders,
+              meta: {
+                requireAuth: true
+              }
+            }
+          ]
         }
       ]
     },

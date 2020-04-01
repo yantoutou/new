@@ -39,8 +39,7 @@
         <h5>商品信息</h5>
         <ul>
           <li>我的购物车</li>
-          <li>已买到的商品</li>
-          <li>我的订单</li>
+          <li class="myOrder">我的订单</li>
         </ul>
         <h5>我的评价</h5>
         <ul>
@@ -92,7 +91,7 @@ export default {
     }
   },
   mounted() {
-    this.$router.push({ path: '/myOrder/homePage' })
+    this.$router.push({ path: '/myOrder/homePage/order' })
     let name = sessionStorage.getItem('username')
     axios
       .post('/api/set/getMessage', {
@@ -190,6 +189,9 @@ export default {
         li:hover {
           color: #03b262;
         }
+      }
+      .myOrder{
+        color: #03b262;
       }
     }
     .right {
