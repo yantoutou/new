@@ -117,7 +117,8 @@ export default {
       let startTime
       let endTime
       if (this.form.time == '' || !this.form.time) {
-        ;(startTime = ''), (endTime = '')
+        startTime = ''
+        endTime = ''
       } else {
         startTime = moment(this.form.time[0]).format('YYYY-MM-DD 00:00:00')
         endTime = moment(this.form.time[1]).format('YYYY-MM-DD 23:59:59')
@@ -152,7 +153,8 @@ export default {
       let startTime
       let endTime
       if (this.form.time == '' || !this.form.time) {
-        ;(startTime = ''), (endTime = '')
+        startTime = ''
+        endTime = ''
       } else {
         startTime = moment(this.form.time[0]).format('YYYY-MM-DD 00:00:00')
         endTime = moment(this.form.time[1]).format('YYYY-MM-DD 23:59:59')
