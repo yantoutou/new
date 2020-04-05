@@ -202,6 +202,7 @@ export default {
       window.open(newpage.href, '_blank')
     },
     order() {
+      sessionStorage.setItem('active', 'order')
       let newpage = this.$router.resolve({
         name: 'myOrder'
       })

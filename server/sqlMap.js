@@ -54,7 +54,17 @@ var sqlMap = {
         selectByNameT: 'select * from orderList where userId = ? and goodsName = ? and time between ? and ?',
         selectByNameTP: 'select * from orderList where userId = ? and goodsName = ? and time between ? and ? limit ?,10',
         selectByAll: 'select * from orderList where userId = ? and number = ? and goodsName = ? and time between ? and ?',
-        selectByAllP: 'select * from orderList where userId = ? and number = ? and goodsName = ? and time between ? and ? limit ?,10'
+        selectByAllP: 'select * from orderList where userId = ? and number = ? and goodsName = ? and time between ? and ? limit ?,10',
+        complete: 'select * from orderList where userId = ? and status = "1"',
+        completeP: 'select * from orderList where userId = ? and status = "1" limit ?,10',
+        ongoing: 'select * from orderList where userId = ? and status = "2"',
+        ongoingP: 'select * from orderList where userId = ? and status = "2" limit ?,10',
+        return: 'select * from orderList where userId = ? and status = "3"',
+        returnP: 'select * from orderList where userId = ? and status = "3" limit ?,10',
+        send: 'select * from orderList where userId = ? and status = "5"',
+        sendP: 'select * from orderList where userId = ? and status = "5" limit ?,10',
+        refund: 'select * from orderList where userId = ? and status = "4"',
+        refundP: 'select * from orderList where userId = ? and status = "4" limit ?,10'
     },
     returnGoods: {
         select: 'select * from returnList',

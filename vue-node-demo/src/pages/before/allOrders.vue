@@ -44,9 +44,12 @@
       <el-table-column prop="money" label="价格" width="150"> </el-table-column>
       <el-table-column prop="time" label="日期" width="150"> </el-table-column>
       <el-table-column prop="label" label="交易状态" width="150"> </el-table-column>
-      <el-table-column prop="evaluation" label="评价">
-        <template>
-          <el-button type="success" plain>评价</el-button>
+      <el-table-column prop="evaluation" label="操作">
+        <template slot-scope="scope">
+          <el-link type="primary" v-if="scope.row.status == '1'">评价</el-link>
+          <el-link type="success" v-if="scope.row.status == '2'">确认收货</el-link>
+          <el-link type="warning" v-if="scope.row.status == '5'">提醒发货</el-link>
+          <el-link type="danger" v-if="scope.row.status == '4'">提醒退货</el-link>
         </template>
       </el-table-column>
     </el-table>
@@ -71,7 +74,6 @@ export default {
   data() {
     return {
       tableData: [],
-      statusList: [],
       showMore: false,
       showText: {
         more: '高级搜索',
@@ -108,9 +110,6 @@ export default {
               this.total = res.data.total
             })
         })
-      axios.post('/api/order/statusList').then(res => {
-        this.statusList = res.data
-      })
     },
     handleCurrentChange(val) {
       this.currentPage = val
