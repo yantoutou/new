@@ -21,106 +21,6 @@
             <el-col :span="5">
               <img src="../../assets/salelogo.jpg" alt="" />
             </el-col>
-            <el-col :span="3">
-              <el-tooltip effect="light" placement="bottom-start">
-                <div slot="content">
-                  <div class="content">
-                    <div class="content1">
-                      <el-row class="row">
-                        原料分类
-                      </el-row>
-                      <el-row :gutter="20" class="row">
-                        <el-col :span="12">
-                          烤烟型
-                        </el-col>
-                        <el-col :span="12">
-                          混合型
-                        </el-col>
-                      </el-row>
-                      <el-row :gutter="20">
-                        <el-col :span="12">
-                          香料型
-                        </el-col>
-                        <el-col :span="12">
-                          晒烟型
-                        </el-col>
-                      </el-row>
-                    </div>
-                    <div class="content2">
-                      <el-row class="row">
-                        香味分类
-                      </el-row>
-                      <el-row :gutter="20" class="row">
-                        <el-col :span="12">
-                          烤烟型
-                        </el-col>
-                        <el-col :span="12">
-                          混合型
-                        </el-col>
-                      </el-row>
-                      <el-row :gutter="20">
-                        <el-col :span="12">
-                          雪茄型
-                        </el-col>
-                        <el-col :span="12">
-                          外香型
-                        </el-col>
-                      </el-row>
-                    </div>
-                    <div class="content3">
-                      <el-row class="row">
-                        品牌推荐
-                      </el-row>
-                      <el-row :gutter="20" class="row">
-                        <el-col :span="8">
-                          宝岛
-                        </el-col>
-                        <el-col :span="8">
-                          牡丹
-                        </el-col>
-                        <el-col :span="8">
-                          古田
-                        </el-col>
-                      </el-row>
-                      <el-row :gutter="20" class="row">
-                        <el-col :span="8">
-                          红河
-                        </el-col>
-                        <el-col :span="8">
-                          黄鹤楼
-                        </el-col>
-                        <el-col :span="8">
-                          将军
-                        </el-col>
-                      </el-row>
-                      <el-row :gutter="20" class="row">
-                        <el-col :span="8">
-                          苏烟
-                        </el-col>
-                        <el-col :span="8">
-                          七匹狼
-                        </el-col>
-                        <el-col :span="8">
-                          双喜
-                        </el-col>
-                      </el-row>
-                      <el-row :gutter="20">
-                        <el-col :span="8">
-                          东方红
-                        </el-col>
-                        <el-col :span="8">
-                          灵芝
-                        </el-col>
-                        <el-col :span="8">
-                          红豆
-                        </el-col>
-                      </el-row>
-                    </div>
-                  </div>
-                </div>
-                <i class="iconfont icon-mulu1">目录</i>
-              </el-tooltip>
-            </el-col>
             <el-col :span="8">
               <el-input placeholder="搜索" v-model="input" class="input">
                 <el-button slot="append" icon="el-icon-search" class="button"></el-button>
@@ -159,6 +59,83 @@
             </el-table>
           </div>
         </div>
+        <el-row class="box1">
+          <el-col :span="10" :offset="1">
+            <el-card class="box-card" shadow="never">
+              <div slot="header">
+                <span>烤烟型</span>
+                <el-button type="text" class="more"
+                  >更多<i class="el-icon-arrow-right"></i
+                ></el-button>
+              </div>
+              <div v-for="item in FlueTobacco" :key="item.id">
+                <div class="box">
+                  <img :src="showImg(item.img)" />
+                  <div class="text">{{ item.name }}</div>
+                </div>
+              </div>
+            </el-card>
+          </el-col>
+          <el-col :span="10">
+            <el-card class="box-card1" shadow="never">
+              <div slot="header">
+                <span>混合型</span>
+                <el-button type="text" class="more"
+                  >更多<i class="el-icon-arrow-right"></i
+                ></el-button>
+              </div>
+              <div v-for="item in hybridTobacco" :key="item.id">
+                <div class="box">
+                  <img :src="showImg(item.img)" />
+                  <div class="text">{{ item.name }}</div>
+                </div>
+              </div>
+            </el-card>
+          </el-col>
+        </el-row>
+        <el-row class="box2">
+          <el-col :span="10" :offset="1">
+            <el-card class="box-card" shadow="never">
+              <div slot="header">
+                <span style="color: #ffdd07;">雪茄型</span>
+                <el-button type="text" class="more"
+                  >更多<i class="el-icon-arrow-right"></i
+                ></el-button>
+              </div>
+              <div v-for="item in cigarList" :key="item.id">
+                <div class="box">
+                  <img :src="showImg(item.img)" />
+                  <div class="text">{{ item.name }}</div>
+                </div>
+              </div>
+            </el-card>
+          </el-col>
+          <el-col :span="10">
+            <el-card class="box-card1" shadow="never">
+              <div slot="header">
+                <span style="color: #ac45df;">外香型</span>
+                <el-button type="text" class="more"
+                  >更多<i class="el-icon-arrow-right"></i
+                ></el-button>
+              </div>
+              <div v-for="item in sweetList" :key="item.id">
+                <div class="box">
+                  <img :src="showImg(item.img)" />
+                  <div class="text">{{ item.name }}</div>
+                </div>
+              </div>
+            </el-card>
+          </el-col>
+        </el-row>
+        <el-row class="box3">
+          <div v-for="item in brandList" :key="item.id">
+            <el-col :span="3">
+              <el-card class="card" shadow="never">
+                {{ item.name }}
+              </el-card>
+            </el-col>
+          </div>
+        </el-row>
       </el-scrollbar>
     </div>
   </div>
@@ -172,39 +149,46 @@ export default {
       userName: '',
       sex: '',
       input: '',
+      FlueTobacco: [],
+      hybridTobacco: [],
+      cigarList: [],
+      sweetList: [],
       imgList: [
         { id: 0, idView: require('../../assets/add1.jpg') },
         {
           id: 1,
-          idView: require('../../assets/add2.jpg')
+          idView: require('../../assets/add2.jpg'),
         },
         {
           id: 2,
-          idView: require('../../assets/add3.jpg')
+          idView: require('../../assets/add3.jpg'),
         },
         {
           id: 3,
-          idView: require('../../assets/add4.jpg')
+          idView: require('../../assets/add4.jpg'),
         },
         {
           id: 4,
-          idView: require('../../assets/add5.jpg')
-        }
+          idView: require('../../assets/add5.jpg'),
+        },
       ],
-      tableData: []
+      tableData: [],
     }
   },
   methods: {
     goHome() {
       let newpage = this.$router.resolve({
-        name: 'sale'
+        name: 'sale',
       })
       window.open(newpage.href, '_blank')
+    },
+    showImg(icon) {
+      return require('../../../../server/uploads/' + icon)
     },
     order() {
       sessionStorage.setItem('active', 'order')
       let newpage = this.$router.resolve({
-        name: 'myOrder'
+        name: 'myOrder',
       })
       window.open(newpage.href, '_blank')
     },
@@ -216,22 +200,59 @@ export default {
       })
     },
     hotList() {
-      axios.post('/api/sale/hotList').then(res => {
+      axios.post('/api/sale/hotList').then((res) => {
         this.tableData = res.data
       })
     },
     personSet() {
       this.$router.push('/userSet')
-    }
+    },
+    typeList() {
+      axios
+        .post('/api/goods/typeList', {
+          type: '1',
+        })
+        .then((res) => {
+          this.FlueTobacco = res.data
+        })
+      axios
+        .post('/api/goods/typeList', {
+          type: '2',
+        })
+        .then((res) => {
+          this.hybridTobacco = res.data
+        })
+      axios
+        .post('/api/goods/typeList', {
+          type: '3',
+        })
+        .then((res) => {
+          this.cigarList = res.data
+        })
+      axios
+        .post('/api/goods/typeList', {
+          type: '4',
+        })
+        .then((res) => {
+          this.sweetList = res.data
+        })
+    },
+    brandList() {
+      axios.post('/api/goods/brandList').then((res) => {
+        this.brandList = res.data
+      })
+    },
   },
   mounted() {
     this.hotList()
+    this.typeList()
+    this.brandList()
     let name = sessionStorage.getItem('username')
     axios
       .post('/api/sale/user', {
-        name
+        name,
       })
-      .then(res => {
+      .then((res) => {
         this.userName = res.data[0].nickname
         if (res.data[0].gender == '女') {
           this.sex = '女士'
@@ -239,7 +260,7 @@ export default {
           this.sex = '先生'
         }
       })
-  }
+  },
 }
 </script>
 
@@ -250,6 +271,7 @@ export default {
   position: fixed;
   top: 0;
   left: 0;
+  background: #f4f4f4;
   .top {
     height: 33px;
     border-bottom: 1px #f0f0f0 solid;
@@ -273,7 +295,7 @@ export default {
     }
   }
   .wrap {
-    margin-top: 25px;
+    background: #fff;
     img {
       width: 100px;
       margin-left: 160px;
@@ -325,22 +347,63 @@ export default {
       }
     }
   }
+  .box1,
+  .box2 {
+    .more {
+      float: right;
+      padding: 3px 0;
+      color: #acacac;
+      font-size: 12px;
+    }
+    .box {
+      float: left;
+      position: relative;
+      left: 10px;
+      padding-right: 10px;
+      padding-bottom: 30px;
+      img {
+        width: 170px;
+        height: 170px;
+      }
+      .text {
+        text-align: center;
+      }
+    }
+    .box-card {
+      width: 100%;
+      margin-top: 10px;
+      margin-left: 40px;
+      span {
+        color: #35b2fb;
+      }
+    }
+    .box-card1 {
+      width: 100%;
+      margin-left: 50px;
+      margin-top: 10px;
+      span {
+        color: #ff4568;
+      }
+    }
+  }
+  .box3 {
+    width: 84%;
+    margin-left: 7%;
+    margin-top: 10px;
+    .card {
+      height: 150px;
+      text-align: center;
+      line-height: 110px;
+      font-family: Georgia, serif;
+      font-size: 23px;
+    }
+    .card:hover {
+      cursor: pointer;
+      border: #ff4568 1px solid;
+    }
+  }
 }
 .row {
   margin-bottom: 20px;
-}
-.content {
-  display: flex;
-  width: 700px;
-  .content1,
-  .content2 {
-    flex: 1;
-    margin-right: 50px;
-    border-right: #000 1px solid;
-    padding-right: 50px;
-  }
-  .content3 {
-    flex: 1;
-  }
 }
 </style>

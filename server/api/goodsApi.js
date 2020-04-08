@@ -203,5 +203,19 @@ router.post('/deleteSome', (req, res) => {
   })
 })
 
+router.post('/typeList', (req, res) => {
+  let conn = new DBHelper().getConn()
+  conn.query(sql.goods.type, [req.body.type], (err, result) => {
+    res.json(result)
+  })
+})
+
+router.post('/brandList', (req, res) => {
+  let conn = new DBHelper().getConn()
+  conn.query(sql.goods.brandList, (err, result) => {
+    res.json(result)
+  })
+})
+
 
 module.exports = router
