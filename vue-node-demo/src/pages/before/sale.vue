@@ -23,7 +23,12 @@
             </el-col>
             <el-col :span="8">
               <el-input placeholder="搜索" v-model="input" class="input">
-                <el-button slot="append" icon="el-icon-search" class="button"></el-button>
+                <el-button
+                  slot="append"
+                  icon="el-icon-search"
+                  class="button"
+                  @click="search"
+                ></el-button>
               </el-input>
             </el-col>
             <el-col :span="1">
@@ -38,7 +43,7 @@
         </div>
         <div class="carouselContainer">
           <div class="carousel">
-            <el-carousel :interval="5000" height="500px">
+            <el-carousel :interval="2000" height="500px">
               <el-carousel-item v-for="item in imgList" :key="item.id">
                 <el-row>
                   <el-col :span="24">
@@ -157,28 +162,28 @@ export default {
         { id: 0, idView: require('../../assets/add1.jpg') },
         {
           id: 1,
-          idView: require('../../assets/add2.jpg'),
+          idView: require('../../assets/add2.jpg')
         },
         {
           id: 2,
-          idView: require('../../assets/add3.jpg'),
+          idView: require('../../assets/add3.jpg')
         },
         {
           id: 3,
-          idView: require('../../assets/add4.jpg'),
+          idView: require('../../assets/add4.jpg')
         },
         {
           id: 4,
-          idView: require('../../assets/add5.jpg'),
-        },
+          idView: require('../../assets/add5.jpg')
+        }
       ],
-      tableData: [],
+      tableData: []
     }
   },
   methods: {
     goHome() {
       let newpage = this.$router.resolve({
-        name: 'sale',
+        name: 'sale'
       })
       window.open(newpage.href, '_blank')
     },
@@ -188,7 +193,7 @@ export default {
     order() {
       sessionStorage.setItem('active', 'order')
       let newpage = this.$router.resolve({
-        name: 'myOrder',
+        name: 'myOrder'
       })
       window.open(newpage.href, '_blank')
     },
@@ -200,7 +205,7 @@ export default {
       })
     },
     hotList() {
-      axios.post('/api/sale/hotList').then((res) => {
+      axios.post('/api/sale/hotList').then(res => {
         this.tableData = res.data
       })
     },
@@ -210,38 +215,46 @@ export default {
     typeList() {
       axios
         .post('/api/goods/typeList', {
-          type: '1',
+          type: '1'
         })
-        .then((res) => {
+        .then(res => {
           this.FlueTobacco = res.data
         })
       axios
         .post('/api/goods/typeList', {
-          type: '2',
+          type: '2'
         })
-        .then((res) => {
+        .then(res => {
           this.hybridTobacco = res.data
         })
       axios
         .post('/api/goods/typeList', {
-          type: '3',
+          type: '3'
         })
-        .then((res) => {
+        .then(res => {
           this.cigarList = res.data
         })
       axios
         .post('/api/goods/typeList', {
-          type: '4',
+          type: '4'
         })
-        .then((res) => {
+        .then(res => {
           this.sweetList = res.data
         })
     },
     brandList() {
-      axios.post('/api/goods/brandList').then((res) => {
+      axios.post('/api/goods/brandList').then(res => {
         this.brandList = res.data
       })
     },
+    search() {
+      if (this.input == '') {
+        this.$message.error('请输入商品')
+      } else {
+        this.$router.push({ path: '/search' })
+        sessionStorage.setItem('searchName', this.input)
+      }
+    }
   },
   mounted() {
     this.hotList()
@@ -250,17 +263,19 @@ export default {
     let name = sessionStorage.getItem('username')
     axios
       .post('/api/sale/user', {
-        name,
+        name
       })
-      .then((res) => {
+      .then(res => {
         this.userName = res.data[0].nickname
+        sessionStorage.setItem('nickname', this.userName)
         if (res.data[0].gender == '女') {
           this.sex = '女士'
         } else {
           this.sex = '先生'
         }
+        sessionStorage.setItem('sex', this.sex)
       })
-  },
+  }
 }
 </script>
 
@@ -399,7 +414,7 @@ export default {
     }
     .card:hover {
       cursor: pointer;
-      border: #ff4568 1px solid;
+      border: #03b262 1px solid;
     }
   }
 }

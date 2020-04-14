@@ -217,5 +217,12 @@ router.post('/brandList', (req, res) => {
   })
 })
 
+router.post('/goodsSearch', (req, res) => {
+  let conn = new DBHelper().getConn()
+  conn.query(sql.goods.saleSearch, req.body.name, (err, result) => {
+    res.json(result)
+  })
+})
+
 
 module.exports = router

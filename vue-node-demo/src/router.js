@@ -15,6 +15,7 @@ import userSet from './pages/before/set'
 import myOrder from './pages/before/myOrder'
 import HomePage from './pages/before/homePage'
 import allOrders from './pages/before/allOrders'
+import Search from './pages/before/search'
 
 Vue.use(Router)
 
@@ -130,6 +131,14 @@ export default new Router({
       path: '/set',
       name: 'set',
       component: Set,
+      meta: {
+        requireAuth: true
+      }
+    },
+    {
+      path: '/search',
+      name: 'search',
+      component: Search,
       meta: {
         requireAuth: true
       }

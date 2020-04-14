@@ -91,7 +91,8 @@ var sqlMap = {
         upload: 'update goods set img = ? where id = ?',
         addGoods: 'insert into goods(name, img, time, money, discount, new, count, inventory) values (?, ?, ?, ?, ?, ?, ?, ?)',
         type: 'select * from goods where type = ? limit 0,6',
-        brandList: 'select * from brandList'
+        brandList: 'select * from brandList',
+        saleSearch: 'select * from goods where name = ?'
     },
     work: {
         returnNumber: 'select * from returnList where deal = "未处理"',
