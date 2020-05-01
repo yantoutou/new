@@ -54,12 +54,12 @@
                 </el-menu-item>
                 <el-menu-item index="/manage/message">
                   <i class="iconfont icon-liuyan"></i>
-                  <span slot="title">留言管理</span>
+                  <span slot="title">用户管理</span>
                 </el-menu-item>
-                <el-menu-item index="5">
+                <!-- <el-menu-item index="5">
                   <i class="iconfont icon-gonggao"></i>
                   <span slot="title">公告管理</span>
-                </el-menu-item>
+                </el-menu-item> -->
                 <el-menu-item index="/manage/log">
                   <i class="el-icon-s-management"></i>
                   <span slot="title">日志中心</span>

@@ -41,7 +41,7 @@
                 <span>￥{{ item.money }}</span>
                 <span class="count">{{ item.count }}人购买</span>
               </div>
-              <div class="describe">{{ item.describe }}</div>
+              <div class="describe">{{ item.describe1 }}</div>
             </el-card>
           </el-col>
         </div>

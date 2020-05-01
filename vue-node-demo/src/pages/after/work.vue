@@ -1,7 +1,7 @@
 <template>
   <div>
-    <el-row>
-      <el-col :span="6">
+    <!-- <el-row>
+      <el-col :span='6'>
         <el-card shadow="hover" class="card" @click.native="returnClick">
           <div class="left">
             <span class="number-return">{{ returnNum }}</span>
@@ -45,7 +45,7 @@
           </div>
         </el-card>
       </el-col>
-    </el-row>
+    </el-row> -->
     <el-row class="three-card" :gutter="0">
       <el-col :span="12">
         <el-card class="pie-card">

@@ -69,10 +69,7 @@
           prop="discount"
           label="折扣"
           width="150"
-          :filters="[
-            { text: '有折扣', value: '1' },
-            { text: '无折扣', value: '0' }
-          ]"
+          :filters="[{ text: '有折扣', value: '1' }, { text: '无折扣', value: '0' }]"
           :filter-method="filterDiscount"
           filter-placement="bottom-end"
         >
@@ -85,10 +82,7 @@
           prop="new"
           label="新品"
           width="100"
-          :filters="[
-            { text: '新品', value: '1' },
-            { text: '非新品', value: '0' }
-          ]"
+          :filters="[{ text: '新品', value: '1' }, { text: '非新品', value: '0' }]"
           :filter-method="filterNew"
           filter-placement="bottom-end"
         >
@@ -241,8 +235,6 @@
                 <el-input v-model="addForm.name"></el-input>
               </el-form-item>
             </el-col>
-          </el-row>
-          <el-row>
             <el-col :span="12">
               <el-form-item label="商品价格" prop="money">
                 <el-input v-model="addForm.money" type="number"></el-input>
@@ -255,6 +247,19 @@
                 <el-input v-model="addForm.inventory" type="number"></el-input>
               </el-form-item>
             </el-col>
+            <el-col :span="12">
+              <el-form-item label="商品类型" prop="value">
+                <el-select v-model="addForm.value" placeholder="请选择">
+                  <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  >
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
           </el-row>
           <el-row>
             <el-col :span="12">
@@ -263,6 +268,17 @@
                 <el-checkbox v-model="addForm.checked2">新品</el-checkbox>
               </el-form-item>
             </el-col>
+          </el-row>
+          <el-row>
+            <el-form-item label="商品描述" prop="textarea">
+              <el-input
+                type="textarea"
+                :rows="2"
+                placeholder="请输入商品描述"
+                v-model="addForm.textarea"
+              >
+              </el-input>
+            </el-form-item>
           </el-row>
           <el-row>
             <el-form-item label="上传图片" :required="true">
@@ -362,6 +378,24 @@ export default {
       dom: '',
       limit: 10,
       flag: 0,
+      options: [
+        {
+          value: '1',
+          label: '烤烟型',
+        },
+        {
+          value: '2',
+          label: '混合型',
+        },
+        {
+          value: '3',
+          label: '雪茄型',
+        },
+        {
+          value: '4',
+          label: '外香型',
+        },
+      ],
       form: {
         id: '',
         name: '',
@@ -371,26 +405,30 @@ export default {
         inventory: '',
         checked1: '',
         checked2: '',
-        img: ''
+        img: '',
       },
       addForm: {
         name: '',
         money: '',
         inventory: '',
         checked1: '',
-        checked2: ''
+        checked2: '',
+        textarea: '',
+        value: ''
       },
       file: '',
       addFile: '',
       rules: {
         name: [{ required: true, message: '请输入商品名称', trigger: 'change' }],
-        money: [{ required: true, validator: money, trigger: 'change' }]
+        money: [{ required: true, validator: money, trigger: 'change' }],
       },
       addRules: {
         name: [{ required: true, message: '请输入商品名称', trigger: 'change' }],
         money: [{ required: true, validator: money, trigger: 'change' }],
-        inventory: [{ required: true, validator: inventory, trigger: 'change' }]
-      }
+        inventory: [{ required: true, validator: inventory, trigger: 'change' }],
+        value: [{required: true, message: '请选择商品类型', trigger: 'change'}],
+        textarea: [{required: true, message: '请为商品添加描述', trigger: 'change'}]
+      },
     }
   },
   methods: {
@@ -401,10 +439,10 @@ export default {
       const formData = new FormData()
       const file = this.$refs.upload.uploadFiles[0]
       const headerConfig = {
-        headers: { 'Content-Type': 'multipart/form-data' }
+        headers: { 'Content-Type': 'multipart/form-data' },
       }
       formData.append('file', file.raw)
-      axios.post('/api/goods/upload', formData, headerConfig).then(res => {
+      axios.post('/api/goods/upload', formData, headerConfig).then((res) => {
         console.log(res)
       })
     },
@@ -430,9 +468,9 @@ export default {
             name: this.searchInput,
             startTime,
             endTime,
-            limit: this.limit
+            limit: this.limit,
           })
-          .then(res => {
+          .then((res) => {
             this.tableData = res.data.data
             this.loading = false
             this.len = res.data.len
@@ -444,7 +482,7 @@ export default {
               this.nomore = false
             }
           })
-          .catch(err => {
+          .catch((err) => {
             console.log(err)
           })
       }, 1000)
@@ -456,9 +494,9 @@ export default {
           name: logName,
           operation: '商品管理',
           time: moment().format('YYYY-MM-DD HH:mm:ss'),
-          content: '搜索'
+          content: '搜索',
         })
-        .then(res => {
+        .then((res) => {
           console.log(res)
         })
       this.loading = true
@@ -499,14 +537,14 @@ export default {
       this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
       })
         .then(() => {
           axios
             .post('/api/goods/deleteOne', {
-              id: row.id
+              id: row.id,
             })
-            .then(res => {
+            .then((res) => {
               this.tableData = res.data
               this.reload()
               let logName = sessionStorage.getItem('username')
@@ -515,24 +553,24 @@ export default {
                   name: logName,
                   operation: '商品管理',
                   time: moment().format('YYYY-MM-DD HH:mm:ss'),
-                  content: '单条删除商品'
+                  content: '单条删除商品',
                 })
-                .then(res => {
+                .then((res) => {
                   console.log(res)
                 })
               this.$message({
                 type: 'success',
-                message: '删除成功!'
+                message: '删除成功!',
               })
             })
-            .catch(err => {
+            .catch((err) => {
               console.log(err)
             })
         })
         .catch(() => {
           this.$message({
             type: 'info',
-            message: '已取消删除'
+            message: '已取消删除',
           })
         })
     },
@@ -578,7 +616,7 @@ export default {
       this.$message('操作已取消')
     },
     confirm() {
-      this.$refs.form.validate(valid => {
+      this.$refs.form.validate((valid) => {
         if (valid) {
           if (this.$refs.upload.uploadFiles.length == 0) {
             this.success()
@@ -619,7 +657,7 @@ export default {
           name: this.form.name,
           money: this.form.money,
           checked1,
-          checked2
+          checked2,
         })
         .then(() => {
           let logName = sessionStorage.getItem('username')
@@ -628,15 +666,15 @@ export default {
               name: logName,
               operation: '商品管理',
               time: moment().format('YYYY-MM-DD HH:mm:ss'),
-              content: '商品信息修改'
+              content: '商品信息修改',
             })
-            .then(res => {
+            .then((res) => {
               console.log(res)
             })
           this.$message.success('修改成功')
           this.reload()
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err)
         })
       this.dialogFormVisible = false
@@ -649,7 +687,7 @@ export default {
       this.$message('操作已取消')
     },
     addConfirm() {
-      this.$refs.addForm.validate(valid => {
+      this.$refs.addForm.validate((valid) => {
         if (valid) {
           if (this.$refs.addUpload.uploadFiles.length == 0) {
             this.$message.error('请选择上传图片')
@@ -665,7 +703,7 @@ export default {
                 const formData = new FormData()
                 const file = this.$refs.addUpload.uploadFiles[0]
                 const headerConfig = {
-                  headers: { 'Content-Type': 'multipart/form-data' }
+                  headers: { 'Content-Type': 'multipart/form-data' },
                 }
                 formData.append('file', file.raw)
                 axios
@@ -676,9 +714,11 @@ export default {
                     checked1: this.addForm.checked1,
                     checked2: this.addForm.checked2,
                     count: 0,
-                    inventory: this.addForm.inventory
+                    inventory: this.addForm.inventory,
+                    type: this.addForm.value,
+                    describe: this.addForm.textarea
                   })
-                  .then(res => console.log(res.data))
+                  .then((res) => console.log(res.data))
                 axios
                   .post('/api/goods/addGoodsUpload', formData, headerConfig)
                   .then(() => {
@@ -690,9 +730,9 @@ export default {
                         name: logName,
                         operation: '商品管理',
                         time: moment().format('YYYY-MM-DD HH:mm:ss'),
-                        content: '添加商品'
+                        content: '添加商品',
                       })
-                      .then(res => {
+                      .then((res) => {
                         console.log(res)
                       })
                   })
@@ -708,7 +748,7 @@ export default {
     },
     handleSelectionChange(val) {
       let arr = []
-      val.forEach(item => {
+      val.forEach((item) => {
         arr.push(item.id)
       })
       this.deleteArr = arr
@@ -720,12 +760,12 @@ export default {
         this.$confirm('此操作将永久删除所选文件, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
-          type: 'warning'
+          type: 'warning',
         })
           .then(() => {
             axios
               .post('/api/goods/deleteSome', {
-                deleteArr: this.deleteArr
+                deleteArr: this.deleteArr,
               })
               .then(() => {
                 this.reload()
@@ -735,33 +775,33 @@ export default {
                     name: logName,
                     operation: '商品管理',
                     time: moment().format('YYYY-MM-DD HH:mm:ss'),
-                    content: '批量删除'
+                    content: '批量删除',
                   })
-                  .then(res => {
+                  .then((res) => {
                     console.log(res)
                   })
                 this.$message({
                   type: 'success',
-                  message: '删除成功!'
+                  message: '删除成功!',
                 })
               })
-              .catch(err => {
+              .catch((err) => {
                 console.log(err)
               })
           })
           .catch(() => {
             this.$message({
               type: 'info',
-              message: '已取消删除'
+              message: '已取消删除',
             })
           })
       }
-    }
+    },
   },
   mounted() {
     this.loading = true
     this.search()
-  }
+  },
 }
 </script>
 

@@ -150,6 +150,7 @@ export default {
       })
     },
     search() {
+      this.showMore = false
       let logName = sessionStorage.getItem('username')
       axios
         .post('/api/log/addLog', {
@@ -169,6 +170,10 @@ export default {
           .then(res => {
             this.total = res.data.count
             this.tableData = res.data.data
+            if (res.data.data.length == 0) {
+              this.showMore = false
+              this.nomore = false
+            }
           })
           .catch(err => {
             console.log(err)
