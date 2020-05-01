@@ -89,7 +89,7 @@ var sqlMap = {
         delete_one : 'delete from goods where id = ?',
         edit: 'update goods set name = ?, money = ?, discount = ?, new = ? where id = ?',
         upload: 'update goods set img = ? where id = ?',
-        addGoods: 'insert into goods(name, img, time, money, discount, new, count, inventory) values (?, ?, ?, ?, ?, ?, ?, ?)',
+        addGoods: 'insert into goods(name, img, time, money, discount, new, count, inventory, type, describe1) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
         type: 'select * from goods where type = ? limit 0,6',
         brandList: 'select * from brandList',
         saleSearch: 'select * from goods where name = ?'

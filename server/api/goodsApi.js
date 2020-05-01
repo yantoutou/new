@@ -13,6 +13,8 @@ var checked1 = ''
 var checked2 = ''
 var count = ''
 var inventory = ''
+var type = ''
+var describe = ''
 
 var multer = require('multer')
 
@@ -158,7 +160,9 @@ router.post('/addGoodsUpload', upload.single('file'), (req, res) => {
       checked1,
       checked2,
       count,
-      inventory
+      inventory,
+      type,
+      describe
     ],
     (err, result) => {
       if (err) {
@@ -171,7 +175,6 @@ router.post('/addGoodsUpload', upload.single('file'), (req, res) => {
 })
 
 router.post('/addGoods', (req, res) => {
-  let conn = new DBHelper().getConn()
   let params = req.body
   name = params.name
   time = params.time
@@ -180,6 +183,8 @@ router.post('/addGoods', (req, res) => {
   checked2 = params.checked2
   count = params.count
   inventory = params.inventory
+  type = params.type
+  describe = params.describe
 })
 
 // 批量删除
