@@ -54,7 +54,7 @@
                 </el-menu-item>
                 <el-menu-item index="/manage/message">
                   <i class="iconfont icon-liuyan"></i>
-                  <span slot="title">用户管理</span>
+                  <span slot="title">未读消息</span>
                 </el-menu-item>
                 <!-- <el-menu-item index="5">
                   <i class="iconfont icon-gonggao"></i>

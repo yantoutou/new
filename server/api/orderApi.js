@@ -474,4 +474,28 @@ router.post('/refund', (req, res) => {
     })
   })
 
+  router.post('/confirmGoods', (req, res) => {
+    let conn = new DBHelper().getConn()
+    conn.query(sql.order.confirmGoods, req.body.id, (err, result) => {
+      res.json(result)
+    })
+  })
+
+  router.post('/remindelivery', (req, res) => {
+    let conn = new DBHelper().getConn()
+    let params = req.body
+    conn.query(sql.order.remindelivery, [params.type, params.time, params.username, params.number], (err, result) => {
+      res.json(result)
+    })
+  })
+
+  router.post('/returnGoods', (req, res) => {
+    let conn = new DBHelper().getConn()
+    let params = req.body
+    conn.query(sql.order.returnGoods, [params.number, params.money, params.user, params.time, params.id], (err, result) => {
+      res.json(result)
+    })
+    conn.query(sql.order.change, [params.goodsId])
+  })
+
 module.exports = router

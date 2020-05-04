@@ -10,9 +10,10 @@
       <el-table-column prop="number" label="订单号" width="150"> </el-table-column>
       <el-table-column prop="money" label="价格" width="150"> </el-table-column>
       <el-table-column prop="time" label="日期" width="150"> </el-table-column>
-      <el-table-column prop="evaluation" label="提醒发货" width='150'>
-        <template>
-          <el-button>提醒发货</el-button>
+      <el-table-column prop="evaluation" label="提醒发货">
+        <template slot-scope="scope">
+          <el-button @click="remindelivery(scope.row)">提醒发货</el-button>
+          <el-button @click="returnGoods(scope.row)">退货</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -32,7 +33,9 @@
 
 <script>
 import axios from 'axios'
+import moment from 'moment'
 export default {
+  inject: ['reload'],
   data() {
     return {
       tableData: [],
@@ -60,8 +63,41 @@ export default {
             })
         })
     },
+    remindelivery(row) {
+      let username = sessionStorage.getItem('username')
+      axios
+        .post('/api/order/remindelivery', {
+          type: '发货提醒',
+          username,
+          time: moment().format('YYYY-MM-DD HH:mm:ss'),
+          number: row.number,
+        })
+        .then(() => {
+          this.$message.success('提醒发货成功')
+        })
+    },
     showImg(icon) {
       return require('../../../../server/uploads/' + icon)
+    },
+    returnGoods(row) {
+      let username = sessionStorage.getItem('username')
+      axios
+        .post('/api/user/selectId', {
+          username,
+        })
+        .then((res) => {
+          axios.post('/api/order/returnGoods', {
+            number: row.number,
+            money: row.money,
+            user: username,
+            time: moment().format('YYYY-MM-DD HH:mm:ss'),
+            id: res.data[0].id,
+            goodsId: row.id
+          }).then(() => {
+            this.$message.success('退货申请已提交')
+            this.reload()
+          })
+        })
     },
     handleCurrentChange(val) {
         this.currentPage = val

@@ -10,9 +10,9 @@
       <el-table-column prop="number" label="订单号" width="150"> </el-table-column>
       <el-table-column prop="money" label="价格" width="150"> </el-table-column>
       <el-table-column prop="time" label="日期" width="150"> </el-table-column>
-      <el-table-column prop="evaluation" label="确认收货" width='150'>
-        <template>
-          <el-button>确认收货</el-button>
+      <el-table-column prop="evaluation" label="确认收货" width="150">
+        <template slot-scope="scope">
+          <el-button @click="ConfirmGoods(scope.row)">确认收货</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -33,6 +33,7 @@
 <script>
 import axios from 'axios'
 export default {
+  inject: ['reload'],
   data() {
     return {
       tableData: [],
@@ -52,7 +53,7 @@ export default {
           axios
             .post('/api/order/ongoing', {
               userId: res.data[0].id,
-              page: this.currentPage
+              page: this.currentPage,
             })
             .then((res) => {
               this.tableData = res.data.res
@@ -60,13 +61,23 @@ export default {
             })
         })
     },
+    ConfirmGoods(row) {
+      axios
+        .post('/api/order/confirmGoods', {
+          id: row.id,
+        })
+        .then(() => {
+          this.$message.success('确认收货成功')
+          this.reload()
+        })
+    },
     showImg(icon) {
       return require('../../../../server/uploads/' + icon)
     },
     handleCurrentChange(val) {
-        this.currentPage = val
-        this.getList()
-    }
+      this.currentPage = val
+      this.getList()
+    },
   },
   mounted() {
     this.getList()

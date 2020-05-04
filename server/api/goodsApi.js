@@ -15,6 +15,7 @@ var count = ''
 var inventory = ''
 var type = ''
 var describe = ''
+var detail = []
 
 var multer = require('multer')
 
@@ -227,6 +228,17 @@ router.post('/goodsSearch', (req, res) => {
   conn.query(sql.goods.saleSearch, req.body.name, (err, result) => {
     res.json(result)
   })
+})
+
+router.post('/detail', (req, res) => {
+  let conn = new DBHelper().getConn()
+  conn.query(sql.goods.detail, req.body.id, (err, result) => {
+    detail = result
+  })
+})
+
+router.post('/goodsDetail', (req, res) => {
+  res.json(detail)
 })
 
 

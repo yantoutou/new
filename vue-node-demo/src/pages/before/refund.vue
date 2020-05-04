@@ -11,8 +11,8 @@
       <el-table-column prop="money" label="价格" width="150"> </el-table-column>
       <el-table-column prop="time" label="日期" width="150"> </el-table-column>
       <el-table-column prop="evaluation" label="提醒" width='180'>
-        <template>
-          <el-button>提醒卖家退货</el-button>
+        <template slot-scope="scope">
+          <el-button @click="remindReturn(scope.row)">提醒卖家退货</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -32,6 +32,7 @@
 
 <script>
 import axios from 'axios'
+import moment from 'moment'
 export default {
   data() {
     return {
@@ -58,6 +59,18 @@ export default {
               this.tableData = res.data.res
               this.total = res.data.total
             })
+        })
+    },remindReturn(row) {
+      let username = sessionStorage.getItem('username')
+      axios
+        .post('/api/order/remindelivery', {
+          type: '退货提醒',
+          username,
+          time: moment().format('YYYY-MM-DD HH:mm:ss'),
+          number: row.number,
+        })
+        .then(() => {
+          this.$message.success('提醒退货成功')
         })
     },
     showImg(icon) {

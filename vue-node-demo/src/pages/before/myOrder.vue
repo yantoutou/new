@@ -14,43 +14,9 @@
         <el-col :span="4" :offset="2">
           <span class="order" @click="myorder">我的订单</span>
         </el-col>
-        <el-col :span="1">
-          <span class="menu" @click="orderhome">首页</span>
-          <i class="el-icon-caret-top"></i>
-        </el-col>
-        <el-col :span="2">
-          <span class="menu">消息</span>
-        </el-col>
-        <el-col :span="7" :offset="6" class="search">
-          <el-input>
-            <template slot="append">搜索</template>
-          </el-input>
-        </el-col>
       </el-row>
     </div>
     <div class="main">
-      <div class="left">
-        <h5>我的资料</h5>
-        <ul>
-          <li>登录密码</li>
-          <li>收货地址</li>
-          <li>基本信息</li>
-        </ul>
-        <h5>商品信息</h5>
-        <ul>
-          <li>我的购物车</li>
-          <li class="myOrder">我的订单</li>
-        </ul>
-        <h5>我的评价</h5>
-        <ul>
-          <li>评价商品</li>
-        </ul>
-        <h5>退货中心</h5>
-        <ul>
-          <li>退货管理</li>
-          <li>退货进度</li>
-        </ul>
-      </div>
       <div class="right">
         <router-view></router-view>
       </div>
@@ -88,6 +54,9 @@ export default {
     },
     orderhome() {
       this.$router.push({ path: '/myOrder/homePage' })
+    },
+    set() {
+      this.$router.push('/userSet')
     }
   },
   mounted() {
@@ -160,40 +129,11 @@ export default {
       font-size: 30px;
       color: #fff;
     }
-    .search {
-      margin-top: -10px;
-      cursor: pointer;
-    }
   }
   .main {
     width: 90%;
     height: 100%;
     margin-left: 5%;
-    .left {
-      width: 20%;
-      float: left;
-      position: fixed;
-      h5 {
-        color: #03b262;
-        font-size: 15px;
-        padding: 0 50px;
-      }
-      ul {
-        list-style: none;
-        cursor: pointer;
-        font-size: 12px;
-        li {
-          padding-bottom: 15px;
-          padding-left: 10px;
-        }
-        li:hover {
-          color: #03b262;
-        }
-      }
-      .myOrder{
-        color: #03b262;
-      }
-    }
     .right {
       width: 90%;
       height: 100%;

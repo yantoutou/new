@@ -5,7 +5,8 @@ var sqlMap = {
         add: 'insert into user(name, password, nickname, gender, img) values (?, ?, ?, ?, "file-1581411637655.png")',
         // 查询用户
         select_user: 'select * from user where name = ? and password = ?',
-        select: 'select * from user where name = ?'
+        select: 'select * from user where name = ?',
+        ById: 'select id from user where name = ?'
     },
     admin: {
         // 查询管理员
@@ -64,7 +65,11 @@ var sqlMap = {
         send: 'select * from orderList where userId = ? and status = "5"',
         sendP: 'select * from orderList where userId = ? and status = "5" limit ?,10',
         refund: 'select * from orderList where userId = ? and status = "4"',
-        refundP: 'select * from orderList where userId = ? and status = "4" limit ?,10'
+        refundP: 'select * from orderList where userId = ? and status = "4" limit ?,10',
+        confirmGoods: 'update orderList set status = "1", label = "已完成" where id = ?',
+        remindelivery: 'insert into unMessage (type, time, username, number) values (?, ?, ?, ?)',
+        returnGoods: 'insert into returnList (number, money, user, time, deal, id) values (?, ?, ?, ?, "未处理", ?)',
+        change: 'update orderList set status = "4", label = "退货审核中" where id = ?'
     },
     returnGoods: {
         select: 'select * from returnList',
@@ -92,7 +97,8 @@ var sqlMap = {
         addGoods: 'insert into goods(name, img, time, money, discount, new, count, inventory, type, describe1) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
         type: 'select * from goods where type = ? limit 0,6',
         brandList: 'select * from brandList',
-        saleSearch: 'select * from goods where name like concat("%",?,"%")'
+        saleSearch: 'select * from goods where name like concat("%",?,"%")',
+        detail:'select * from goods where id = ?'
     },
     work: {
         returnNumber: 'select * from returnList where deal = "未处理"',

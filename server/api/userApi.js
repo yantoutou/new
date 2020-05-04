@@ -117,4 +117,11 @@ router.post('/selectUser', (req, res) => {
     conn.end();
 });
 
+router.post('/selectId', (req, res) => {
+    let conn = new DBHelper().getConn();
+    conn.query(sql.user.ById, [req.body.username], (err, result) => {
+        res.json(result)
+    })
+})
+
 module.exports = router;

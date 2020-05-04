@@ -9,12 +9,7 @@
       </el-table-column>
       <el-table-column prop="number" label="订单号" width="150"> </el-table-column>
       <el-table-column prop="money" label="价格" width="150"> </el-table-column>
-      <el-table-column prop="time" label="日期" width="150"> </el-table-column>
-      <el-table-column prop="evaluation" label="评价" width="150">
-        <template>
-          <el-button>评价</el-button>
-        </template>
-      </el-table-column>
+      <el-table-column prop="time" label="日期"> </el-table-column>
     </el-table>
     <div class="page">
       <el-pagination

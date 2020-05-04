@@ -46,10 +46,30 @@
       <el-table-column prop="label" label="交易状态" width="150"> </el-table-column>
       <el-table-column prop="evaluation" label="操作">
         <template slot-scope="scope">
-          <el-link type="primary" v-if="scope.row.status == '1'">评价</el-link>
-          <el-link type="success" v-if="scope.row.status == '2'">确认收货</el-link>
-          <el-link type="warning" v-if="scope.row.status == '5'">提醒发货</el-link>
-          <el-link type="danger" v-if="scope.row.status == '4'">提醒退货</el-link>
+          <el-link
+            type="success"
+            v-if="scope.row.status == '2'"
+            @click="ConfirmGoods(scope.row)"
+            >确认收货</el-link
+          >
+          <el-link
+            type="warning"
+            v-if="scope.row.status == '5'"
+            @click="remindelivery(scope.row)"
+            >提醒发货</el-link
+          >
+          <el-link
+            type="warning"
+            v-if="scope.row.status == '5'"
+            @click="returnGoods(scope.row)"
+            >退货</el-link
+          >
+          <el-link
+            type="danger"
+            v-if="scope.row.status == '4'"
+            @click="remindReturn(scope.row)"
+            >提醒退货</el-link
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -71,13 +91,14 @@
 import axios from 'axios'
 import moment from 'moment'
 export default {
+  inject: ['reload'],
   data() {
     return {
       tableData: [],
       showMore: false,
       showText: {
         more: '高级搜索',
-        nomore: '收起'
+        nomore: '收起',
       },
       text: '',
       total: 0,
@@ -85,9 +106,9 @@ export default {
       form: {
         number: '',
         name: '',
-        time: ''
+        time: '',
       },
-      id: ''
+      id: '',
     }
   },
   methods: {
@@ -96,19 +117,75 @@ export default {
       axios
         .post('/api/user/selectUser', {
           name,
-          identity: 'user'
+          identity: 'user',
         })
-        .then(res => {
+        .then((res) => {
           this.id = res.data[0].id
           axios
             .post('/api/order/selectOrder', {
               id: res.data[0].id,
-              page: this.currentPage
+              page: this.currentPage,
             })
-            .then(res => {
+            .then((res) => {
               this.tableData = res.data.res
               this.total = res.data.total
             })
+        })
+    },
+    ConfirmGoods(row) {
+      axios
+        .post('/api/order/confirmGoods', {
+          id: row.id,
+        })
+        .then(() => {
+          this.$message.success('确认收货成功')
+          this.reload()
+        })
+    },
+    remindelivery(row) {
+      let username = sessionStorage.getItem('username')
+      axios
+        .post('/api/order/remindelivery', {
+          type: '发货提醒',
+          username,
+          time: moment().format('YYYY-MM-DD HH:mm:ss'),
+          number: row.number,
+        })
+        .then(() => {
+          this.$message.success('提醒发货成功')
+        })
+    },
+    returnGoods(row) {
+      let username = sessionStorage.getItem('username')
+      axios
+        .post('/api/user/selectId', {
+          username,
+        })
+        .then((res) => {
+          axios.post('/api/order/returnGoods', {
+            number: row.number,
+            money: row.money,
+            user: username,
+            time: moment().format('YYYY-MM-DD HH:mm:ss'),
+            id: res.data[0].id,
+            goodsId: row.id
+          }).then(() => {
+            this.$message.success('退货申请已提交')
+            this.reload()
+          })
+        })
+    },
+    remindReturn(row) {
+      let username = sessionStorage.getItem('username')
+      axios
+        .post('/api/order/remindelivery', {
+          type: '退货提醒',
+          username,
+          time: moment().format('YYYY-MM-DD HH:mm:ss'),
+          number: row.number,
+        })
+        .then(() => {
+          this.$message.success('提醒退货成功')
         })
     },
     handleCurrentChange(val) {
@@ -129,9 +206,9 @@ export default {
           startTime,
           endTime,
           id: this.id,
-          page: this.currentPage
+          page: this.currentPage,
         })
-        .then(res => {
+        .then((res) => {
           this.tableData = res.data
         })
     },
@@ -164,37 +241,37 @@ export default {
           name: this.form.name,
           startTime,
           endTime,
-          id: this.id
+          id: this.id,
         })
-        .then(res => {
+        .then((res) => {
           this.total = res.data.total
           this.tableData = res.data.res
         })
-    }
+    },
   },
   mounted() {
     this.getList()
     this.text = this.showText.more
-  }
+  },
 }
 </script>
 
 <style lang="less" scoped>
-    .searchMore {
-      font-size: 12px;
-      line-height: 50px;
-      margin-left: 15px;
-      color: #02a8f3;
-      cursor: pointer;
-    }
-    .input {
-      cursor: pointer;
-    }
-    .goodsImg {
-      width: 100px;
-      cursor: pointer;
-    }
-    .page {
-      float: right;
-    }
+.searchMore {
+  font-size: 12px;
+  line-height: 50px;
+  margin-left: 15px;
+  color: #02a8f3;
+  cursor: pointer;
+}
+.input {
+  cursor: pointer;
+}
+.goodsImg {
+  width: 100px;
+  cursor: pointer;
+}
+.page {
+  float: right;
+}
 </style>

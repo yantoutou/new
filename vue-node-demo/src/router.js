@@ -16,6 +16,7 @@ import myOrder from './pages/before/myOrder'
 import HomePage from './pages/before/homePage'
 import allOrders from './pages/before/allOrders'
 import Search from './pages/before/search'
+import Detail from './pages/before/detail'
 
 Vue.use(Router)
 
@@ -139,6 +140,14 @@ export default new Router({
       path: '/search',
       name: 'search',
       component: Search,
+      meta: {
+        requireAuth: true
+      }
+    },
+    {
+      path: '/detail',
+      name: 'detail',
+      component: Detail,
       meta: {
         requireAuth: true
       }

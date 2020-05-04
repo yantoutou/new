@@ -31,7 +31,7 @@
     </div>
     <div class="goods">
       <el-row :gutter="20">
-        <div v-for="item in goodsList" :key="item.id">
+        <div v-for="item in goodsList" :key="item.id" @click="detail(item)">
           <el-col :span="6">
             <el-card shadow="hover" class="card" :body-style="{ padding: '0px' }">
               <div class="img">
@@ -83,6 +83,15 @@ export default {
         name: 'myOrder'
       })
       window.open(newpage.href, '_blank')
+    },
+    detail(item) {
+      let newpage = this.$router.resolve({
+        name: 'detail'
+      })
+      window.open(newpage.href, '_blank')
+      axios.post('/api/goods/detail', {
+        id: item.id
+      })
     },
     loginOut() {
       this.$router.replace('/')
