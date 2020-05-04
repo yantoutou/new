@@ -17,6 +17,7 @@ import HomePage from './pages/before/homePage'
 import allOrders from './pages/before/allOrders'
 import Search from './pages/before/search'
 import Detail from './pages/before/detail'
+import Car from './pages/before/car'
 
 Vue.use(Router)
 
@@ -148,6 +149,14 @@ export default new Router({
       path: '/detail',
       name: 'detail',
       component: Detail,
+      meta: {
+        requireAuth: true
+      }
+    },
+    {
+      path: '/car',
+      name: 'car',
+      component: Car,
       meta: {
         requireAuth: true
       }

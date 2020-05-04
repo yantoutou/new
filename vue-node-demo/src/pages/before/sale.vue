@@ -7,7 +7,7 @@
           <div class="right">
             <span class="home" @click="goHome()"><i class="el-icon-house"></i>首页</span>
             <el-divider direction="vertical"></el-divider>
-            <span><i class="el-icon-shopping-cart-2"></i>购物车</span>
+            <span @click="car"><i class="el-icon-shopping-cart-2"></i>购物车</span>
             <el-divider direction="vertical"></el-divider>
             <span @click="order"><i class="el-icon-s-order"></i>我的订单</span>
             <el-divider direction="vertical"></el-divider>
@@ -61,13 +61,10 @@
             <el-card class="box-card" shadow="never">
               <div slot="header">
                 <span>烤烟型</span>
-                <el-button type="text" class="more"
-                  >更多<i class="el-icon-arrow-right"></i
-                ></el-button>
               </div>
               <div v-for="item in FlueTobacco" :key="item.id">
                 <div class="box">
-                  <img :src="showImg(item.img)" />
+                  <img :src="showImg(item.img)" @click="detail(item.name)" />
                   <div class="text">{{ item.name }}</div>
                 </div>
               </div>
@@ -77,13 +74,10 @@
             <el-card class="box-card1" shadow="never">
               <div slot="header">
                 <span>混合型</span>
-                <el-button type="text" class="more"
-                  >更多<i class="el-icon-arrow-right"></i
-                ></el-button>
               </div>
               <div v-for="item in hybridTobacco" :key="item.id">
                 <div class="box">
-                  <img :src="showImg(item.img)" />
+                  <img :src="showImg(item.img)" @click="detail(item.name)" />
                   <div class="text">{{ item.name }}</div>
                 </div>
               </div>
@@ -95,13 +89,10 @@
             <el-card class="box-card" shadow="never">
               <div slot="header">
                 <span style="color: #ffdd07;">雪茄型</span>
-                <el-button type="text" class="more"
-                  >更多<i class="el-icon-arrow-right"></i
-                ></el-button>
               </div>
               <div v-for="item in cigarList" :key="item.id">
                 <div class="box">
-                  <img :src="showImg(item.img)" />
+                  <img :src="showImg(item.img)" @click="detail(item.name)" />
                   <div class="text">{{ item.name }}</div>
                 </div>
               </div>
@@ -111,27 +102,15 @@
             <el-card class="box-card1" shadow="never">
               <div slot="header">
                 <span style="color: #ac45df;">外香型</span>
-                <el-button type="text" class="more"
-                  >更多<i class="el-icon-arrow-right"></i
-                ></el-button>
               </div>
               <div v-for="item in sweetList" :key="item.id">
                 <div class="box">
-                  <img :src="showImg(item.img)" />
+                  <img :src="showImg(item.img)" @click="detail(item.name)" />
                   <div class="text">{{ item.name }}</div>
                 </div>
               </div>
             </el-card>
           </el-col>
-        </el-row>
-        <el-row class="box3">
-          <div v-for="item in brandList" :key="item.id">
-            <el-col :span="3">
-              <el-card class="card" shadow="never">
-                {{ item.name }}
-              </el-card>
-            </el-col>
-          </div>
         </el-row>
       </el-scrollbar>
     </div>
@@ -201,6 +180,12 @@ export default {
         this.tableData = res.data
       })
     },
+    car() {
+      let newpage = this.$router.resolve({
+        name: 'car',
+      })
+      window.open(newpage.href, '_blank')
+    },
     personSet() {
       this.$router.push('/userSet')
     },
@@ -234,11 +219,6 @@ export default {
           this.sweetList = res.data
         })
     },
-    brandList() {
-      axios.post('/api/goods/brandList').then((res) => {
-        this.brandList = res.data
-      })
-    },
     search() {
       if (this.input == '') {
         this.$message.error('请输入商品')
@@ -247,11 +227,14 @@ export default {
         sessionStorage.setItem('searchName', this.input)
       }
     },
+    detail(name) {
+      this.$router.push({ path: '/search' })
+      sessionStorage.setItem('searchName', name)
+    },
   },
   mounted() {
     this.hotList()
     this.typeList()
-    this.brandList()
     let name = sessionStorage.getItem('username')
     axios
       .post('/api/sale/user', {
@@ -358,6 +341,7 @@ export default {
       img {
         width: 170px;
         height: 170px;
+        cursor: pointer;
       }
       .text {
         text-align: center;

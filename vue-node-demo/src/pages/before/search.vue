@@ -5,7 +5,7 @@
       <div class="right">
         <span class="home" @click="goHome"><i class="el-icon-house"></i>首页</span>
         <el-divider direction="vertical"></el-divider>
-        <span><i class="el-icon-shopping-cart-2"></i>购物车</span>
+        <span @click="car"><i class="el-icon-shopping-cart-2"></i>购物车</span>
         <el-divider direction="vertical"></el-divider>
         <span @click="order"><i class="el-icon-s-order"></i>我的订单</span>
         <el-divider direction="vertical"></el-divider>
@@ -105,6 +105,12 @@ export default {
     },
     showImg(icon) {
       return require('../../../../server/uploads/' + icon)
+    },
+    car() {
+      let newpage = this.$router.resolve({
+        name: 'car',
+      })
+      window.open(newpage.href, '_blank')
     }
   },
   mounted() {

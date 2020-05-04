@@ -241,5 +241,20 @@ router.post('/goodsDetail', (req, res) => {
   res.json(detail)
 })
 
+router.post('/addCar', (req, res) => {
+  let conn = new DBHelper().getConn()
+  let params = req.body
+  conn.query(sql.goods.addCar, [params.img, params.name, params.describe1, params.money, params.count, params.username], (err, result) => {
+    res.json(result)
+  })
+})
+
+router.post('/carList', (req, res) => {
+  let conn = new DBHelper().getConn()
+  conn.query(sql.goods.carList, [req.body.username], (err, result) => {
+    res.json(result)
+  })
+})
+
 
 module.exports = router

@@ -498,4 +498,14 @@ router.post('/refund', (req, res) => {
     conn.query(sql.order.change, [params.goodsId])
   })
 
+  router.post('/addOrder', (req, res) => {
+    let conn = new DBHelper().getConn()
+    let params = req.body
+    conn.query(sql.order.addOrder, [params.time, params.address, params.phone, params.money, params.status, params.number, params.label, params.userId, params.name, params.img], (err, result) => {
+      conn.query(sql.order.deleteCar, [params.id], (err, result) => {
+        res.json(result)
+      })
+    })
+  })
+
 module.exports = router

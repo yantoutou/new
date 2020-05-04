@@ -5,7 +5,7 @@
       <div class="right">
         <span class="home" @click="goHome"><i class="el-icon-house"></i>首页</span>
         <el-divider direction="vertical"></el-divider>
-        <span><i class="el-icon-shopping-cart-2"></i>购物车</span>
+        <span @click="car"><i class="el-icon-shopping-cart-2"></i>购物车</span>
         <el-divider direction="vertical"></el-divider>
         <span @click="order"><i class="el-icon-s-order"></i>我的订单</span>
         <el-divider direction="vertical"></el-divider>
@@ -78,7 +78,7 @@
                 <el-button type="danger" plain>立即购买</el-button>
               </el-col>
               <el-col :span="3">
-                <el-button type="danger">加入购物车</el-button>
+                <el-button type="danger" @click="addCar">加入购物车</el-button>
               </el-col>
             </el-row>
           </div>
@@ -109,6 +109,12 @@ export default {
       })
       window.open(newpage.href, '_self')
     },
+    car() {
+      let newpage = this.$router.resolve({
+        name: 'car',
+      })
+      window.open(newpage.href, '_blank')
+    },
     showImg(icon) {
       return require('../../../../server/uploads/' + icon)
     },
@@ -129,6 +135,19 @@ export default {
     personSet() {
       this.$router.push('/userSet')
     },
+    addCar() {
+      let username = sessionStorage.getItem('username')
+      axios.post('/api/goods/addCar', {
+        img: this.detail.img,
+        name: this.detail.name,
+        describe1: this.detail.describe1,
+        money: this.detail.money,
+        count: this.num,
+        username
+      }).then(() => {
+        this.$message.success('购物车添加成功')
+      })
+    }
   },
   mounted() {
     this.userName = sessionStorage.getItem('nickname')

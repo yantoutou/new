@@ -69,7 +69,9 @@ var sqlMap = {
         confirmGoods: 'update orderList set status = "1", label = "已完成" where id = ?',
         remindelivery: 'insert into unMessage (type, time, username, number) values (?, ?, ?, ?)',
         returnGoods: 'insert into returnList (number, money, user, time, deal, id) values (?, ?, ?, ?, "未处理", ?)',
-        change: 'update orderList set status = "4", label = "退货审核中" where id = ?'
+        change: 'update orderList set status = "4", label = "退货审核中" where id = ?',
+        addOrder: 'insert into orderList (time, address, phone, money, status, number, label, userId, goodsName, goodsImg) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        deleteCar: 'delete from car where id = ?'
     },
     returnGoods: {
         select: 'select * from returnList',
@@ -98,7 +100,9 @@ var sqlMap = {
         type: 'select * from goods where type = ? limit 0,6',
         brandList: 'select * from brandList',
         saleSearch: 'select * from goods where name like concat("%",?,"%")',
-        detail:'select * from goods where id = ?'
+        detail:'select * from goods where id = ?',
+        addCar: 'insert into car (img, name, describe1, money, count, username) values (?, ?, ?, ?, ?, ?)',
+        carList: 'select * from car where username = ?'
     },
     work: {
         returnNumber: 'select * from returnList where deal = "未处理"',
@@ -123,7 +127,7 @@ var sqlMap = {
         editMsg: 'update user set nickname = ?,password = ?,gender = ? where name = ?'
     },
     message: {
-        selectAll: 'select * from message',
+        /* selectAll: 'select * from message',
         selectPage: 'select * from message limit ?,10',
         selectName: 'select * from message where name = ?',
         selectNamePage: 'select * from message where name = ? limit ?,10',
@@ -133,7 +137,7 @@ var sqlMap = {
         selectBothPage: 'select * from message where name = ? and status = ? limit ?,10',
         ignore: 'update message set status = "3",value = "忽略" where id = ?',
         apply: 'insert into apply(id, apply, content, time) values (?, ?, ?, ?)',
-        edit: 'update message set status = "2",value = "已回复" where id = ?'
+        edit: 'update message set status = "2",value = "已回复" where id = ?' */
     },
     sale: {
         user: 'select * from user where name = ?',

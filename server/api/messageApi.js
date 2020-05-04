@@ -5,7 +5,7 @@ const DBHelper = require('../utils/DBHelper')
 const sql = require('../sqlMap')
 const moment = require('moment')
 
-router.post('/showList', (req, res) => {
+/* router.post('/showList', (req, res) => {
   let conn = new DBHelper().getConn()
   let sqlStrA = sql.message.selectAll
   conn.query(sqlStrA, (err, result) => {
@@ -103,6 +103,6 @@ router.post('/page', (req, res) => {
       res.json(result)
     }
   })
-})
+}) */
 
 module.exports = router
