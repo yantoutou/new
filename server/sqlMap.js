@@ -127,17 +127,12 @@ var sqlMap = {
         editMsg: 'update user set nickname = ?,password = ?,gender = ? where name = ?'
     },
     message: {
-        /* selectAll: 'select * from message',
-        selectPage: 'select * from message limit ?,10',
-        selectName: 'select * from message where name = ?',
-        selectNamePage: 'select * from message where name = ? limit ?,10',
-        selectValue: 'select * from message where status = ?',
-        selectValuePage: 'select * from message where status = ? limit ?,10',
-        selectBoth: 'select * from message where name = ? and status = ?',
-        selectBothPage: 'select * from message where name = ? and status = ? limit ?,10',
-        ignore: 'update message set status = "3",value = "忽略" where id = ?',
-        apply: 'insert into apply(id, apply, content, time) values (?, ?, ?, ?)',
-        edit: 'update message set status = "2",value = "已回复" where id = ?' */
+       list: 'select * from unMessage limit 0,10',
+       total: 'select * from unMessage',
+       page: 'select * from unMessage limit ?,10',
+       search: 'select * from unMessage where number = ?',
+       searchPage: 'select * from unMessage where number = ? limit ?,10',
+       deleteNum: 'delete from unMessage where number = ?'
     },
     sale: {
         user: 'select * from user where name = ?',

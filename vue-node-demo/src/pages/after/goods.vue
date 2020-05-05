@@ -69,7 +69,7 @@
           prop="discount"
           label="折扣"
           width="150"
-          :filters="[{ text: '有折扣', value: '1' }, { text: '无折扣', value: '0' }]"
+          :filters="[{ text: '有折扣', value: 1 }, { text: '无折扣', value: 0 }]"
           :filter-method="filterDiscount"
           filter-placement="bottom-end"
         >
@@ -82,7 +82,7 @@
           prop="new"
           label="新品"
           width="100"
-          :filters="[{ text: '新品', value: '1' }, { text: '非新品', value: '0' }]"
+          :filters="[{ text: '新品', value: 1 }, { text: '非新品', value: 0 }]"
           :filter-method="filterNew"
           filter-placement="bottom-end"
         >
