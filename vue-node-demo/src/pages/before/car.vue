@@ -27,7 +27,7 @@
           <el-table-column prop="name" label="商品名称" width="180"> </el-table-column>
           <el-table-column prop="describe1" label="商品信息" width="180">
           </el-table-column>
-          <el-table-column prop="money" label="价格" width="180"> </el-table-column>
+          <el-table-column prop="money" label="价格（单盒）" width="180"> </el-table-column>
           <el-table-column prop="count" label="数量">
             <template slot-scope="scope">
               <el-input-number

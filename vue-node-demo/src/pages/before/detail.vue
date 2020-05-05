@@ -70,12 +70,12 @@
                 label="请选择数量"
               ></el-input-number
             ></span>
-            <span class="inven">库存{{detail.inventory}}件</span>
+            <span class="inven">库存{{ detail.inventory }}件</span>
           </div>
           <div class="button">
             <el-row>
               <el-col :span="3">
-                <el-button type="danger" plain>立即购买</el-button>
+                <el-button type="danger" plain @click="buy">立即购买</el-button>
               </el-col>
               <el-col :span="3">
                 <el-button type="danger" @click="addCar">加入购物车</el-button>
@@ -85,13 +85,45 @@
         </div>
       </div>
     </div>
+    <el-dialog
+      title="填写信息"
+      :visible.sync="dialogVisible"
+      width="30%"
+      :modal-append-to-body="false"
+    >
+      <el-form :model="form" :rules="rules" ref="form" label-width="100px">
+        <el-form-item label="填写地址" prop="address">
+          <el-input v-model="form.address"></el-input>
+        </el-form-item>
+        <el-form-item label="联系电话" prop="phone">
+          <el-input v-model="form.phone"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="cancel">取 消</el-button>
+        <el-button type="primary" @click="confirm">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+import moment from 'moment'
 export default {
   data() {
+    var phone = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入电话号'))
+      } else {
+        var reg = /^1[3456789]\d{9}$/
+        if (!reg.test(this.form.phone)) {
+          callback(new Error('请输入有效的手机号码'))
+        } else {
+          callback()
+        }
+      }
+    }
     return {
       userName: '',
       sex: '',
@@ -100,6 +132,15 @@ export default {
       new1: '',
       discount: '',
       num: '',
+      dialogVisible: false,
+      form: {
+        address: '',
+        phone: '',
+      },
+      rules: {
+        address: [{ required: true, message: '请填写地址', trigger: 'change' }],
+        phone: [{ required: true, validator: phone, trigger: 'change' }],
+      },
     }
   },
   methods: {
@@ -137,17 +178,59 @@ export default {
     },
     addCar() {
       let username = sessionStorage.getItem('username')
-      axios.post('/api/goods/addCar', {
-        img: this.detail.img,
-        name: this.detail.name,
-        describe1: this.detail.describe1,
-        money: this.detail.money,
-        count: this.num,
-        username
-      }).then(() => {
-        this.$message.success('购物车添加成功')
+      axios
+        .post('/api/goods/addCar', {
+          img: this.detail.img,
+          name: this.detail.name,
+          describe1: this.detail.describe1,
+          money: this.detail.money,
+          count: this.num,
+          username,
+        })
+        .then(() => {
+          this.$message.success('购物车添加成功')
+        })
+    },
+    buy() {
+      this.dialogVisible = true
+    },
+    cancel() {
+      this.dialogVisible = false
+    },
+    confirm() {
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          let name = sessionStorage.getItem('username')
+          axios
+            .post('/api/set/getMessage', {
+              name,
+            })
+            .then((res) => {
+              axios
+                .post('/api/order/addOrder', {
+                  img: this.detail.img,
+                  name: this.detail.name,
+                  number: moment().valueOf(),
+                  money: this.detail.money,
+                  time: moment().format('YYYY-MM-DD HH:mm:ss'),
+                  status: 5,
+                  label: '未审核',
+                  userId: res.data[0].id,
+                  address: this.form.address,
+                  phone: this.form.phone,
+                  id: this.detail.id,
+                })
+                .then(() => {
+                  this.dialogVisible = false
+                  this.$message.success('购买成功')
+                  this.$router.push('/myOrder')
+                })
+            })
+        } else {
+          return false
+        }
       })
-    }
+    },
   },
   mounted() {
     this.userName = sessionStorage.getItem('nickname')
@@ -256,13 +339,13 @@ export default {
         color: #6b6666;
       }
       .inven {
-          font-size: 10px;
-          margin-left: 20px;
-          color: #6b6666;
+        font-size: 10px;
+        margin-left: 20px;
+        color: #6b6666;
       }
     }
     .button {
-        margin-top: 20px;
+      margin-top: 20px;
     }
   }
 }
